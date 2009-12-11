@@ -1,1 +1,1 @@
-java -cp C:\apps\scala-2.7.5.final\lib\scala-library.jar;target\classes; grambers.Test
+java -cp C:\apps\scala-2.7.5.final\lib\scala-library.jar;target\classes; %1
