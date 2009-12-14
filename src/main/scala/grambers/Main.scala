@@ -8,6 +8,15 @@ object Main extends JFrame {
     object MyPanel extends JPanel {
         val myLabel = new JLabel("I'm alive")
         add(myLabel)
+
+      
+       override def paint (g : Graphics) {
+            super.paint(g)
+            g match {
+                case g2: Graphics2D => g2
+                case _ => throw new ClassCastException
+            }
+       }
     }
 
     def addOne(number:Int): Int = {
