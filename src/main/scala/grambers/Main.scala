@@ -29,8 +29,7 @@ object Main extends JFrame {
         val sbg = screenBuffer.getGraphics()
         sbg.setColor(Color.green);
         sbg.fillRect(0, 0, MAX_X, MAX_Y);
-	    sbg.setColor(Color.black);
-
+        sbg.setColor(Color.black);
         sbg.drawString("I REALLY AM ALIVE", random.nextInt(MAX_X), random.nextInt(MAX_Y))      
         g2.drawImage(screenBuffer, 0, 0, null); 
     }
@@ -39,9 +38,6 @@ object Main extends JFrame {
         return number + 1;
     }
 
-    def initGraphics() {
-    }
-    
     def main(args:Array[String]) {
         println("I'm alive!")
         add(MyPanel)
