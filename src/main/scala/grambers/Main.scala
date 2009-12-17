@@ -18,7 +18,6 @@ object Main extends JFrame {
 
        override def paint (g : Graphics) {
             super.paint(g)
-            println("paint()");
             g match {
                 case g2: Graphics2D => draw(g2)
                 case _ => throw new ClassCastException
@@ -27,8 +26,12 @@ object Main extends JFrame {
     }
     
     def draw(g2:Graphics2D) {
-        println("draw()");
-        screenBuffer.getGraphics().drawString("I REALLY AM ALIVE", random.nextInt(MAX_X), random.nextInt(MAX_Y))      
+        val sbg = screenBuffer.getGraphics()
+        sbg.setColor(Color.green);
+        sbg.fillRect(0, 0, MAX_X, MAX_Y);
+	    sbg.setColor(Color.black);
+
+        sbg.drawString("I REALLY AM ALIVE", random.nextInt(MAX_X), random.nextInt(MAX_Y))      
         g2.drawImage(screenBuffer, 0, 0, null); 
     }
 
@@ -45,6 +48,9 @@ object Main extends JFrame {
         pack()
         setSize(new Dimension(MAX_X, MAX_Y));
         show()
-        while (true) {repaint()}
+        while (true) {
+            repaint()
+            Thread.sleep(200)
+        }
     }
 }
