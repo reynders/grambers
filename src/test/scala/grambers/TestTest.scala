@@ -2,7 +2,7 @@ package grambers
 import junit.framework._
 import Assert._
 
-class Test extends TestCase {
+class TestTest extends TestCase {
 
     def testAddOne() {
         var main = grambers.Main
