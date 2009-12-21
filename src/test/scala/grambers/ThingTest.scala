@@ -6,7 +6,7 @@ class TestThing extends TestCase {
 
     def testCircleLocationVal() {
         val location = (1, 2)
-        val thing = new grambers.Circle(1)
+        val thing = new grambers.Circle(1, java.awt.Color.red)
         thing.location = location
         assertEquals(1, thing.location._1)
         assertEquals(2, thing.location._2)

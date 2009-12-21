@@ -22,11 +22,15 @@ abstract class Thing {
     }
 }
 
-class Circle(radius:int) extends Thing {
+class Circle(val radius:int, val color : java.awt.Color) extends Thing {
   
   def draw(g2 : Graphics2D) {
     import java.awt.geom._
-    g2.draw(new Ellipse2D.Double(location._1, location._2, radius*2, radius*2))
+    val shape = new Ellipse2D.Double(location._1, location._2, radius*2, radius*2)
+    val originalPaintColor = g2.getPaint()
+    g2.setPaint(color)
+    g2.fill(shape)
+    g2.setPaint(originalPaintColor)
   }
 }
 

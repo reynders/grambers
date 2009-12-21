@@ -3,7 +3,6 @@ package grambers
 import javax.swing._
 import java.awt._
 import java.awt.image._
-import java.util.Random
 
 // Philosophy says that observer makes immaterial things material, thus the class that
 // does the rendering was named as Observer :) 
@@ -23,14 +22,6 @@ class Observer (val universe : Universe, val WIDTH : int, val HEIGHT : int) {
                     case _ => throw new ClassCastException
                 }
            }
-        }
-
-        def draw(g2:Graphics2D) {
-            sbg.setColor(Color.green);
-            sbg.fillRect(0, 0, WIDTH, HEIGHT);
-            sbg.setColor(Color.black);
-            sbg.drawString("I REALLY AM ALIVE", random.nextInt(WIDTH), random.nextInt(HEIGHT))      
-            g2.drawImage(screenBuffer, 0, 0, null); 
         }
 
         def drawUniverse(g2 : Graphics2D) {
