@@ -12,6 +12,10 @@ abstract class Thing {
     def accelerate(amount : int) {
         speed += amount
     }
+    
+    override def toString : String = {
+        location + ":" + speed + ":" + direction
+    }
 }
 
 class Circle extends Thing {
