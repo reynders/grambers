@@ -50,6 +50,7 @@ class Observer (val universe : Universe, val WIDTH : int, val HEIGHT : int) {
             show()
             while (true) {
                 repaint()
+                universe.advanceTime(1)
                 Thread.sleep(fpsToMs(FPS))
             }
         }
