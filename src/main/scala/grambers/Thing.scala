@@ -3,7 +3,7 @@ package grambers
 import java.awt._
 
 abstract class Thing {
-    var location: (int, int) = (0, 0)
+    var location: (double, double) = (0, 0)
     var speed : int = 0
     var direction : int = 0
     
@@ -18,7 +18,7 @@ abstract class Thing {
     def draw(g2 : Graphics2D );
     
     override def toString : String = {
-        location + ":" + speed + ":" + direction
+        "(" + location._1 + "," + location._2 + "):" + speed + ":" + direction
     }
 }
 

@@ -4,11 +4,9 @@ import Assert._
 
 class UniverseTest extends TestCase {
 
-    def testCircleLocationVal() {
-        val location = (1, 2)
-        val thing = new grambers.Circle(1, java.awt.Color.red)
-        thing.location = location
-        assertEquals(1, thing.location._1);
-        assertEquals(2, thing.location._2);
-    }    
+    def testToRadians() {
+      import java.lang.Math
+      assertEquals(0.0, Math.toRadians(0))
+      assertEquals(Math.round(Math.PI), Math.round(Math.toRadians(180)))
+    }
 }
