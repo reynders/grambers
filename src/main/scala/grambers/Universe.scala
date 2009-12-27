@@ -13,6 +13,8 @@ class Universe(val WIDTH : int, val HEIGHT : int) {
             val xSpeed = thing.speed * sin(toRadians(thing.direction))
             val ySpeed = thing.speed * cos(toRadians(thing.direction)) * - 1
             thing.location = (thing.location._1 + xSpeed, thing.location._2 + ySpeed)
+            
+            thing.turn(1)
         }
     }
     
