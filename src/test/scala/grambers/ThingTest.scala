@@ -12,6 +12,17 @@ class ThingTest extends TestCase {
         assertEquals(2.0, thing.location._2)
     }    
     
+    def testTurn() {
+      val thing = new grambers.Circle(1, java.awt.Color.red)
+      thing.direction = 0
+      thing.turn(-1)
+      assertEquals(359, thing.direction)
+      thing.turn(-359)
+      assertEquals(0, thing.direction)
+      thing.turn(721)
+      assertEquals(1, thing.direction)
+    }
+    
     def testToString() {
         val thing = new grambers.Box()
         thing.location = (3, 5)

@@ -10,12 +10,14 @@ abstract class Thing {
     
     def turn(degrees:int) {
         direction += degrees
+        direction %= 360
+        if (direction < 0 ) direction = 360 + direction
     }
     
     def accelerate(amount : int) {
         speed += amount
     }
-    
+
     def draw(g2 : Graphics2D );
         
     override def toString : String = {

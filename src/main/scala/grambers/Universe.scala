@@ -5,7 +5,7 @@ import java.lang.Math._
 
 class Universe(val WIDTH : int, val HEIGHT : int) {
     val things : ArrayBuffer[Thing] = new ArrayBuffer[Thing]
-    var ticksInMs = 0; 
+    var sinceBigBangInTicks = 0; 
     
     def moveThings {
         for(thing <- things) {
@@ -19,6 +19,7 @@ class Universe(val WIDTH : int, val HEIGHT : int) {
     def advanceTime(msToAdvance : int) {
       for(i <- 1 to msToAdvance) {
         moveThings
+        sinceBigBangInTicks += 1
       }
     }
 }
