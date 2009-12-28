@@ -7,6 +7,8 @@ object Main {
       val plainCircle = new grambers.Circle(10, java.awt.Color.yellow);
       plainCircle.speed = 1
       plainCircle.direction = 135
+      plainCircle.location = (50, 50)
+      plainCircle.doYourThing = (plainCircle) => {plainCircle.turn(3)}
       universe.things += plainCircle
       
       return universe
