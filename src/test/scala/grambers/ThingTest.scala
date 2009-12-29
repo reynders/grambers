@@ -6,14 +6,14 @@ class ThingTest extends TestCase {
 
     def testCircleLocationVal() {
         val location = (1.0, 2.0)
-        val thing = new grambers.Circle(1, java.awt.Color.red)
+        val thing = new grambers.Circle(1)
         thing.location = location
         assertEquals(1.0, thing.location._1)
         assertEquals(2.0, thing.location._2)
     }    
     
     def testTurn() {
-      val thing = new grambers.Circle(1, java.awt.Color.red)
+      val thing = new grambers.Circle(1)
       thing.direction = 0
       thing.turn(-1)
       assertEquals(359, thing.direction)
@@ -24,7 +24,7 @@ class ThingTest extends TestCase {
     }
     
     def testToString() {
-        val thing = new grambers.Box()
+        val thing = new grambers.Box(1, 1)
         thing.location = (3, 5)
         thing.speed = 10
         thing.direction = 180

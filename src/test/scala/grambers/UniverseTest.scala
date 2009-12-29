@@ -12,7 +12,7 @@ class UniverseTest extends TestCase {
     
     def testListIteration {
       val listOfThings = new Array[String](0)
-      val circle = new grambers.Circle(1, java.awt.Color.red)
+      val circle = new grambers.Circle(1)
       val doh = List(circle)
       doh.foreach(println)
     }
