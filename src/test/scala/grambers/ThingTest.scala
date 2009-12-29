@@ -39,4 +39,21 @@ class ThingTest extends TestCase {
       assertEquals(box.w, 2)
       assertEquals(box.h, 2)
     }
+    
+    def testCollidesWithBoxesThatDoNotCollide() {
+      val box_1 = new grambers.Box(2, 2)
+      box_1.location = (2, 2)
+      val box_2 = new grambers.Box(2, 2)
+      box_2.location = (4, 4)
+      assertFalse(box_1.collidesWith(box_2))
+    }
+    
+    def testCollidesWithBoxesThatOverlap() {
+      val box_1 = new grambers.Box(4, 4)      
+      box_1.location = (2, 2)
+      val box_2 = new grambers.Box(2, 2)
+      box_2.location = (3, 3)
+      println("Failing test")
+      assertTrue(box_1.collidesWith(box_2))
+    }
 }
