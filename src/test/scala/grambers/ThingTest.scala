@@ -30,4 +30,13 @@ class ThingTest extends TestCase {
         thing.direction = 180
         assertEquals("(3.0,5.0):10:180", thing.toString)
     }
+    
+    def testWidthAndHeigth() {
+      val circle = new grambers.Circle(3)
+      assertEquals(circle.w, 6)
+      assertEquals(circle.h, 6)
+      val box = new grambers.Box(2, 2)
+      assertEquals(box.w, 2)
+      assertEquals(box.h, 2)
+    }
 }

@@ -2,7 +2,7 @@ package grambers
 
 import java.awt._
 
-abstract class Thing (w:Int, h:Int) {
+abstract class Thing (val w:Int, val h:Int) {
     var location: (double, double) = (0, 0)
     var speed : int = 0
     var direction : int = 0
