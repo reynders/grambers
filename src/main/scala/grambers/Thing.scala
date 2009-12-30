@@ -15,7 +15,6 @@ abstract class Thing (val w:Int, val h:Int) {
     }
 
     def collidesWith(otherThing : Thing) : Boolean = {
-      println("Otherthing w = " + otherThing.w + " and x is " + otherThing.location._1)
       val o_left = otherThing.location._1 - (otherThing.w/2)
       val left = location._1 - (w/2)
       val o_right = o_left + otherThing.w
@@ -25,13 +24,10 @@ abstract class Thing (val w:Int, val h:Int) {
       val o_bottom = o_top - otherThing.h
       val bottom = top - h
 
-      println("ol " + o_left + " or " + o_right + " ot " + o_top + " ob " + o_bottom)
-      println("l " + left + " r " + right + " t " + top + " b " + bottom)
-      if (bottom > o_top) return false
-      if (top < o_bottom) return false
-      if (right < o_left) return false
-      if (left > o_right) return false
-      
+      if ((bottom > o_top) || (top < o_bottom) ||
+          (right < o_left) ||(left > o_right))
+        return false
+
       return true
     }
     

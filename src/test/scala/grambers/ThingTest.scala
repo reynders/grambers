@@ -44,7 +44,7 @@ class ThingTest extends TestCase {
       val box_1 = new grambers.Box(2, 2)
       box_1.location = (2, 2)
       val box_2 = new grambers.Box(2, 2)
-      box_2.location = (4, 4)
+      box_2.location = (5, 5)
       assertFalse(box_1.collidesWith(box_2))
     }
     
@@ -53,7 +53,15 @@ class ThingTest extends TestCase {
       box_1.location = (2, 2)
       val box_2 = new grambers.Box(2, 2)
       box_2.location = (3, 3)
-      println("Failing test")
       assertTrue(box_1.collidesWith(box_2))
     }
+    
+    def testCollidesWithAdjacentBoxes() {
+      val box_1 = new grambers.Box(2, 2)      
+      box_1.location = (2, 2)
+      val box_2 = new grambers.Box(2, 2)
+      box_2.location = (4, 2)
+      assertTrue(box_1.collidesWith(box_2))
+    }
+    
 }
