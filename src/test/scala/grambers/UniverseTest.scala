@@ -1,8 +1,13 @@
 package grambers
 import junit.framework._
 import Assert._
+import org.jmock.Mockery
+import org.jmock.Expectations._
+
 
 class UniverseTest extends TestCase {
+
+    val context = new Mockery()
 
     def testToRadians() {
       import java.lang.Math
@@ -15,6 +20,22 @@ class UniverseTest extends TestCase {
       val circle = new grambers.Circle(1)
       val doh = List(circle)
       doh.foreach(println)
+    }
+    
+    def testCollideThings {
+      val universe = new Universe(100, 100)
+      val box_1 = new grambers.Box(2, 2)      
+      box_1.location = (2, 2)
+      val box_2 = new grambers.Box(2, 2)
+      box_2.location = (4, 2)
+      val box_3 = new grambers.Box(3, 3)
+      box_3.location = (6, 6)
+
+      universe.things += box_1
+      universe.things += box_2
+      universe.things += box_3
+
+      universe.collideThings
     }
     
     def testScalaCollectionPerformance {

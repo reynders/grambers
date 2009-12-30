@@ -16,7 +16,11 @@
 			<artifactId>junit</artifactId>
 			<version>${junit-version}</version>
 		</dependency>
-        
+        <dependency>
+            <groupId>org.jmock</groupId>
+            <artifactId>jmock-junit4</artifactId>
+            <version>2.5.1</version>
+        </dependency>
 	</dependencies>
 	<repositories>
 		<repository>
@@ -88,5 +92,4 @@
         <junit-version>4.4</junit-version>
         <maven-scala-version>2.13</maven-scala-version>
     </properties>
-
 </project>
