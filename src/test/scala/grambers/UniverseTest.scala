@@ -15,12 +15,6 @@ class UniverseTest extends TestCase {
       assertEquals(Math.round(Math.PI), Math.round(Math.toRadians(180)))
     }
     
-    def testListIteration {
-      val listOfThings = new Array[String](0)
-      val circle = new grambers.Circle(1)
-      val doh = List(circle)
-      doh.foreach(println)
-    }
     
     def testCollideThings {
       val universe = new Universe(100, 100)
@@ -36,6 +30,19 @@ class UniverseTest extends TestCase {
       universe.things += box_3
 
       universe.collideThings
+    }
+    
+    def testCalculateCollisionAngle {
+      val universe = new Universe(100, 100)
+      
+      val circle_1 = new grambers.Circle(1)
+      circle_1.location = (0, 0)
+      circle_1.direction = 45
+      val circle_2 = new grambers.Circle(1)
+      circle_2.location = (1, 1)
+      circle_1.direction = -45
+
+      assertEquals(45.0, universe.calculateCollisionAngle(circle_1, circle_2))
     }
     
     def testScalaCollectionPerformance {

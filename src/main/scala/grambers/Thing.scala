@@ -30,16 +30,7 @@ abstract class Thing (val w:Int, val h:Int) {
 
       return true
     }
-    
-    def resolveCollisionWith(thing : Thing) {
-      speed = 0;
-    }
-    
-    def collide(collideWith : Thing) {
-      resolveCollisionWith(collideWith)
-      collideWith.resolveCollisionWith(this)
-    }
-    
+        
     def accelerate(amount : int) {
         speed += amount
     }
