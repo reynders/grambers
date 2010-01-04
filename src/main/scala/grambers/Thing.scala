@@ -35,6 +35,12 @@ abstract class Thing (val w:Int, val h:Int) {
         speed += amount
     }
 
+    def distanceFrom(otherThing : Thing) : Double = {
+      val xDiff = Math.abs(otherThing.location._1 - location._1)
+      val yDiff = Math.abs(otherThing.location._2 - location._2)
+      
+      return Math.sqrt((xDiff*xDiff) + (yDiff*yDiff)) 
+    }
     
     def draw(g2 : Graphics2D );
         
@@ -43,21 +49,22 @@ abstract class Thing (val w:Int, val h:Int) {
     }
 }
 
-class Circle(radius:Int) extends Thing(radius*2, radius*2) {
+class Circle(val radius:Int) extends Thing(radius*2, radius*2) {
   
   var color = java.awt.Color.yellow
   
-  def collide(otherThing : Thing) : Boolean = {
+  override def collidesWith(otherThing : Thing) : Boolean = {
     otherThing match {
-      case otherCircle: Circle => collide(otherCircle)
-      case _ => return false
+      case otherCircle : Circle => collide(otherCircle)
+      case _ => return super.collidesWith(otherThing)
     }
   }
   
   def collide(otherCircle : Circle) : Boolean = {
-    // if distance is < r1 + r2 we have a collision
-    return false
-    
+    if ((radius + otherCircle.radius) < distanceFrom(otherCircle))
+      return false
+    else 
+      return true
   }
   
   def draw(g2 : Graphics2D) {

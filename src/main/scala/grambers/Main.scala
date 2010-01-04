@@ -4,12 +4,21 @@ object Main {
     
     def bigBang() : Universe = {
       val universe = new Universe(500, 200);
-      val plainCircle = new grambers.Circle(10);
-      plainCircle.speed = 1
-      plainCircle.direction = 135
-      plainCircle.location = (50, 50)
-      plainCircle.doYourThing = (plainCircle) => {plainCircle.turn(3)}
-      universe.things += plainCircle
+      val yellowCircle = new grambers.Circle(10);
+      yellowCircle.color = java.awt.Color.yellow
+      yellowCircle.speed = 1
+      yellowCircle.direction = 135
+      yellowCircle.location = (50, 50)
+      yellowCircle.doYourThing = (yellowCircle) => {yellowCircle.turn(3)}
+      universe.things += yellowCircle
+
+      val redCircle = new grambers.Circle(10);
+      redCircle.color = java.awt.Color.red
+      redCircle.speed = 1
+      redCircle.direction = 135
+      redCircle.location = (100, 50)
+      redCircle.doYourThing = (redCircle) => {redCircle.turn(-1)}
+      universe.things += redCircle
       
       return universe
     }

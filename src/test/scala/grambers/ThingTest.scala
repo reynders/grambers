@@ -64,4 +64,46 @@ class ThingTest extends TestCase {
       assertTrue(box_1.collidesWith(box_2))
     }
     
+    def testCollidesWithAdjacentCollidingCircles() {
+      val circle_1 = new grambers.Circle(1)
+      circle_1.location = (0, 0)
+
+      val circle_2 = new grambers.Circle(1)
+      circle_2.location = (2, 0)
+
+      assertTrue(circle_1.collidesWith(circle_2))
+    }
+
+    def testCollidesWithOverlappingCircles() {
+      val circle_1 = new grambers.Circle(2)
+      circle_1.location = (1, -1)
+
+      val circle_2 = new grambers.Circle(1)
+      circle_2.location = (0, 0)
+
+      assertTrue(circle_1.collidesWith(circle_2))
+    }
+
+    def testCollidesWithNonOverlappingCircles() {
+      val circle_1 = new grambers.Circle(1)
+      circle_1.location = (0, -1)
+
+      val circle_2 = new grambers.Circle(1)
+      circle_2.location = (0, 2)
+
+      assertFalse(circle_1.collidesWith(circle_2))
+    }
+    
+    def testDistanceFrom() {
+      val circle_1 = new grambers.Circle(1)
+      circle_1.location = (0, 0)
+
+      val circle_2 = new grambers.Circle(1)
+      circle_2.location = (2, 0)
+
+      assertEquals(2.0, circle_1.distanceFrom(circle_2))
+      circle_1.location = (2, -3)      
+      assertEquals(3.0, circle_1.distanceFrom(circle_2))
+    }
+    
 }
