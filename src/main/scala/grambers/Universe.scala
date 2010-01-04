@@ -11,14 +11,11 @@ class Universe(val WIDTH : int, val HEIGHT : int) {
       for (startFrom <- 0 until things.size) {
         for (right <- startFrom until things.size) {
           if (things(startFrom) != things(right)) {
-            collide(things(startFrom), things(right))       
+            if (things(startFrom).collidesWith(things(right)))
+              things(startFrom).collide(things(right))       
           }
         }
       }
-    }
-    
-    def collide(left: Thing, right: Thing) {
-      println("Colliding " + left + " with " + right)
     }
     
     def moveThings {
@@ -33,6 +30,7 @@ class Universe(val WIDTH : int, val HEIGHT : int) {
     def advanceTime(msToAdvance : int) {
       for(i <- 1 to msToAdvance) {
         moveThings
+        collideThings
         sinceBigBangInTicks += 1
       }
     }

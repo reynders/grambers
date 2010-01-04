@@ -31,6 +31,15 @@ abstract class Thing (val w:Int, val h:Int) {
       return true
     }
     
+    def resolveCollisionWith(thing : Thing) {
+      speed = 0;
+    }
+    
+    def collide(collideWith : Thing) {
+      resolveCollisionWith(collideWith)
+      collideWith.resolveCollisionWith(this)
+    }
+    
     def accelerate(amount : int) {
         speed += amount
     }
@@ -55,12 +64,12 @@ class Circle(val radius:Int) extends Thing(radius*2, radius*2) {
   
   override def collidesWith(otherThing : Thing) : Boolean = {
     otherThing match {
-      case otherCircle : Circle => collide(otherCircle)
+      case otherCircle : Circle => collidesWith(otherCircle)
       case _ => return super.collidesWith(otherThing)
     }
   }
   
-  def collide(otherCircle : Circle) : Boolean = {
+  def collidesWith(otherCircle : Circle) : Boolean = {
     if ((radius + otherCircle.radius) < distanceFrom(otherCircle))
       return false
     else 
