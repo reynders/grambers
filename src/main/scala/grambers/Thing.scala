@@ -1,10 +1,11 @@
 package grambers
 
 import java.awt._
+import java.lang.Math._
 
 abstract class Thing (val w:Int, val h:Int) {
     var location: (double, double) = (0, 0)
-    var speed : int = 0
+    var speed : Double = 0.0
     var direction : int = 0
     var doYourThing : ((Thing) => Unit) = (thing) => {}
     
@@ -33,6 +34,14 @@ abstract class Thing (val w:Int, val h:Int) {
         
     def accelerate(amount : int) {
         speed += amount
+    }
+
+    def xSpeed : Double = {
+      return speed * sin(toRadians(direction))
+    }
+    
+    def ySpeed : Double = {
+      return speed * cos(toRadians(direction))
     }
 
     def distanceFrom(otherThing : Thing) : Double = {

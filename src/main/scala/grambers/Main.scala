@@ -7,7 +7,7 @@ object Main {
       
       val yellowCircle = new grambers.Circle(10);
       yellowCircle.color = java.awt.Color.yellow
-      yellowCircle.speed = 1
+      yellowCircle.speed = 1.0
       yellowCircle.direction = 135
       yellowCircle.location = (50, 50)
       yellowCircle.doYourThing = (yellowCircle) => {yellowCircle.turn(3)}
@@ -15,7 +15,7 @@ object Main {
 
       val redCircle = new grambers.Circle(10);
       redCircle.color = java.awt.Color.red
-      redCircle.speed = 1
+      redCircle.speed = 1.0
       redCircle.direction = 180
       redCircle.location = (80, 50)
       redCircle.doYourThing = (redCircle) => {redCircle.turn(4)}
