@@ -37,6 +37,15 @@ class ThingTest extends TestCase {
       
     }
     
+    def testSetSpeedAndDirection() {
+      val thing = new grambers.Circle(1)
+      thing.direction = 0
+      thing.speed = 0 //Math.sqrt(2.0)
+      thing.setSpeedAndDirection(1, 1)
+      assertEquals(45, thing.direction)
+      assertEquals(Math.sqrt(2.0), thing.speed)
+    }
+    
     def testToString() {
         val thing = new grambers.Box(1, 1)
         thing.location = (3, 5)

@@ -21,23 +21,51 @@ class Universe(val WIDTH : int, val HEIGHT : int) {
       val distance : Double = leftThing.distanceFrom(rightThing)
       val collUnitVector : (Double, Double) = (((leftThing.location._1 - rightThing.location._1)/distance),  
                                                ((leftThing.location._2 - rightThing.location._2)/distance))
-                                          
-      //val left_delta_x = left.location                                                 
-      //val leftVelocityTowardsCollision = ()
+
+      val leftSpeedTowardsCollision =  (leftThing.xSpeed * collUnitVector._1 + 
+                                        leftThing.ySpeed * collUnitVector._2)
+
+      val rightSpeedTowardsCollision = (rightThing.xSpeed * collUnitVector._1 + 
+                                        rightThing.ySpeed * collUnitVector._2)                                               
+
+      val leftSpeedPerpendicularWithCollision =  (-leftThing.xSpeed * collUnitVector._2 + 
+                                                  leftThing.ySpeed * collUnitVector._1)
+
+      val rightSpeedPerpendicularWithCollision = (-rightThing.xSpeed * collUnitVector._2 + 
+                                                  rightThing.ySpeed * collUnitVector._1)                                               
+                                        
+      val leftNewSpeedTowardsCollision = leftSpeedTowardsCollision + (leftSpeedTowardsCollision- 
+                                                                      rightSpeedTowardsCollision)
+
+      val rightNewSpeedTowardsCollision = rightSpeedTowardsCollision + (rightSpeedTowardsCollision- 
+                                                                        leftSpeedTowardsCollision)                                               
+                                                                      
+      val leftNewXspeed = (leftNewSpeedTowardsCollision * collUnitVector._1) - 
+                           (leftSpeedPerpendicularWithCollision * collUnitVector._2)
+      val leftNewYspeed = (leftNewSpeedTowardsCollision * collUnitVector._2) + 
+                           (leftSpeedPerpendicularWithCollision * collUnitVector._1)
+
+      val rightNewXspeed = (rightNewSpeedTowardsCollision * collUnitVector._1) - 
+                            (rightSpeedPerpendicularWithCollision * collUnitVector._2)
+      val rightNewYspeed = (rightNewSpeedTowardsCollision * collUnitVector._2) + 
+                           (rightSpeedPerpendicularWithCollision * collUnitVector._1)      
+
+      leftThing.setSpeedAndDirection(leftNewXspeed, leftNewYspeed)
+      rightThing.setSpeedAndDirection(rightNewXspeed, rightNewYspeed)
+
 /*
 // where x1,y1 are center of ball1, and x2,y2 are center of ball2
-
 double distance = Math.sqrt(dx*dx+dy*dy);
 
 // Unit vector in the direction of the collision
 double cx=dx/distance, cy=dy/distance;
 
-// Projection of the velocities in these cxes
+// Projection of the velocities in these axes
 double va1=(ax*cx+ay*cy), vb1=(-ax*cy+ay*cx);
 
 double va2=(bx*cx+by*cy), vb2=(-bx*cy+by*cx);
 
-// New velocities in these cxes (after collision): ed<=1,  for elastic collision ed=1
+// New velocities in these axes (after collision): ed<=1,  for elastic collision ed=1
 double vaP1=va1 + (1+ed)*(va2-va1)/(1+mass1/mass2);
 double vaP2=va2 + (1+ed)*(va1-va2)/(1+mass2/mass1);
 

@@ -44,6 +44,12 @@ abstract class Thing (val w:Int, val h:Int) {
       return speed * cos(toRadians(direction))
     }
 
+    def setSpeedAndDirection(xSpeed : Double, ySpeed : Double) {
+      speed = Math.sqrt(xSpeed * xSpeed + ySpeed * ySpeed)
+      println("Speed: " + speed + ", dir: " + acos(ySpeed / speed))
+      direction = toDegrees(acos(ySpeed / speed)).toInt
+    }
+    
     def distanceFrom(otherThing : Thing) : Double = {
       val xDiff = Math.abs(otherThing.location._1 - location._1)
       val yDiff = Math.abs(otherThing.location._2 - location._2)
