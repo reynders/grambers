@@ -1,3 +1,14 @@
+Material 
+---------
+http://www.euclideanspace.com/physics/dynamics/collision/twod/index.htm#twod
+http://www.yov408.com/html/tutorials.php?s=74
+http://www.plasmaphysics.org.uk/collision2d.htm
+http://books.google.gr/books?id=lRUj-nhQRu8C&pg=PA836&lpg=PA836&dq=game%2Bprogramming%2Bvectors%2Bphysics&source=bl&ots=7vD94EI8-x&sig=X8DEWfrx7602Ijw83tXbtVbCvPk&hl=el&ei=6DwzSpyTHYKD_Ab9n42fCg&sa=X&oi=book_result&ct=result&resnum=2#v=onepage&q=game%2Bprogramming%2Bvectors%2Bphysics&f=false
+
+
+
+Git
+------------
 git://github.com/reynders/grambers.git
 Give this clone URL to anyone.
 git clone git://github.com/reynders/grambers.git
