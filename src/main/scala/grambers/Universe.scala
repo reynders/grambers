@@ -32,8 +32,8 @@ class Universe(val WIDTH : int, val HEIGHT : int) {
                                                   leftThing.ySpeed * collUnitVector._1)
 
       val rightSpeedPerpendicularWithCollision = (-rightThing.xSpeed * collUnitVector._2 + 
-                                                  rightThing.ySpeed * collUnitVector._1)                                               
-                                        
+                                                  rightThing.ySpeed * collUnitVector._1)                                                                                           
+                                                  
       val leftNewSpeedTowardsCollision = leftSpeedTowardsCollision + (leftSpeedTowardsCollision- 
                                                                       rightSpeedTowardsCollision)
 
