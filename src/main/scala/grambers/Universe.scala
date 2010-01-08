@@ -78,49 +78,74 @@ bx=vaP2*cx-vb2*cy;  by=vaP2*cy+vb2*cx;// new vx,vy for ball 2 after collision
 
     def collideUsingVectors (leftThing : Thing, rightThing : Thing) {
 
-      val lVector = new Vector(leftThing.xSpeed, leftThing.ySpeed)
+      val lVector = new Vector(leftThing.xSpeed, leftThing.ySpeed)       
       val rVector = new Vector(rightThing.xSpeed, rightThing.ySpeed)
-      val collisionVector = new Vector((leftThing.location._1 - rightThing.location._1), (leftThing.location._2 - rightThing.location._2))
-      //Vector impulse = 
+      val collisionUnitVector = new Vector((leftThing.location._1 - rightThing.location._1), (leftThing.location._2 - rightThing.location._2)).unitVector
+      //val collisionUnitVector = collisionVector.unitVector
       
+lVector.name = "l"
+rVector.name = "r"
+collisionUnitVector.name = "col"
       
+      val massProportion = 2
+      val diffOfVelocities = lVector - rVector
+      val impulse = diffOfVelocities dot collisionUnitVector
+      val impulseVector = collisionUnitVector * impulse
       
-      val distance : Double = leftThing.distanceFrom(rightThing)
-      val collUnitVector : (Double, Double) = (((leftThing.location._1 - rightThing.location._1)/distance),  
-                                               ((leftThing.location._2 - rightThing.location._2)/distance))
+      if (impulse > 0) {
+        println("Impact already happened, no need to act")
+        return
+      }
+        
+diffOfVelocities.name = "dov"
+impulseVector.name = "impulse"
+println(lVector+ " - " + rVector + " - " + collisionUnitVector + " - " + diffOfVelocities + " - " + impulse + " - " + impulseVector)
 
-      val leftSpeedTowardsCollision =  (leftThing.xSpeed * collUnitVector._1 + 
-                                        leftThing.ySpeed * collUnitVector._2)
+      // float j = -(1.0f + cor) * impulse / (m1inverse + m2inverse);
+      val relativeCollisionImpulse = 2*impulse / massProportion
+      var adjustVector = collisionUnitVector * relativeCollisionImpulse
+            
+      leftThing.setSpeedAndDirection(lVector - adjustVector)
+      rightThing.setSpeedAndDirection(rVector + adjustVector)
+      
+      // Impulse is 2*(m1*m2/m1+m2)*((lvector-rvector) dot n) * n
+      // From http://www.euclideanspace.com/physics/dynamics/collision/twod/index.htm#twod
+      /*bool applyReponse(sphere& a, rectangle& b, const Vector& normal)
+{
+    // inverse masses (for static objects, inversemass = 0).
+    float ima = a.m_inverseMass;
+    float imb = b.m_inverseMass;
+    float im  = ima + imb;
+    if(im < 0.000001f) im = 1.0f;
 
-      val rightSpeedTowardsCollision = (rightThing.xSpeed * collUnitVector._1 + 
-                                        rightThing.ySpeed * collUnitVector._2)                                               
+    // impact velocity along normal of collision 'n'
+    Vector v = (a.m_velocity - b.m_velocity);
+    float vn = v.dotProduct(normal);
 
-      val leftSpeedPerpendicularWithCollision =  (-leftThing.xSpeed * collUnitVector._2 + 
-                                                  leftThing.ySpeed * collUnitVector._1)
+    // objects already separating, no reflection
+    if (vn > 0.0f) return true;
 
-      val rightSpeedPerpendicularWithCollision = (-rightThing.xSpeed * collUnitVector._2 + 
-                                                  rightThing.ySpeed * collUnitVector._1)                                                                                           
-                                                  
-      val leftNewSpeedTowardsCollision = leftSpeedTowardsCollision + (leftSpeedTowardsCollision- 
-                                                                      rightSpeedTowardsCollision)
+    const float cor = 0.7f; // coefficient of restitution. Arbitrary value, in range [0, 1].
+  
+    // relative collision impulse
+    float j = -(1.0f + cor) * vn / (im);
+  
+    // apply collision impulse to the two objects
+    a.m_velocity += normal * (j * ima);
+    b.m_velocity -= normal * (j * imb);
 
-      val rightNewSpeedTowardsCollision = rightSpeedTowardsCollision + (rightSpeedTowardsCollision- 
-                                                                        leftSpeedTowardsCollision)                                               
-                                                                      
-      val leftNewXspeed = (leftNewSpeedTowardsCollision * collUnitVector._1) - 
-                           (leftSpeedPerpendicularWithCollision * collUnitVector._2)
-      val leftNewYspeed = (leftNewSpeedTowardsCollision * collUnitVector._2) + 
-                           (leftSpeedPerpendicularWithCollision * collUnitVector._1)
+    return true;
 
-      val rightNewXspeed = (rightNewSpeedTowardsCollision * collUnitVector._1) - 
-                            (rightSpeedPerpendicularWithCollision * collUnitVector._2)
-      val rightNewYspeed = (rightNewSpeedTowardsCollision * collUnitVector._2) + 
-                           (rightSpeedPerpendicularWithCollision * collUnitVector._1)      
+    void collisionResponse(sphere& s, rectangle& r)
+{
+    Vector closest = closestPoint(s.m_centre, r);
+    Vector normal = (s.m_centre - closest);
+    normal.normalise();
+    applyReponse(s, r, normal);
+}
 
-      leftThing.setSpeedAndDirection(leftNewXspeed, leftNewYspeed)
-      rightThing.setSpeedAndDirection(rightNewXspeed, rightNewYspeed)
-
-      calculateCollisionAngle(leftThing, rightThing)
+}
+      */      
     }
 
     
@@ -129,7 +154,8 @@ bx=vaP2*cx-vb2*cy;  by=vaP2*cy+vb2*cx;// new vx,vy for ball 2 after collision
         for (right <- startFrom until things.size) {
           if (things(startFrom) != things(right)) {
             if (things(startFrom).collidesWith(things(right)))
-              collide(things(startFrom), things(right))       
+              //collide(things(startFrom), things(right))
+              collideUsingVectors(things(startFrom), things(right))
           }
         }
       }

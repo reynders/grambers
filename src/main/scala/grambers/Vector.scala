@@ -46,6 +46,9 @@ class Vector(val i : Double, val j : Double) {
     return new Vector(this.i + vector.i, this.j + vector.j)
   }
 
+  def *(scalar : Double) : Vector = {
+    return new Vector(this.i * scalar, this.j * scalar)
+  }
   
   def leftHandNormal : Vector = { 
     return new Vector(j, -i)

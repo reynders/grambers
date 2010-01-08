@@ -24,11 +24,22 @@ class VectorTest extends TestCase {
     var vectorB = new Vector(-1, -1)
     var expectedVector = new Vector(1, 2)
     assertEquals(expectedVector, vectorA + vectorB)
+
+    vectorA = new Vector(2, -2)
+    vectorB = new Vector(-2, 2)
+    expectedVector = new Vector(0, 0)
+    assertEquals(expectedVector, vectorA + vectorB)
     
     vectorA = new Vector(2, 3)
     vectorB = new Vector(4, 1)
     expectedVector = new Vector(-2, 2)
     assertEquals(expectedVector, vectorA - vectorB)
+    
+    vectorA = new Vector(2, -2)
+    vectorB = new Vector(-2, 2)
+    expectedVector = new Vector(4, -4)
+    assertEquals(expectedVector, vectorA - vectorB)
+
   }
 
   def testProjectionOn {
