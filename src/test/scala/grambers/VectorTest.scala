@@ -19,16 +19,44 @@ class VectorTest extends TestCase {
     assertEquals(5.0, vector.length)
   }
 
+  def testProjectionOn {
+    var vectorA = new Vector(2, 2)
+    var vectorB = new Vector(2, 0)
+    var expectedProjection = new Vector(2, 0)
+    assertEquals(expectedProjection, vectorA projectionOn vectorB)
+
+    vectorA = new Vector(0, -4)
+    vectorB = new Vector(4, -4)
+    expectedProjection = new Vector(2, -2)
+    assertEquals(expectedProjection, vectorA projectionOn vectorB)
+    
+    vectorA = new Vector(3, -2)
+    vectorB = new Vector(0, -10)
+    expectedProjection = new Vector(0, -2)
+    assertEquals(expectedProjection, vectorA projectionOn vectorB)
+  }
+  
   def testNormalize {
     val vectorA = new Vector(10, -8)
-    assertEquals(1.0, vectorA.normal.length)
+    assertEquals(1.0, vectorA.unitVector.length)
   }
   
   def testAngleBetween {
-    val vectorA = new Vector(2, 2)
-    val vectorB = new Vector(2, 0)
-    //val angle : Int = rint(vectorA.angleBetween(vectorB))
+    var vectorA = new Vector(2, 2)
+    var vectorB = new Vector(2, 0)
     assertEquals(45.0, rint(vectorA.angleBetween(vectorB)))
+
+    vectorA = new Vector(-2, -2)
+    vectorB = new Vector(-2, 0)
+    assertEquals(45.0, rint(vectorA.angleBetween(vectorB)))
+    
+    vectorA = new Vector(2, 2)
+    vectorB = new Vector(-2, 2)
+    assertEquals(90.0, rint(vectorA.angleBetween(vectorB)))
+    
+    vectorA = new Vector(10, 10)
+    vectorB = new Vector(-10, -10)
+    assertEquals(180.0, rint(vectorA.angleBetween(vectorB)))
   }
   
   def testToString {

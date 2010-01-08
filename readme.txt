@@ -1,5 +1,6 @@
 Material 
 ---------
+http://www.metanetsoftware.com/technique/tutorialA.html#appendixA
 http://www.euclideanspace.com/physics/dynamics/collision/twod/index.htm#twod
 http://www.yov408.com/html/tutorials.php?s=74
 http://www.plasmaphysics.org.uk/collision2d.htm

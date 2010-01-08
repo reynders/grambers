@@ -6,21 +6,6 @@ class Vector(val i : Double, val j : Double) {
   
   var name : String = ""  
     
-  /*
-   float 	angle(Vector2f v1)
-          Returns the angle in radians between this vector and the vector parameter; the return value is constrained to the range [0,PI].
- float 	dot(Vector2f v1)
-          Computes the dot product of the this vector and vector v1.
- float 	length()
-          Returns the length of this vector.
- float 	lengthSquared()
-          Returns the squared length of this vector.
- void 	normalize()
-          Normalizes this vector in place.
- void 	normalize(Vector2f v1)
-          Sets the value of this vector to the normalization of vector v1.
-  */
-  
   def dot(vector : Vector) : Double = {
     return (i*vector.i + j*vector.j)
   }
@@ -28,20 +13,46 @@ class Vector(val i : Double, val j : Double) {
   def length : Double = {
     return (sqrt(i*i + j*j))
   }
-  
-  def angleBetween(vector : Vector) : Double = {
-    return toDegrees(acos(this.normal.dot(vector.normal)))
+
+  def lengthSquared : Double = {
+    return (i*i + j*j)
   }
   
-  def normal : Vector = {
+  def angleBetween(vector : Vector) : Double = {
+    return toDegrees(acos(this.unitVector.dot(vector.unitVector)))
+  }
+  
+  def unitVector : Vector = {
     return new Vector(i/length, j/length)  
   }
   
-  def eq(vector : Vector) : Boolean = {
-    if (i == vector.i && j == vector.j)
-      return true
-    else
-      return false
+  /**
+    http://www.metanetsoftware.com/technique/tutorialA.html#appendixA
+    The formula for projecting vector a onto vector b is:
+  
+    proj.x = ( dp / (b.x*b.x + b.y*b.y) ) * b.x;
+    proj.y = ( dp / (b.x*b.x + b.y*b.y) ) * b.y;
+  
+    where dp is the dotprod of a and b: dp = (a.x*b.x + a.y*b.y)
+  
+    Note that the result is a vector; also, (b.x*b.x + b.y*b.y) is simply the length of b squared.
+  
+    If b is a unit vector, (b.x*b.x + b.y*b.y) = 1, and thus a projected onto b reduces to:
+    proj.x = dp*b.x;
+    proj.y = dp*b.y;
+  */
+  def projectionOn(vector : Vector) : Vector = {
+    val dotProduct = this dot vector
+    val xProj = (dotProduct / vector.lengthSquared) * vector.i
+    val yProj = (dotProduct / vector.lengthSquared) * vector.j
+    return new Vector(xProj, yProj)
+  }
+  
+  override def equals(vector : Any) =  vector match {    
+    case that : Vector => 
+      this.i == that.i && this.j == that.j
+    case _ => 
+      false      
   }
   
   override def toString() : String = {
