@@ -18,6 +18,18 @@ class VectorTest extends TestCase {
     var vector = new Vector(-4, 3)
     assertEquals(5.0, vector.length)
   }
+  
+  def testAddAndSubstract {
+    var vectorA = new Vector(2, 3)
+    var vectorB = new Vector(-1, -1)
+    var expectedVector = new Vector(1, 2)
+    assertEquals(expectedVector, vectorA + vectorB)
+    
+    vectorA = new Vector(2, 3)
+    vectorB = new Vector(4, 1)
+    expectedVector = new Vector(-2, 2)
+    assertEquals(expectedVector, vectorA - vectorB)
+  }
 
   def testProjectionOn {
     var vectorA = new Vector(2, 2)
@@ -39,6 +51,14 @@ class VectorTest extends TestCase {
   def testNormalize {
     val vectorA = new Vector(10, -8)
     assertEquals(1.0, vectorA.unitVector.length)
+  }
+  
+  def testNormals {
+    var vectorA = new Vector(3, -1)
+    var expectedVector = new Vector(-1, -3)
+    assertEquals(expectedVector, vectorA leftHandNormal)
+    expectedVector = new Vector(1, 3)
+    assertEquals(expectedVector, vectorA rightHandNormal)
   }
   
   def testAngleBetween {

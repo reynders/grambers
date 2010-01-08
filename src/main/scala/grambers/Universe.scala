@@ -75,6 +75,54 @@ bx=vaP2*cx-vb2*cy;  by=vaP2*cy+vb2*cx;// new vx,vy for ball 2 after collision
       */
       calculateCollisionAngle(leftThing, rightThing)
     }
+
+    def collideUsingVectors (leftThing : Thing, rightThing : Thing) {
+
+      val lVector = new Vector(leftThing.xSpeed, leftThing.ySpeed)
+      val rVector = new Vector(rightThing.xSpeed, rightThing.ySpeed)
+      val collisionVector = new Vector((leftThing.location._1 - rightThing.location._1), (leftThing.location._2 - rightThing.location._2))
+      //Vector impulse = 
+      
+      
+      
+      val distance : Double = leftThing.distanceFrom(rightThing)
+      val collUnitVector : (Double, Double) = (((leftThing.location._1 - rightThing.location._1)/distance),  
+                                               ((leftThing.location._2 - rightThing.location._2)/distance))
+
+      val leftSpeedTowardsCollision =  (leftThing.xSpeed * collUnitVector._1 + 
+                                        leftThing.ySpeed * collUnitVector._2)
+
+      val rightSpeedTowardsCollision = (rightThing.xSpeed * collUnitVector._1 + 
+                                        rightThing.ySpeed * collUnitVector._2)                                               
+
+      val leftSpeedPerpendicularWithCollision =  (-leftThing.xSpeed * collUnitVector._2 + 
+                                                  leftThing.ySpeed * collUnitVector._1)
+
+      val rightSpeedPerpendicularWithCollision = (-rightThing.xSpeed * collUnitVector._2 + 
+                                                  rightThing.ySpeed * collUnitVector._1)                                                                                           
+                                                  
+      val leftNewSpeedTowardsCollision = leftSpeedTowardsCollision + (leftSpeedTowardsCollision- 
+                                                                      rightSpeedTowardsCollision)
+
+      val rightNewSpeedTowardsCollision = rightSpeedTowardsCollision + (rightSpeedTowardsCollision- 
+                                                                        leftSpeedTowardsCollision)                                               
+                                                                      
+      val leftNewXspeed = (leftNewSpeedTowardsCollision * collUnitVector._1) - 
+                           (leftSpeedPerpendicularWithCollision * collUnitVector._2)
+      val leftNewYspeed = (leftNewSpeedTowardsCollision * collUnitVector._2) + 
+                           (leftSpeedPerpendicularWithCollision * collUnitVector._1)
+
+      val rightNewXspeed = (rightNewSpeedTowardsCollision * collUnitVector._1) - 
+                            (rightSpeedPerpendicularWithCollision * collUnitVector._2)
+      val rightNewYspeed = (rightNewSpeedTowardsCollision * collUnitVector._2) + 
+                           (rightSpeedPerpendicularWithCollision * collUnitVector._1)      
+
+      leftThing.setSpeedAndDirection(leftNewXspeed, leftNewYspeed)
+      rightThing.setSpeedAndDirection(rightNewXspeed, rightNewYspeed)
+
+      calculateCollisionAngle(leftThing, rightThing)
+    }
+
     
     def collideThings {
       for (startFrom <- 0 until things.size) {

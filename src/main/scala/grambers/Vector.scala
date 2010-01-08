@@ -26,26 +26,29 @@ class Vector(val i : Double, val j : Double) {
     return new Vector(i/length, j/length)  
   }
   
-  /**
-    http://www.metanetsoftware.com/technique/tutorialA.html#appendixA
-    The formula for projecting vector a onto vector b is:
-  
-    proj.x = ( dp / (b.x*b.x + b.y*b.y) ) * b.x;
-    proj.y = ( dp / (b.x*b.x + b.y*b.y) ) * b.y;
-  
-    where dp is the dotprod of a and b: dp = (a.x*b.x + a.y*b.y)
-  
-    Note that the result is a vector; also, (b.x*b.x + b.y*b.y) is simply the length of b squared.
-  
-    If b is a unit vector, (b.x*b.x + b.y*b.y) = 1, and thus a projected onto b reduces to:
-    proj.x = dp*b.x;
-    proj.y = dp*b.y;
-  */
+  // http://www.metanetsoftware.com/technique/tutorialA.html#appendixA
   def projectionOn(vector : Vector) : Vector = {
     val dotProduct = this dot vector
     val xProj = (dotProduct / vector.lengthSquared) * vector.i
     val yProj = (dotProduct / vector.lengthSquared) * vector.j
     return new Vector(xProj, yProj)
+  }
+  
+  def rightHandNormal : Vector = { 
+    return new Vector(-j, i)
+  }
+
+  def -(vector : Vector) : Vector = {
+    return new Vector(this.i - vector.i, this.j - vector.j)
+  }
+
+  def +(vector : Vector) : Vector = {
+    return new Vector(this.i + vector.i, this.j + vector.j)
+  }
+
+  
+  def leftHandNormal : Vector = { 
+    return new Vector(j, -i)
   }
   
   override def equals(vector : Any) =  vector match {    
