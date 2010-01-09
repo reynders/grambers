@@ -37,10 +37,10 @@ class UniverseTest extends TestCase {
       
       val circle_1 = new grambers.Circle(1)
       circle_1.location = (0, 0)
-      circle_1.direction = 45
+      circle_1.direction = 45.0
       val circle_2 = new grambers.Circle(1)
       circle_2.location = (1, 1)
-      circle_1.direction = -45
+      circle_1.direction = -45.0
 
       assertEquals(45.0, universe.calculateCollisionAngle(circle_1, circle_2))
     }

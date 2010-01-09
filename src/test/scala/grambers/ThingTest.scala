@@ -16,12 +16,14 @@ class ThingTest extends TestCase {
     def testTurn() {
       val thing = new grambers.Circle(1)
       thing.direction = 0
-      thing.turn(-1)
-      assertEquals(359, thing.direction)
-      thing.turn(-359)
-      assertEquals(0, thing.direction)
-      thing.turn(721)
-      assertEquals(1, thing.direction)
+      thing.turn(1)
+      assertEquals(1.0, thing.direction)
+      thing.direction = 0
+      thing.turn(361)
+      assertEquals(1.0, thing.direction)
+      thing.direction = 0
+      thing.turn(-361)
+      assertEquals(359.0, thing.direction)
     }
 
     def testXandYspeed() {
@@ -32,8 +34,8 @@ class ThingTest extends TestCase {
       assertEquals(1.0, Math.floor(thing.xSpeed))
       thing.speed = 1
       thing.direction = 90
-      assertEquals(0.0, Math.floor(thing.ySpeed))
-      assertEquals(1.0, Math.floor(thing.xSpeed))      
+      assertEquals(1.0, Math.floor(thing.ySpeed))
+      assertEquals(0.0, Math.floor(thing.xSpeed))      
       
     }
     
@@ -42,16 +44,33 @@ class ThingTest extends TestCase {
       thing.direction = 0
       thing.speed = 0 //Math.sqrt(2.0)
       thing.setSpeedAndDirection(1, 1)
-      assertEquals(45, thing.direction)
+      assertEquals(45.0, thing.direction)
       assertEquals(Math.sqrt(2.0), thing.speed)
+
+      thing.setSpeedAndDirection(-3, -3)
+      assertEquals(225.0, thing.direction)
+      assertEquals(Math.sqrt(18.0), thing.speed)
+      
+      thing.setSpeedAndDirection(0, 1)
+      assertEquals(90.0, thing.direction)
+
+      thing.setSpeedAndDirection(0, -1)
+      assertEquals(270.0, thing.direction)
+
+      thing.setSpeedAndDirection(1, 0)
+      assertEquals(0.0, thing.direction)
+
+      thing.setSpeedAndDirection(0, -1)
+      assertEquals(270.0, thing.direction)
+
     }
-    
+
     def testToString() {
         val thing = new grambers.Box(1, 1)
         thing.location = (3, 5)
         thing.speed = 10.0
-        thing.direction = 180
-        assertEquals("(3.0,5.0):10.0:180", thing.toString)
+        thing.direction = 170
+        assertEquals("(3.0,5.0):10.0:170.0", thing.toString)
     }
     
     def testWidthAndHeigth() {

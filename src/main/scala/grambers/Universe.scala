@@ -76,11 +76,11 @@ bx=vaP2*cx-vb2*cy;  by=vaP2*cy+vb2*cx;// new vx,vy for ball 2 after collision
       calculateCollisionAngle(leftThing, rightThing)
     }
 
-    def collideUsingVectors (leftThing : Thing, rightThing : Thing) {
+    def collideUsingVectors2 (leftThing : Thing, rightThing : Thing) {
 
       val lVector = new Vector(leftThing.xSpeed, leftThing.ySpeed)       
       val rVector = new Vector(rightThing.xSpeed, rightThing.ySpeed)
-      val collisionUnitVector = new Vector((leftThing.location._1 - rightThing.location._1), (leftThing.location._2 - rightThing.location._2)).unitVector
+      val collisionUnitVector = new Vector((rightThing.location._1 - leftThing.location._1), (rightThing.location._2 - leftThing.location._2)).unitVector
       //val collisionUnitVector = collisionVector.unitVector
       
 lVector.name = "l"
@@ -90,7 +90,6 @@ collisionUnitVector.name = "col"
       val massProportion = 2
       val diffOfVelocities = lVector - rVector
       val impulse = diffOfVelocities dot collisionUnitVector
-      val impulseVector = collisionUnitVector * impulse
       
       if (impulse > 0) {
         println("Impact already happened, no need to act")
@@ -98,11 +97,10 @@ collisionUnitVector.name = "col"
       }
         
 diffOfVelocities.name = "dov"
-impulseVector.name = "impulse"
-println(lVector+ " - " + rVector + " - " + collisionUnitVector + " - " + diffOfVelocities + " - " + impulse + " - " + impulseVector)
+println(lVector+ " - " + rVector + " - " + collisionUnitVector + " - " + diffOfVelocities + " - " + impulse)
 
       // float j = -(1.0f + cor) * impulse / (m1inverse + m2inverse);
-      val relativeCollisionImpulse = 2*impulse / massProportion
+      val relativeCollisionImpulse = (2*impulse) / massProportion
       var adjustVector = collisionUnitVector * relativeCollisionImpulse
             
       leftThing.setSpeedAndDirection(lVector - adjustVector)
@@ -148,6 +146,50 @@ println(lVector+ " - " + rVector + " - " + collisionUnitVector + " - " + diffOfV
       */      
     }
 
+    /*
+    http://www.phy.ntnu.edu.tw/ntnujava/index.php?topic=4
+    Vap2=((m1-m2)/(m1+m2))vap+ (2m2/(m1+m2))Vbp and
+  Vbp2=(2 m1/(m1+m2))Vap+((m2-m1)/(m2+m1))Vbp
+  The tangential component is not changed Van2=Van, and Vbn2=Vbn
+4. Calculate the vector sum for velocity of each ball after collision
+  Va2=Vap2+Van2 and Vb2=Vb2p+Vbn2 (vector summation)
+    */
+    def collideUsingVectors (leftThing : Thing, rightThing : Thing) {
+
+      val lVector = new Vector(leftThing.xSpeed, leftThing.ySpeed)       
+      val rVector = new Vector(rightThing.xSpeed, rightThing.ySpeed)
+      val collisionUnitVector = new Vector((rightThing.location._1 - leftThing.location._1), (rightThing.location._2 - leftThing.location._2)).unitVector
+      
+lVector.name = "l"
+rVector.name = "r"
+collisionUnitVector.name = "l2rCol"
+
+      if (((lVector dot collisionUnitVector) - (rVector dot collisionUnitVector)) < 0) {
+        println("Impact already happened, no need to act")
+        return
+      }
+
+      val l2rImpulse = collisionUnitVector * (lVector dot collisionUnitVector) 
+   
+      // Buggy
+      val r2lImpulse = collisionUnitVector * (rVector dot collisionUnitVector)
+
+      val l2rNormal = lVector - l2rImpulse
+      val r2lNormal = rVector - r2lImpulse
+      
+      val l2rVelocityAfterCollision = l2rImpulse + (l2rImpulse + r2lImpulse)
+      val r2lVelocityAfterCollision = r2lImpulse + (l2rImpulse + r2lImpulse)
+
+l2rImpulse.name = "l2rI"
+r2lImpulse.name = "r2lI"
+
+      println(lVector+ " - " + rVector + " - " + l2rImpulse + " - " + r2lImpulse + " - " +
+              (l2rNormal - l2rVelocityAfterCollision) + " - " + (r2lNormal - r2lVelocityAfterCollision))
+      
+      leftThing.setSpeedAndDirection(l2rNormal - l2rVelocityAfterCollision)
+      rightThing.setSpeedAndDirection(r2lNormal - r2lVelocityAfterCollision)
+    }
+    
     
     def collideThings {
       for (startFrom <- 0 until things.size) {

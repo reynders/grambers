@@ -6,7 +6,7 @@ import java.lang.Math._
 abstract class Thing (val w:Int, val h:Int) {
     var location: (double, double) = (0, 0)
     var speed : Double = 0.0
-    var direction : int = 0
+    var direction : Double = 0
     var doYourThing : ((Thing) => Unit) = (thing) => {}
     
     def turn(degrees:int) {
@@ -37,17 +37,50 @@ abstract class Thing (val w:Int, val h:Int) {
     }
 
     def xSpeed : Double = {
-      return speed * sin(toRadians(direction))
+      return speed * cos(toRadians(direction))
     }
     
     def ySpeed : Double = {
-      return speed * cos(toRadians(direction))
+      return speed * sin(toRadians(direction))
     }
 
     def setSpeedAndDirection(xSpeed : Double, ySpeed : Double) {
       speed = Math.sqrt(xSpeed * xSpeed + ySpeed * ySpeed)
-println("Speed: " + speed + ", dir: " + toDegrees(acos(ySpeed / speed)))
-      direction = toDegrees(acos(ySpeed / speed)).toInt
+      
+      if (xSpeed == 0.0) {
+        if (ySpeed >= 0) {          
+          direction = 90
+        }
+        else {
+          direction = 270
+        }
+      }
+      else if (ySpeed == 0.0) {
+        if (xSpeed >= 0) {        
+          direction = 0
+        }
+        else {
+          direction = -180
+        }
+      }
+      else {
+        val angle = toDegrees(atan(ySpeed / xSpeed))
+        println("Angle for " + ySpeed + "/" + xSpeed + " is " + angle)
+        if (ySpeed > 0 && xSpeed < 0) {
+          direction = 180 + angle
+        }   
+        else if (ySpeed < 0 && xSpeed < 0) {
+          direction =  180 + angle
+        }
+        else if (ySpeed < 0 && xSpeed > 0) {
+          direction = 360 + angle
+        }
+        else {
+          direction = angle
+        }
+      }
+
+      println("Speed: " + speed + ", dir: " + direction)
     }
 
     def setSpeedAndDirection(vector : Vector) {
