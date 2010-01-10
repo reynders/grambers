@@ -60,7 +60,7 @@ abstract class Thing (val w:Int, val h:Int) {
           direction = 0
         }
         else {
-          direction = -180
+          direction = 180
         }
       }
       else {

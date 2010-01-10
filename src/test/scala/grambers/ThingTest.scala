@@ -63,6 +63,8 @@ class ThingTest extends TestCase {
       thing.setSpeedAndDirection(0, -1)
       assertEquals(270.0, thing.direction)
 
+      thing.setSpeedAndDirection(-1, 0)
+      assertEquals(180.0, thing.direction)
     }
 
     def testToString() {
