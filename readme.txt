@@ -1,3 +1,11 @@
+Backlog
+-------
+* Walls (any angle)
+* Scalafy code 
+* Detach universe time from drawing speed
+* Take into account the displacement between two moments of time in collisions
+* Support for sprites
+
 Material 
 ---------
 http://www.metanetsoftware.com/technique/tutorialA.html#appendixA

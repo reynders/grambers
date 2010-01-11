@@ -44,45 +44,21 @@ abstract class Thing (val w:Int, val h:Int) {
       return speed * sin(toRadians(direction))
     }
 
+
     def setSpeedAndDirection(xSpeed : Double, ySpeed : Double) {
       speed = Math.sqrt(xSpeed * xSpeed + ySpeed * ySpeed)
       
-      if (xSpeed == 0.0) {
-        if (ySpeed >= 0) {          
-          direction = 90
-        }
-        else {
-          direction = 270
-        }
-      }
-      else if (ySpeed == 0.0) {
-        if (xSpeed >= 0) {        
-          direction = 0
-        }
-        else {
-          direction = 180
-        }
-      }
-      else {
-        val angle = toDegrees(atan(ySpeed / xSpeed))
-        println("Angle for " + ySpeed + "/" + xSpeed + " is " + angle)
-        if (ySpeed > 0 && xSpeed < 0) {
-          direction = 180 + angle
-        }   
-        else if (ySpeed < 0 && xSpeed < 0) {
-          direction =  180 + angle
-        }
-        else if (ySpeed < 0 && xSpeed > 0) {
-          direction = 360 + angle
-        }
-        else {
-          direction = angle
-        }
-      }
+      var angle = toDegrees(atan2(ySpeed, xSpeed))
+      
+      if (ySpeed < 0)
+        angle = 180 + (180 + angle)
 
+      direction = angle
+      
       println("Speed: " + speed + ", dir: " + direction)
     }
 
+    
     def setSpeedAndDirection(vector : Vector) {
       setSpeedAndDirection(vector.i, vector.j)
     }
