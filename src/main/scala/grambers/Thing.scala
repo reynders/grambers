@@ -47,14 +47,10 @@ abstract class Thing (val w:Int, val h:Int) {
 
     def setSpeedAndDirection(xSpeed : Double, ySpeed : Double) {
       speed = Math.sqrt(xSpeed * xSpeed + ySpeed * ySpeed)
+      direction = toDegrees(atan2(ySpeed, xSpeed))
       
-      var angle = toDegrees(atan2(ySpeed, xSpeed))
-      
-      if (ySpeed < 0)
-        angle = 180 + (180 + angle)
+      if (ySpeed < 0) direction += 360
 
-      direction = angle
-      
       println("Speed: " + speed + ", dir: " + direction)
     }
 
