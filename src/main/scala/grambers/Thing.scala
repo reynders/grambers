@@ -79,6 +79,7 @@ class Circle(val radius:Int) extends Thing(radius*2, radius*2) {
   override def collidesWith(otherThing : Thing) : Boolean = {
     otherThing match {
       case otherCircle : Circle => collidesWith(otherCircle)
+      case box : Box => return box.collidesWith(this)
       case _ => return super.collidesWith(otherThing)
     }
   }
@@ -111,6 +112,8 @@ class Box(w:Int, h:Int) extends Thing(w, h) {
   }
   
   def collidesWith(circle : Circle) : Boolean = {
+    
+    // Determine the closest point
     // See http://www.tonypa.pri.ee/vectors/tut07.html
     // http://vband3d.tripod.com/visualbasic/tut_mixedcollisions.htm
     // http://www.2dgamecreators.com/tutorials/gameprogramming/collision/T1%20Collision2.html#mozTocId39150
