@@ -24,7 +24,7 @@ class Universe(val WIDTH : int, val HEIGHT : int) {
       4. Calculate the vector sum for velocity of each ball after collision
       Va2=Vap2+Van2 and Vb2=Vb2p+Vbn2 (vector summation)
     */
-    def collide(leftThing : Thing, rightThing : Thing) {
+    def resolveCollision(leftThing : Thing, rightThing : Thing) {
 
       val lVector = new Vector(leftThing.xSpeed, leftThing.ySpeed)       
       val rVector = new Vector(rightThing.xSpeed, rightThing.ySpeed)
@@ -68,13 +68,13 @@ r2lVelocityAfterCollision.name = "r2lVaC"
         for (right <- startFrom until things.size) {
           if (things(startFrom) != things(right)) {
             if (things(startFrom).collidesWith(things(right)))  {            
-              collide(things(startFrom), things(right))          
+              resolveCollision(things(startFrom), things(right))          
             }
           }
         }
       }
     }
-    
+
     def move(things : Seq[Thing]) {
         for(thing <- things) {
             thing.doYourThing(thing)

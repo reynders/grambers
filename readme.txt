@@ -4,6 +4,7 @@ Backlog
 * Scalafy code 
 * Things should have mass
 * Detach universe time from drawing speed
+* Detach view window coordinates from universe coordinates
 * Take into account the displacement between two moments of time in collisions
 * Support for sprites
 

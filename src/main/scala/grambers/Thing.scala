@@ -101,6 +101,28 @@ class Circle(val radius:Int) extends Thing(radius*2, radius*2) {
 }
 
 class Box(w:Int, h:Int) extends Thing(w, h) {
+  var color = java.awt.Color.black
+
+  override def collidesWith(otherThing : Thing) : Boolean = {
+    otherThing match {
+      case circle : Circle => collidesWith(circle)
+      case _ => return super.collidesWith(otherThing)
+    }
+  }
+  
+  def collidesWith(circle : Circle) : Boolean = {
+    // See http://www.tonypa.pri.ee/vectors/tut07.html
+    // http://vband3d.tripod.com/visualbasic/tut_mixedcollisions.htm
+    // http://www.2dgamecreators.com/tutorials/gameprogramming/collision/T1%20Collision2.html#mozTocId39150
+      return false
+  }
+
   def draw(g2: Graphics2D) {
+    import java.awt.geom._
+    val shape = new Rectangle2D.Double(location._1, location._2, w, h)
+    val originalPaintColor = g2.getPaint()
+    g2.setPaint(color)
+    g2.fill(shape)
+    g2.setPaint(originalPaintColor)
   }
 }

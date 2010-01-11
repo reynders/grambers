@@ -30,31 +30,22 @@ class UniverseTest extends TestCase {
       box_1.location = (2, 2)
       val box_2 = new grambers.Box(2, 2)
       box_2.location = (4, 2)
-      val box_3 = new grambers.Box(3, 3)
-      box_3.location = (6, 6)
-
       val box_0_mock = (context.mock(classOf[grambers.Box])).asInstanceOf[grambers.Box]
 
       universe.things += box_0_mock      
       universe.things += box_1
       universe.things += box_2
-      universe.things += box_3
-      //universe.things += box_4_mock
 
       context.checking(new Expectations {  
-        allowing(box_0_mock).location
-          will(returnValue((0.0, 0.0)))
-        allowing(box_0_mock).w
-          will(returnValue(1))
-        allowing(box_0_mock).h
-          will(returnValue(1))
+        allowing(box_0_mock).location;  will(returnValue((0.0, 0.0)))
+        allowing(box_0_mock).w; will(returnValue(1))
+        allowing(box_0_mock).h; will(returnValue(1))
 
-        exactly(3).of(box_0_mock).collidesWith(`with`(any(classOf[Thing])))
-        will(returnValue(false))
+        exactly(2).of(box_0_mock).collidesWith(`with`(any(classOf[Thing])))
+          will(returnValue(false))
       }) 
       
-      universe.collide(universe.things)
-      
+      universe.collide(universe.things)      
       context.assertIsSatisfied
     }
     
