@@ -2,20 +2,28 @@ package grambers
 import junit.framework._
 import Assert._
 import org.jmock.Mockery
+import org.jmock.lib.legacy.ClassImposteriser;
+import org.jmock.Expectations
 import org.jmock.Expectations._
 
+/*
+class SExpectations extends Expectations {
+  def withArg[T](matcher: Matcher[T]): T = super.`with`(matcher)  
+}
+*/
 
 class UniverseTest extends TestCase {
 
-    val context = new Mockery()
+    val context = new Mockery() {{
+        setImposteriser(ClassImposteriser.INSTANCE);
+    }};
 
     def testToRadians() {
       import java.lang.Math
       assertEquals(0.0, Math.toRadians(0))
       assertEquals(Math.round(Math.PI), Math.round(Math.toRadians(180)))
     }
-    
-    
+       
     def testCollideThings {
       val universe = new Universe(100, 100)
       val box_1 = new grambers.Box(2, 2)      
@@ -25,11 +33,29 @@ class UniverseTest extends TestCase {
       val box_3 = new grambers.Box(3, 3)
       box_3.location = (6, 6)
 
+      val box_0_mock = (context.mock(classOf[grambers.Box])).asInstanceOf[grambers.Box]
+
+      universe.things += box_0_mock      
       universe.things += box_1
       universe.things += box_2
       universe.things += box_3
+      //universe.things += box_4_mock
 
-      universe.collideThings
+      context.checking(new Expectations {  
+        allowing(box_0_mock).location
+          will(returnValue((0.0, 0.0)))
+        allowing(box_0_mock).w
+          will(returnValue(1))
+        allowing(box_0_mock).h
+          will(returnValue(1))
+
+        exactly(3).of(box_0_mock).collidesWith(`with`(any(classOf[Thing])))
+        will(returnValue(false))
+      }) 
+      
+      universe.collide(universe.things)
+      
+      context.assertIsSatisfied
     }
     
     def testCalculateCollisionAngle {

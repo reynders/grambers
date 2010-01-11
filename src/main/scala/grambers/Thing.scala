@@ -50,8 +50,7 @@ abstract class Thing (val w:Int, val h:Int) {
       direction = toDegrees(atan2(ySpeed, xSpeed))
       
       if (ySpeed < 0) direction += 360
-
-      println("Speed: " + speed + ", dir: " + direction)
+//println("Speed: " + speed + ", dir: " + direction)
     }
 
     

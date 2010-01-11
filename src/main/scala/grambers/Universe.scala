@@ -5,7 +5,7 @@ import java.lang.Math._
 
 class Universe(val WIDTH : int, val HEIGHT : int) {
     val things : ArrayBuffer[Thing] = new ArrayBuffer[Thing]
-    var sinceBigBangInTicks = 0; 
+    var ticksSinceBigBangIn = 0; 
     
     def calculateCollisionAngle(leftThing : Thing, rightThing : Thing) : Double = {
       val xDiff : Double = (leftThing.location._1 - rightThing.location._1)
@@ -24,7 +24,7 @@ class Universe(val WIDTH : int, val HEIGHT : int) {
       4. Calculate the vector sum for velocity of each ball after collision
       Va2=Vap2+Van2 and Vb2=Vb2p+Vbn2 (vector summation)
     */
-    def collideUsingVectors (leftThing : Thing, rightThing : Thing) {
+    def collide(leftThing : Thing, rightThing : Thing) {
 
       val lVector = new Vector(leftThing.xSpeed, leftThing.ySpeed)       
       val rVector = new Vector(rightThing.xSpeed, rightThing.ySpeed)
@@ -63,19 +63,19 @@ r2lVelocityAfterCollision.name = "r2lVaC"
     }
     
     
-    def collideThings {
+    def collide(things : Seq[Thing]) {
       for (startFrom <- 0 until things.size) {
         for (right <- startFrom until things.size) {
           if (things(startFrom) != things(right)) {
-            if (things(startFrom).collidesWith(things(right)))
-              //collide(things(startFrom), things(right))
-              collideUsingVectors(things(startFrom), things(right))
+            if (things(startFrom).collidesWith(things(right)))  {            
+              collide(things(startFrom), things(right))          
+            }
           }
         }
       }
     }
     
-    def moveThings {
+    def move(things : Seq[Thing]) {
         for(thing <- things) {
             thing.doYourThing(thing)
             thing.location = (thing.location._1 + thing.xSpeed, thing.location._2 + thing.ySpeed)
@@ -84,9 +84,9 @@ r2lVelocityAfterCollision.name = "r2lVaC"
     
     def advanceTime(msToAdvance : int) {
       for(i <- 1 to msToAdvance) {
-        moveThings
-        collideThings
-        sinceBigBangInTicks += 1
+        move(things)
+        collide(things)
+        ticksSinceBigBangIn += 1
       }
     }
 }
