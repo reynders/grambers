@@ -8,7 +8,12 @@ abstract class Thing (val w:Int, val h:Int) {
     var speed : Double = 0.0
     var direction : Double = 0
     var doYourThing : ((Thing) => Unit) = (thing) => {}
-    
+
+    // If the shape can change override this to return current enclosing box 
+    def enclosingRectangle : Rectangle = {
+      return new Rectangle(w, h, location._1, location._2)
+    }    
+
     def turn(degrees:int) {
         direction += degrees
         direction %= 360
@@ -16,22 +21,9 @@ abstract class Thing (val w:Int, val h:Int) {
     }
 
     def collidesWith(otherThing : Thing) : Boolean = {
-      val o_left = otherThing.location._1 - (otherThing.w/2)
-      val left = location._1 - (w/2)
-      val o_right = o_left + otherThing.w
-      val right = left + w
-      val o_top = otherThing.location._2 + (otherThing.h/2)
-      val top = location._2 + (h/2)
-      val o_bottom = o_top - otherThing.h
-      val bottom = top - h
-
-      if ((bottom > o_top) || (top < o_bottom) ||
-          (right < o_left) ||(left > o_right))
-        return false
-
-      return true
+      return enclosingRectangle.overlaps(otherThing.enclosingRectangle)
     }
-        
+    
     def accelerate(amount : int) {
         speed += amount
     }
@@ -64,7 +56,7 @@ abstract class Thing (val w:Int, val h:Int) {
       
       return Math.sqrt((xDiff*xDiff) + (yDiff*yDiff)) 
     }
-    
+     
     def draw(g2 : Graphics2D );
         
     override def toString : String = {
@@ -79,7 +71,7 @@ class Circle(val radius:Int) extends Thing(radius*2, radius*2) {
   override def collidesWith(otherThing : Thing) : Boolean = {
     otherThing match {
       case otherCircle : Circle => collidesWith(otherCircle)
-      case box : Box => return box.collidesWith(this)
+      case box : Box => collidesWith(box)
       case _ => return super.collidesWith(otherThing)
     }
   }
@@ -89,6 +81,16 @@ class Circle(val radius:Int) extends Thing(radius*2, radius*2) {
       return false
     else 
       return true
+  }
+  
+  def collidesWith(box : Box) : Boolean = {
+    if (super.collidesWith(box)) {
+println("Cirle enclosing box collides with box enclosing box, checking for collision")
+       
+      return true
+    }
+    
+    return false
   }
   
   def draw(g2 : Graphics2D) {
@@ -104,16 +106,13 @@ class Circle(val radius:Int) extends Thing(radius*2, radius*2) {
 class Box(w:Int, h:Int) extends Thing(w, h) {
   var color = java.awt.Color.black
 
+  
   override def collidesWith(otherThing : Thing) : Boolean = {
     otherThing match {
-      case circle : Circle => collidesWith(circle)
+      case circle : Circle => return circle.collidesWith(this)
       case _ => return super.collidesWith(otherThing)
-    }
-  }
-  
-  def collidesWith(circle : Circle) : Boolean = {
-    
-    // Determine the closest point
+    }  
+        
     // See http://www.tonypa.pri.ee/vectors/tut07.html
     // http://vband3d.tripod.com/visualbasic/tut_mixedcollisions.htm
     // http://www.2dgamecreators.com/tutorials/gameprogramming/collision/T1%20Collision2.html#mozTocId39150
