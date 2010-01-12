@@ -22,8 +22,27 @@ class Line(val startX : Double, val startY : Double, val endX : Double, val endY
   }
 }
 
+/** 
+  Rectangle is specified as w, h and center point (x, y) instead of left upper 
+  and right lower corner so that rectangle can be at an angle if needed
+  */
 class Rectangle(val w : Double, val h : Double, val x : Double, val y : Double) extends Shape {
 
+  def normal : Vector = {
+    asLines.foreach {line => 
+      println(line)
+      
+    }
+    
+    return new Vector(0, 0)
+  }
+  
+  /*
+  def closestCorner(pX : Double, pY : Double) : (Double, Double) = {
+    val luX = (x- w/2) val luY = (y - h/2)
+    if (pX - (x-w/2)) >
+  }*/
+  
   def asLines : Buffer[Line] = {
     val lines = new ArrayBuffer[Line]()
     
@@ -53,3 +72,5 @@ class Rectangle(val w : Double, val h : Double, val x : Double, val y : Double) 
     }
     
 }
+
+
