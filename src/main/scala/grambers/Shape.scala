@@ -5,7 +5,7 @@ import scala.collection.mutable._
 class Shape {
 }
 
-class Line(val startX : Double, val startY : Double, val endX : Double, val endY : Double) {
+class Line(val startX : Double, val startY : Double, val endX : Double, val endY : Double) extends Shape {
  
   override def equals(line : Any) = line match {    
     case that : Line => 
@@ -17,21 +17,32 @@ class Line(val startX : Double, val startY : Double, val endX : Double, val endY
       false      
   }
   
+  // Does not work ?!?
+  implicit def lineToVector(line : Line) : Vector = new Vector(endX - startX, endY - startY)
+  
+  def asVector() : Vector = {
+    return new Vector(endX - startX, endY - startY)
+  }
+  
   override def toString : String = {
     return "(" + startX + "," + startY + "-" + endX + "," + endY + ")"
   }
+}
+
+class Circle2(val x: Double, val y : Double, val r : Double) extends Shape {
 }
 
 /** 
   Rectangle is specified as w, h and center point (x, y) instead of left upper 
   and right lower corner so that rectangle can be at an angle if needed
   */
-class Rectangle(val w : Double, val h : Double, val x : Double, val y : Double) extends Shape {
+class Rectangle(val x : Double, val y : Double, val w : Double, val h : Double) extends Shape {
 
-  def normal : Vector = {
+  def normal(circle : Circle2): Vector = {
     asLines.foreach {line => 
-      println(line)
-      
+      val lineToCircleVector = new Vector(circle.x - line.startX, circle.y - line.startY)
+      val lineToCircleProjection = lineToCircleVector.projectionOn(line.asVector)     
+      println(line + " vector towards " + circle + " is " + lineToCircleVector + ", projection is " + lineToCircleProjection)
     }
     
     return new Vector(0, 0)
@@ -69,6 +80,10 @@ class Rectangle(val w : Double, val h : Double, val x : Double, val y : Double) 
         return false
       else
         return true
+    }
+    
+    override def toString : String = {
+      return "Rectangle (" + x + "," + y + ") : " + w + "w, " + h + "h"
     }
     
 }

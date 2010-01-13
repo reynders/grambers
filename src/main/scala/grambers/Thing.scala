@@ -11,7 +11,7 @@ abstract class Thing (val w:Int, val h:Int) {
 
     // If the shape can change override this to return current enclosing box 
     def enclosingRectangle : Rectangle = {
-      return new Rectangle(w, h, location._1, location._2)
+      return new Rectangle(location._1, location._2, w, h)
     }    
 
     def turn(degrees:int) {
@@ -20,7 +20,7 @@ abstract class Thing (val w:Int, val h:Int) {
         if (direction < 0 ) direction = 360 + direction
     }
 
-    def collidesWith(otherThing : Thing) : Boolean = {
+    def collidesWith(otherThing : Thing) : Boolean = {    
       return enclosingRectangle.overlaps(otherThing.enclosingRectangle)
     }
     
@@ -64,19 +64,19 @@ abstract class Thing (val w:Int, val h:Int) {
     }
 }
 
-class Circle(val radius:Int) extends Thing(radius*2, radius*2) {
+class RoundThing(val radius:Int) extends Thing(radius*2, radius*2) {
   
   var color = java.awt.Color.yellow
   
   override def collidesWith(otherThing : Thing) : Boolean = {
     otherThing match {
-      case otherCircle : Circle => collidesWith(otherCircle)
+      case otherCircle : RoundThing => collidesWith(otherCircle)
       case box : Box => collidesWith(box)
       case _ => return super.collidesWith(otherThing)
     }
   }
   
-  def collidesWith(otherCircle : Circle) : Boolean = {
+  def collidesWith(otherCircle : RoundThing) : Boolean = {
     if ((radius + otherCircle.radius) < distanceFrom(otherCircle))
       return false
     else 
@@ -105,12 +105,11 @@ println("Cirle enclosing box collides with box enclosing box, checking for colli
 
 class Box(w:Int, h:Int) extends Thing(w, h) {
   var color = java.awt.Color.black
-
-  
+ 
   override def collidesWith(otherThing : Thing) : Boolean = {
     otherThing match {
-      case circle : Circle => return circle.collidesWith(this)
-      case _ => return super.collidesWith(otherThing)
+      case circle : RoundThing => return circle.collidesWith(this)
+      case _ =>  return super.collidesWith(otherThing)
     }  
         
     // See http://www.tonypa.pri.ee/vectors/tut07.html
