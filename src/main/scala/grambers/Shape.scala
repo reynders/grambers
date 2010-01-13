@@ -7,6 +7,8 @@ class Shape {
 
 class Line(val startX : Double, val startY : Double, val endX : Double, val endY : Double) extends Shape {
  
+  lazy val asVector = new Vector(endX - startX, endY - startY)
+  
   override def equals(line : Any) = line match {    
     case that : Line => 
       (this.startX == that.startX && this.startY == that.startY &&
@@ -16,20 +18,17 @@ class Line(val startX : Double, val startY : Double, val endX : Double, val endY
     case _ => 
       false      
   }
-  
-  // Does not work ?!?
-  implicit def lineToVector(line : Line) : Vector = new Vector(endX - startX, endY - startY)
-  
-  def asVector() : Vector = {
-    return new Vector(endX - startX, endY - startY)
-  }
-  
+    
   override def toString : String = {
     return "(" + startX + "," + startY + "-" + endX + "," + endY + ")"
   }
 }
 
-class Circle2(val x: Double, val y : Double, val r : Double) extends Shape {
+class Circle(val x: Double, val y : Double, val r : Double) extends Shape {
+  
+    override def toString : String = {
+      return "Circle(" + x + "," + y + ") : " + r + "r)"
+    }
 }
 
 /** 
@@ -38,23 +37,9 @@ class Circle2(val x: Double, val y : Double, val r : Double) extends Shape {
   */
 class Rectangle(val x : Double, val y : Double, val w : Double, val h : Double) extends Shape {
 
-  def normal(circle : Circle2): Vector = {
-    asLines.foreach {line => 
-      val lineToCircleVector = new Vector(circle.x - line.startX, circle.y - line.startY)
-      val lineToCircleProjection = lineToCircleVector.projectionOn(line.asVector)     
-      println(line + " vector towards " + circle + " is " + lineToCircleVector + ", projection is " + lineToCircleProjection)
-    }
-    
-    return new Vector(0, 0)
-  }
+  lazy val asLines = convertToLines
   
-  /*
-  def closestCorner(pX : Double, pY : Double) : (Double, Double) = {
-    val luX = (x- w/2) val luY = (y - h/2)
-    if (pX - (x-w/2)) >
-  }*/
-  
-  def asLines : Buffer[Line] = {
+  def convertToLines : Buffer[Line] = {
     val lines = new ArrayBuffer[Line]()
     
     lines += new Line(x-w/2, y-h/2, x+w/2, y-h/2)
@@ -64,6 +49,26 @@ class Rectangle(val x : Double, val y : Double, val w : Double, val h : Double) 
     
     return lines
   }
+  
+  def normal(circle : Circle): Vector = {
+
+asLines.foreach {line => 
+      val lineToCircleVector = new Vector(circle.x - line.startX, circle.y - line.startY)
+      val lineToCircleProjection = lineToCircleVector.projectionOn(line.asVector)     
+      println(line + " vector towards " + circle + " is " + lineToCircleVector + ", length " + lineToCircleVector.length +
+              ", projection is " + lineToCircleProjection + ", length " + lineToCircleProjection.length)
+}
+
+    return new Vector(0, 0)
+  }
+  
+  /*
+  def closestCorner(pX : Double, pY : Double) : (Double, Double) = {
+    val luX = (x- w/2) val luY = (y - h/2)
+    if (pX - (x-w/2)) >
+  }*/
+  
+
   
   def overlaps(otherRectangle : Rectangle) : Boolean = {
       val o_left = otherRectangle.x - (otherRectangle.w/2)
@@ -83,7 +88,7 @@ class Rectangle(val x : Double, val y : Double, val w : Double, val h : Double) 
     }
     
     override def toString : String = {
-      return "Rectangle (" + x + "," + y + ") : " + w + "w, " + h + "h"
+      return "Rectangle(" + x + "," + y + ") : " + w + "w, " + h + "h)"
     }
     
 }

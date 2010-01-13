@@ -63,14 +63,14 @@ class VectorTest extends TestCase {
     val vectorA = new Vector(10, -8)
     assertEquals(1.0, vectorA.unitVector.length)
   }
-  
+  /*
   def testNormals {
     var vectorA = new Vector(3, -1)
     var expectedVector = new Vector(-1, -3)
     assertEquals(expectedVector, vectorA leftHandNormal)
     expectedVector = new Vector(1, 3)
     assertEquals(expectedVector, vectorA rightHandNormal)
-  }
+  }*/
   
   def testAngleBetween {
     var vectorA = new Vector(2, 2)
