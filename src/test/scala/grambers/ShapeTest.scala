@@ -67,5 +67,10 @@ class ShapeTest extends TestCase {
     line = new Line(0, 0, -1, 0)
     circle = new Circle(-4, 0, 1)
     assertEquals(3.0, line.distanceFrom(circle))
+    
+    line = new Line(4, -4, -1, 0)
+    circle = new Circle(4, -6, 1)
+    assertEquals(2.0, line.distanceFrom(circle))
+
   }
 }

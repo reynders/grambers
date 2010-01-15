@@ -43,7 +43,7 @@ class Line(val startX : Double, val startY : Double, val endX : Double, val endY
       }
     }
     case _ => {
-      println("Do not know how to calculate distance between a line and " + shape)
+      println("I do not know how to calculate distance between a line and " + shape)
       return 0.0
     }
   }
@@ -51,7 +51,7 @@ class Line(val startX : Double, val startY : Double, val endX : Double, val endY
   
   def projectionOn(shape : Shape) : Vector = shape match {
       case circle : Circle => {
-println("Dot product: " +new Vector(circle.x - startX, circle.y - startY).dot(this.asUnitVector))          
+//println("Dot product: " +new Vector(circle.x - startX, circle.y - startY).dot(this.asUnitVector))          
         return new Vector(circle.x - startX, circle.y - startY).projectionOn(this.asUnitVector) 
       }
       case _ => {
