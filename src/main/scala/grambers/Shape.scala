@@ -2,12 +2,15 @@ package grambers
 
 import scala.collection.mutable._
 
-class Shape {
+abstract class Shape {
+  
+  //def intersects(shape : Shape) : Boolean
 }
 
 class Line(val startX : Double, val startY : Double, val endX : Double, val endY : Double) extends Shape {
  
   lazy val asVector = new Vector(endX - startX, endY - startY)
+  lazy val asUnitVector = asVector.unitVector
   
   override def equals(line : Any) = line match {    
     case that : Line => 
@@ -18,7 +21,17 @@ class Line(val startX : Double, val startY : Double, val endX : Double, val endY
     case _ => 
       false      
   }
-    
+  
+  def normal(shape : Shape) : Vector = shape match {
+      case circle : Circle => {
+        return new Vector(circle.x - startX, circle.y - startY).projectionOn(this.asVector) 
+      }
+      case _ => {
+        println("Line does not know how to get normal between itself and " + shape)
+        return new Vector(0, 0)
+      }    
+  }
+  
   override def toString : String = {
     return "(" + startX + "," + startY + "-" + endX + "," + endY + ")"
   }
