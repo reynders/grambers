@@ -11,6 +11,7 @@ class Line(val startX : Double, val startY : Double, val endX : Double, val endY
  
   lazy val asVector = new Vector(endX - startX, endY - startY)
   lazy val asUnitVector = asVector.unitVector
+  lazy val length = asVector.length
   
   override def equals(line : Any) = line match {    
     case that : Line => 
@@ -22,9 +23,36 @@ class Line(val startX : Double, val startY : Double, val endX : Double, val endY
       false      
   }
   
-  def normal(shape : Shape) : Vector = shape match {
+  def distanceFrom(shape : Shape) : Double = shape match {
+    case circle : Circle => {
+      val lineToCircleVector = new Vector(circle.x - startX, circle.y - startY)
+      val dotProduct = lineToCircleVector.dot(this.asUnitVector)
+
+      if (dotProduct > 0) {
+        if (dotProduct <= this.length) {
+          val circleProjectionOnLine = projectionOn(circle)
+          val normalVector = new Vector(circle.x - startX, circle.y - startY) - circleProjectionOnLine
+          return normalVector.length
+        }
+        else {
+          return new Vector(circle.x - endX, circle.y - endY).length
+        }
+      }
+      else {
+        return lineToCircleVector.length
+      }
+    }
+    case _ => {
+      println("Do not know how to calculate distance between a line and " + shape)
+      return 0.0
+    }
+  }
+  
+  
+  def projectionOn(shape : Shape) : Vector = shape match {
       case circle : Circle => {
-        return new Vector(circle.x - startX, circle.y - startY).projectionOn(this.asVector) 
+println("Dot product: " +new Vector(circle.x - startX, circle.y - startY).dot(this.asUnitVector))          
+        return new Vector(circle.x - startX, circle.y - startY).projectionOn(this.asUnitVector) 
       }
       case _ => {
         println("Line does not know how to get normal between itself and " + shape)
