@@ -47,30 +47,32 @@ class ShapeTest extends TestCase {
     assertTrue(r != c)
   }  
   
-  def testLineNormal {
-    var line = new Line(0, 0, 4, -4)
-    var circle = new Circle(0, -4, 1)
-    assertEquals(new Vector(2, -2), line.projectionOn(circle))
-
-    circle = new Circle(0, 4, 1)    
-    assertEquals(new Vector(-2, 2), line.projectionOn(circle))
-
-    circle = new Circle(0, -6, 1)    
-    assertEquals(new Vector(3, -3), line.projectionOn(circle))        
-  }
-  
   def testDistanceFrom {
     var line = new Line(0, 0, -4, 0)
-    var circle = new Circle(-2, 2, 1)
-    assertEquals(2.0, line.distanceFrom(circle))
+    assertEquals(2.0, line.distanceFrom(-2, 2))
     
     line = new Line(0, 0, -1, 0)
-    circle = new Circle(-4, 0, 1)
-    assertEquals(3.0, line.distanceFrom(circle))
+    assertEquals(3.0, line.distanceFrom(-4, 0))
     
     line = new Line(4, -4, -1, 0)
-    circle = new Circle(4, -6, 1)
-    assertEquals(2.0, line.distanceFrom(circle))
+    assertEquals(2.0, line.distanceFrom(4, -6))
+    
+    line = new Line(-2, 2, 2, 2)
+    assertEquals(1.0, line.distanceFrom(0, 3))
+  }
+  
+  def testRectangleCollidesWithCircle {
+    var box = new Rectangle(0, 0, 4, 4)
+    var circle = new Circle(0, 3, 1)
+    assertTrue(box.collidesWith(circle))
+    
+    circle = new Circle(0, 3, 0.99)
+    assertFalse(box.collidesWith(circle))
 
+    circle = new Circle(-4, 0, 2)
+    assertTrue(box.collidesWith(circle))
+
+    circle = new Circle(4, 0, 1.9)
+    assertFalse(box.collidesWith(circle))
   }
 }
