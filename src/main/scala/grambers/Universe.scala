@@ -30,10 +30,6 @@ class Universe(val WIDTH : int, val HEIGHT : int) {
       val rVector = new Vector(rightThing.xSpeed, rightThing.ySpeed)
       val collisionUnitVector = new Vector((rightThing.location._1 - leftThing.location._1), (rightThing.location._2 - leftThing.location._2)).unitVector
       
-lVector.name = "l"
-rVector.name = "r"
-collisionUnitVector.name = "l2rCol"
-
       if (((lVector dot collisionUnitVector) - (rVector dot collisionUnitVector)) < 0) {
         println("Impact already happened, no need to act")
         return
@@ -47,17 +43,7 @@ collisionUnitVector.name = "l2rCol"
       
       val l2rVelocityAfterCollision = l2rImpulse + (r2lImpulse - l2rImpulse)
       val r2lVelocityAfterCollision = r2lImpulse + (l2rImpulse - r2lImpulse)
-      
-l2rImpulse.name = "l2rI"
-r2lImpulse.name = "r2lI"
-l2rNormal.name = "l2rN"
-r2lNormal.name = "r2lN"
-l2rVelocityAfterCollision.name = "l2rVaC"
-r2lVelocityAfterCollision.name = "r2lVaC"
-
-      println(lVector+ " - " + rVector + " - " + l2rImpulse + " - " + r2lImpulse + " - " +
-              l2rNormal + " - " + r2lNormal + " - " + l2rVelocityAfterCollision + " - " +r2lVelocityAfterCollision)
-      
+            
       leftThing.setSpeedAndDirection(l2rNormal + l2rVelocityAfterCollision)
       rightThing.setSpeedAndDirection(r2lNormal + r2lVelocityAfterCollision)
     }
@@ -78,7 +64,11 @@ r2lVelocityAfterCollision.name = "r2lVaC"
     def move(things : Seq[Thing]) {
         for(thing <- things) {
             thing.doYourThing(thing)
-            thing.location = (thing.location._1 + thing.xSpeed, thing.location._2 + thing.ySpeed)
+            var newX = (thing.location._1 + thing.xSpeed)%WIDTH
+            if (newX < 0 ) newX += WIDTH 
+            var newY = (thing.location._2 + thing.ySpeed)%HEIGHT
+            if (newY < 0 ) newY += HEIGHT
+            thing.location = (newX, newY)
         }
     }
     

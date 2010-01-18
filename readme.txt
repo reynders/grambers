@@ -16,12 +16,16 @@ http://www.yov408.com/html/tutorials.php?s=74
 http://www.plasmaphysics.org.uk/collision2d.htm
 http://books.google.gr/books?id=lRUj-nhQRu8C&pg=PA836&lpg=PA836&dq=game%2Bprogramming%2Bvectors%2Bphysics&source=bl&ots=7vD94EI8-x&sig=X8DEWfrx7602Ijw83tXbtVbCvPk&hl=el&ei=6DwzSpyTHYKD_Ab9n42fCg&sa=X&oi=book_result&ct=result&resnum=2#v=onepage&q=game%2Bprogramming%2Bvectors%2Bphysics&f=false
 
-c-b
+circle-box
 ---
 http://blog.generalrelativity.org/actionscript-30/collision-detection-circleline-segment-circlecapsule/
 http://board.flashkit.com/board/showthread.php?t=773872
 http://www.gamedev.net/community/forums/topic.asp?topic_id=520224
 http://www.idevgames.com/forum/showthread.php?t=2868
+
+Physics, time etc
+http://gafferongames.com/game-physics/
+http://www.gphysics.com/
 
 Git
 ------------
