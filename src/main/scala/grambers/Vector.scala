@@ -23,15 +23,6 @@ class Vector(val i : Double, val j : Double) {
     val yProj = (dotProduct / vector.lengthSquared) * vector.j
     return new Vector(xProj, yProj)
   }
-  
-  /* No need so far
-  def rightHandNormal : Vector = { 
-    return new Vector(-j, i)
-  }
-
-  def leftHandNormal : Vector = { 
-    return new Vector(j, -i)
-  } */
 
   def -(vector : Vector) : Vector = {
     return new Vector(this.i - vector.i, this.j - vector.j)

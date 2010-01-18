@@ -107,7 +107,7 @@ object Main {
       
       val redBox = new grambers.Box(20, 50);
       redBox.color = java.awt.Color.red
-      redBox.speed = 1.0
+      redBox.speed = 0
       redBox.direction = 180
       redBox.location = (100, 50)
       redBox.doYourThing = (redRoundThing) => {redRoundThing.turn(0)}

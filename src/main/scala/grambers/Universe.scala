@@ -49,11 +49,12 @@ println("Resolving RoundThing <-> RoundThing")
     }
 
     def resolveCollision(leftThing : RoundThing, rightThing : Box) = {
+      
 println("Resolving RoundThing <-> Box")    
     }
 
-    def resolveCollision(leftThing : Box, rightThing : RoundThing) = {
-println("Resolving Box <-> RoundThing")    
+    def resolveCollision(leftThing : Box, rightThing : RoundThing): Unit = {
+ println("Resolving Box <-> RoundThing")
     }
     
     def resolveCollision(leftThing : Thing, rightThing : Thing) = {
