@@ -104,19 +104,7 @@ class Rectangle(val x : Double, val y : Double, val w : Double, val h : Double) 
       }
     return circle.r >= distance
   }
-  
-  def normal(circle : Circle): Vector = {
 
-asLines.foreach {line => 
-      val lineToCircleVector = new Vector(circle.x - line.startX, circle.y - line.startY)
-      val lineToCircleProjection = lineToCircleVector.projectionOn(line.asVector)     
-      println(line + " vector towards " + circle + " is " + lineToCircleVector + ", length " + lineToCircleVector.length +
-              ", projection is " + lineToCircleProjection + ", length " + lineToCircleProjection.length)
-}
-
-    return new Vector(0, 0)
-  }
-  
   
   def overlaps(other : Rectangle) : Boolean = {
     return !((minY > other.maxY) || (maxY < other.minY) ||

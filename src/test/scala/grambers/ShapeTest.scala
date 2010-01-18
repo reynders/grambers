@@ -38,14 +38,6 @@ class ShapeTest extends TestCase {
     val r_2 = new grambers.Rectangle(4, 2, 2, 2)
     assertTrue(r_1.overlaps(r_2))
   }
-    
-  def testNormalBetweenCircleAndRectangle {
-    val r = new Rectangle(6, 6, 4, 4)
-    val c = new Circle(2, 2, 1)
-    
-    r.normal(c)
-    assertTrue(r != c)
-  }  
   
   def testDistanceFrom {
     var line = new Line(0, 0, -4, 0)
