@@ -1,6 +1,8 @@
 Backlog
 -------
 * Walls (any angle)
+* Combine things and shapes
+* Shape to case class (http://programming-scala.labs.oreilly.com/ch06.html#CaseClasses)
 * Scalafy code 
 * Things should have mass
 * Detach universe time from drawing speed

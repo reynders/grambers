@@ -72,7 +72,7 @@ class ThingTest extends TestCase {
         thing.location = (3, 5)
         thing.speed = 10.0
         thing.direction = 170
-        assertEquals("(3.0,5.0):10.0:170.0", thing.toString)
+        assertEquals("Box(3.0,5.0):10.0:170.0", thing.toString)
     }
     
     def testWidthAndHeigth() {

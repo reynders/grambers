@@ -93,6 +93,7 @@ println("Cirle enclosing box collides with box enclosing box, checking for colli
     return false
   }
   
+  
   def draw(g2 : Graphics2D) {
     import java.awt.geom._
     val shape = new Ellipse2D.Double(location._1, location._2, radius*2, radius*2)
@@ -100,6 +101,10 @@ println("Cirle enclosing box collides with box enclosing box, checking for colli
     g2.setPaint(color)
     g2.fill(shape)
     g2.setPaint(originalPaintColor)
+  }
+  
+  override def toString : String = {
+    return "RoundThing" + super.toString
   }
 }
 
@@ -125,5 +130,9 @@ class Box(w:Int, h:Int) extends Thing(w, h) {
     g2.setPaint(color)
     g2.fill(shape)
     g2.setPaint(originalPaintColor)
+  }
+  
+  override def toString : String = {
+    return "Box" + super.toString
   }
 }

@@ -24,8 +24,8 @@ class Universe(val WIDTH : int, val HEIGHT : int) {
       4. Calculate the vector sum for velocity of each ball after collision
       Va2=Vap2+Van2 and Vb2=Vb2p+Vbn2 (vector summation)
     */
-    def resolveCollision(leftThing : Thing, rightThing : Thing) {
-
+    def resolveCollision(leftThing : RoundThing, rightThing : RoundThing) : Unit = {
+println("Resolving RoundThing <-> RoundThing")
       val lVector = new Vector(leftThing.xSpeed, leftThing.ySpeed)       
       val rVector = new Vector(rightThing.xSpeed, rightThing.ySpeed)
       val collisionUnitVector = new Vector((rightThing.location._1 - leftThing.location._1), (rightThing.location._2 - leftThing.location._2)).unitVector
@@ -47,6 +47,18 @@ class Universe(val WIDTH : int, val HEIGHT : int) {
       leftThing.setSpeedAndDirection(l2rNormal + l2rVelocityAfterCollision)
       rightThing.setSpeedAndDirection(r2lNormal + r2lVelocityAfterCollision)
     }
+
+    def resolveCollision(leftThing : RoundThing, rightThing : Box) = {
+println("Resolving RoundThing <-> Box")    
+    }
+
+    def resolveCollision(leftThing : Box, rightThing : RoundThing) = {
+println("Resolving Box <-> RoundThing")    
+    }
+    
+    def resolveCollision(leftThing : Thing, rightThing : Thing) = {
+      println("Universe does not know how to collide " + leftThing + " with " + rightThing)    
+    }
     
     
     def collide(things : Seq[Thing]) {
@@ -54,7 +66,14 @@ class Universe(val WIDTH : int, val HEIGHT : int) {
         for (right <- startFrom until things.size) {
           if (things(startFrom) != things(right)) {
             if (things(startFrom).collidesWith(things(right)))  {            
-              resolveCollision(things(startFrom), things(right))          
+              //collide(things(startFrom), things(right))
+              (things(startFrom), things(right)) match {
+                case (left : RoundThing, right : RoundThing) => resolveCollision(left, right)
+                case (left : RoundThing, right : Box) => resolveCollision(left, right)
+                case (left : Box, right : RoundThing) => resolveCollision(left, right)
+                case (left : Box, right : Box) => resolveCollision(left, right)
+                case (left : Thing, right : Thing) => println("Don't know how to handle collision between " + left + " and " + right)
+              }
             }
           }
         }

@@ -85,29 +85,23 @@ class Rectangle(val x : Double, val y : Double, val w : Double, val h : Double) 
   }
  
   def collidesWith(circle : Circle) : Boolean = {
-println("Checking collision between " + circle + " and " + this)
     val distance = 
       if (circle.x < minX) {
-println("circle is to the left")
         asLines(3).distanceFrom(circle.x, circle.y)
       } 
       else if (circle.x > maxX) {
-println("circle is to the right")
         asLines(1).distanceFrom(circle.x, circle.y)
       }
-      else if (circle.y < minY) {
-println("circle is below")        
+      else if (circle.y < minY) { 
         asLines(0).distanceFrom(circle.x, circle.y)      
       }
-      else if (circle.y > maxY) {
-println("circle is above")        
+      else if (circle.y > maxY) { 
         asLines(2).distanceFrom(circle.x, circle.y)
       }
       else {        
         println(circle + " is inside " + this + ", do something!")
         0.0
       }
-println("distance is " + distance + " and radius " + circle.r)
     return circle.r >= distance
   }
   

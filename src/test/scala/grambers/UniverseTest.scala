@@ -6,12 +6,6 @@ import org.jmock.lib.legacy.ClassImposteriser;
 import org.jmock.Expectations
 import org.jmock.Expectations._
 
-/*
-class SExpectations extends Expectations {
-  def withArg[T](matcher: Matcher[T]): T = super.`with`(matcher)  
-}
-*/
-
 class UniverseTest extends TestCase {
 
     val context = new Mockery() {{
