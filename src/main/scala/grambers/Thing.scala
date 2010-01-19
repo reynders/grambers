@@ -10,21 +10,16 @@ abstract class Thing (val w:Int, val h:Int) {
     var mass : Double = 1.0
     var doYourThing : ((Thing) => Unit) = (thing) => {}
 
-    // If the shape can change override this to return current enclosing box 
-    def enclosingRectangle : Rectangle = {
-      return new Rectangle(location._1, location._2, w, h)
-    }    
-
     def turn(degrees:int) {
         direction += degrees
         direction %= 360
         if (direction < 0 ) direction = 360 + direction
     }
 
-    def collidesWith(otherThing : Thing) : Boolean = {    
-      return enclosingRectangle.overlaps(otherThing.enclosingRectangle)
-    }
-    
+   def collidesWith(thing : Thing) : Boolean = {
+     this.shape.collidesWith(this.shape, thing.shape)
+   }
+  
     def accelerate(amount : int) {
         speed += amount
     }
@@ -44,7 +39,6 @@ abstract class Thing (val w:Int, val h:Int) {
       
       if (ySpeed < 0) direction += 360
     }
-
     
     def setSpeedAndDirection(vector : Vector) {
       setSpeedAndDirection(vector.i, vector.j)
@@ -57,9 +51,9 @@ abstract class Thing (val w:Int, val h:Int) {
       return Math.sqrt((xDiff*xDiff) + (yDiff*yDiff)) 
     }
      
-    def shape : Shape;
+    def shape : Shape
     
-    def draw(g2 : Graphics2D );
+    def draw(g2 : Graphics2D )
         
     override def toString : String = {
         "(" + location._1 + "," + location._2 + "):" + speed + ":" + direction
@@ -69,32 +63,7 @@ abstract class Thing (val w:Int, val h:Int) {
 class RoundThing(val radius:Int) extends Thing(radius*2, radius*2) {
   
   var color = java.awt.Color.yellow
-  
-  override def collidesWith(otherThing : Thing) : Boolean = {
-    otherThing match {
-      case otherCircle : RoundThing => collidesWith(otherCircle)
-      case box : Box => collidesWith(box)
-      case _ => return super.collidesWith(otherThing)
-    }
-  }
-  
-  def collidesWith(otherCircle : RoundThing) : Boolean = {
-    if ((radius + otherCircle.radius) < distanceFrom(otherCircle))
-      return false
-    else 
-      return true
-  }
-  
-  def collidesWith(box : Box) : Boolean = {
-    if (super.collidesWith(box)) {
-println("Cirle enclosing box collides with box enclosing box, checking for collision")
-       
-      return true
-    }
-    
-    return false
-  }
- 
+   
   def shape : Shape = {
     new Circle(location._1, location._2, radius)
   }
@@ -115,20 +84,10 @@ println("Cirle enclosing box collides with box enclosing box, checking for colli
 
 class Box(w:Int, h:Int) extends Thing(w, h) {
   var color = java.awt.Color.black
- 
-  override def collidesWith(otherThing : Thing) : Boolean = {
-    otherThing match {
-      case circle : RoundThing => return circle.collidesWith(this)
-      case _ =>  return super.collidesWith(otherThing)
-    }  
-        
-    return false
-  }
 
   def shape : Shape = {
     new Rectangle(location._1, location._2, w, h)
   }
-
   
   def draw(g2: Graphics2D) {
     import java.awt.geom._

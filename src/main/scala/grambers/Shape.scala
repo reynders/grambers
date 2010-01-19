@@ -4,6 +4,10 @@ import scala.collection.mutable._
 
 abstract class Shape(val x : Double, val y : Double){
   
+  def distanceFrom(shape : Shape) : Double = {
+    new Vector(shape.x - x, shape.y - y).length
+  }
+  
   def collisionUnitVector(leftShape : Shape, rightShape : Shape) : Vector = (leftShape, rightShape) match {
     case (circle: Circle, line : Line) => line.shortestVectorTo(circle.x, circle.y).unitVector
     case (line : Line, circle: Circle) => line.shortestVectorTo(circle.x, circle.y).unitVector
@@ -13,6 +17,15 @@ abstract class Shape(val x : Double, val y : Double){
     case _ => println("Do not know how to calculate collisionUnitVector between " + leftShape + " and " + rightShape)
               new Vector(1, 0)
   }
+  
+  def collidesWith(leftShape : Shape, rightShape : Shape) : Boolean = (leftShape, rightShape) match {
+    case (rectangle : Rectangle, circle : Circle) => circle.r >= rectangle.facingSide(circle.x, circle.y).distanceFrom(circle.x, circle.y) 
+    case (circle : Circle, rectangle : Rectangle) => circle.r >= rectangle.facingSide(circle.x, circle.y).distanceFrom(circle.x, circle.y) 
+    case (leftCircle : Circle, rightCircle : Circle) => !((leftCircle.r + rightCircle.r) < leftCircle.distanceFrom(rightCircle))
+    case (leftRectangle: Rectangle, rightRectangle : Rectangle) => leftRectangle.overlaps(rightRectangle)
+    case _ => return false  
+  }
+  
 }
 
 class Line(val startX : Double, val startY : Double, val endX : Double, val endY : Double) extends Shape(startX, startY) {
@@ -60,9 +73,9 @@ class Line(val startX : Double, val startY : Double, val endX : Double, val endY
 
 class Circle(x: Double, y : Double, val r : Double) extends Shape(x, y) {
   
-    override def toString : String = {
-      return "Circle(" + x + "," + y + ") : " + r + "r)"
-    }
+  override def toString : String = {
+    return "Circle(" + x + "," + y + ") : " + r + "r)"
+  }
 }
 
 /** 
@@ -119,19 +132,7 @@ class Rectangle(x : Double, y : Double, val w : Double, val h : Double) extends 
       
     return facingSide
   }
-  
-  def collidesWith (shape : Shape) : Boolean = shape match {
-    case circle : Circle => {
-      return collidesWith(circle)
-    }
-    case _ => return false  
-  }
-  
-  def collidesWith(circle : Circle) : Boolean = {
-    return circle.r >= facingSide(circle.x, circle.y).distanceFrom(circle.x, circle.y)
-  }
-  
- 
+   
   def overlaps(other : Rectangle) : Boolean = {
     return !((minY > other.maxY) || (maxY < other.minY) ||
              (maxX < other.minX) ||(minX > other.maxX))

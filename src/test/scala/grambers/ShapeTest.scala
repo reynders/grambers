@@ -15,14 +15,12 @@ class ShapeTest extends TestCase {
     assertEquals(new Line(5.0, 15.0, 5.0, 5.0), lines(3))
     
     // Check that equals works no matter which way the line is
-    assertEquals(new Line(15.0, 5.0, 5.0, 5.0), lines(0))
-    
+    assertEquals(new Line(15.0, 5.0, 5.0, 5.0), lines(0))  
     assertFalse(new Line(0, 0, 0, 0) == lines(0))
   }
 
   def testRectangleOverlappingWhenNotColliding() {
     val r_1 = new grambers.Rectangle(2, 2, 2, 2)
-
     val r_2 = new grambers.Rectangle(5, 5, 2, 2)
     assertFalse(r_1.overlaps(r_2))
   }
@@ -56,16 +54,19 @@ class ShapeTest extends TestCase {
   def testRectangleCollidesWithCircle {
     var box = new Rectangle(0, 0, 4, 4)
     var circle = new Circle(0, 3, 1)
-    assertTrue(box.collidesWith(circle))
+    assertTrue(box.collidesWith(box, circle))
     
     circle = new Circle(0, 3, 0.99)
-    assertFalse(box.collidesWith(circle))
+    assertFalse(box.collidesWith(box, circle))
 
     circle = new Circle(-4, 0, 2)
-    assertTrue(box.collidesWith(circle))
+    assertTrue(box.collidesWith(box, circle))
 
     circle = new Circle(4, 0, 1.9)
-    assertFalse(box.collidesWith(circle))
+    assertFalse(box.collidesWith(box, circle))
+    
+    circle = new Circle(3, 2.2, 2)
+    assertTrue(box.collidesWith(box, circle))
   }
   
   def testRectangleFacingSide {
