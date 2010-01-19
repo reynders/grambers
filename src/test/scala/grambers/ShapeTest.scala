@@ -70,7 +70,6 @@ class ShapeTest extends TestCase {
   
   def testRectangleFacingSide {
     var box = new Rectangle(0, 0, 4, 4)
-println("Sides: " + box.asLines);    
     
     var circle = new Circle(0, 3, 1)
     assertEquals(box.side_up, box.facingSide(circle.x, circle.y))
@@ -83,5 +82,13 @@ println("Sides: " + box.asLines);
     
     circle = new Circle(-3, 0, 1)
     assertEquals(box.side_left, box.facingSide(circle.x, circle.y))
+  }
+  
+  def testCollisionUnitVector {
+    var circle = new Circle(0, 0, 1)
+    var box = new Rectangle(2, 0, 2, 2)
+    var expectedVector = new Vector(-1, 0)
+    assertEquals(expectedVector, circle.collisionUnitVector(circle, box))
+    assertEquals(expectedVector, box.collisionUnitVector(box, circle))
   }
 }

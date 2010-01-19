@@ -24,47 +24,15 @@ class Universe(val WIDTH : int, val HEIGHT : int) {
       4. Calculate the vector sum for velocity of each ball after collision
       Va2=Vap2+Van2 and Vb2=Vb2p+Vbn2 (vector summation)
     */
-    def resolveCollision(leftThing : RoundThing, rightThing : RoundThing) : Unit = {
+    def resolveCollision(leftThing : Thing, rightThing : Thing): Unit = {
 println("Resolving " + leftThing + " collision with " + rightThing)
       val lVector = new Vector(leftThing.xSpeed, leftThing.ySpeed)       
       val rVector = new Vector(rightThing.xSpeed, rightThing.ySpeed)
-      val collisionUnitVector = new Vector((rightThing.location._1 - leftThing.location._1), (rightThing.location._2 - leftThing.location._2)).unitVector
-      
-      if (((lVector dot collisionUnitVector) - (rVector dot collisionUnitVector)) < 0) {
-        println("Impact already happened, no need to act")
-        return
-      }
-
-      val l2rImpulse = collisionUnitVector * (lVector dot collisionUnitVector) 
-      val r2lImpulse = collisionUnitVector * (rVector dot collisionUnitVector)
-
-      val l2rNormal = lVector - l2rImpulse
-      val r2lNormal = rVector - r2lImpulse
-      
-      //val l2rVelocityAfterCollision = l2rImpulse + (r2lImpulse - l2rImpulse)
-      //val r2lVelocityAfterCollision = r2lImpulse + (l2rImpulse - r2lImpulse)
-      val l2rVelocityAfterCollision = l2rImpulse*((leftThing.mass-rightThing.mass)/(leftThing.mass+rightThing.mass)) + 
-                                      r2lImpulse*((2*rightThing.mass)/(leftThing.mass + rightThing.mass))
-                                      
-      val r2lVelocityAfterCollision = l2rImpulse*((2*leftThing.mass)/(leftThing.mass+rightThing.mass)) + 
-                                      r2lImpulse*((rightThing.mass-leftThing.mass)/(rightThing.mass + leftThing.mass))
-
-println(leftThing + ":" + lVector + " - " + l2rImpulse + " -- " + l2rNormal + " --- " + l2rVelocityAfterCollision)
-println(rightThing + ":" + rVector + " - " + r2lImpulse + " -- " + r2lNormal + " --- " + r2lVelocityAfterCollision) 
-      leftThing.setSpeedAndDirection(l2rNormal + l2rVelocityAfterCollision)
-      rightThing.setSpeedAndDirection(r2lNormal + r2lVelocityAfterCollision)
-    }
-
-    def resolveCollision(leftThing : Box, rightThing : RoundThing): Unit = {
-println("Resolving " + leftThing + " collision with " + rightThing)
-      val lVector = new Vector(leftThing.xSpeed, leftThing.ySpeed)       
-      val rVector = new Vector(rightThing.xSpeed, rightThing.ySpeed)
+      // Circle-circle case
       //val collisionUnitVector = new Vector((rightThing.location._1 - leftThing.location._1), (rightThing.location._2 - leftThing.location._2)).unitVector
       
-      // Idea: get shape to calculate the collision unit vector based on the involved shapes. Rest of the method should be common
-      // so it could be refactored
-      val collisionUnitVector = leftThing.shape.collisionUnitVector(rightThing.shape)
-      
+      val collisionUnitVector = leftThing.shape.collisionUnitVector(leftThing.shape, rightThing.shape)
+println("Collision vector: " + collisionUnitVector)
       if (((lVector dot collisionUnitVector) - (rVector dot collisionUnitVector)) < 0) {
         println("Impact already happened, no need to act")
         return
@@ -76,8 +44,6 @@ println("Resolving " + leftThing + " collision with " + rightThing)
       val l2rNormal = lVector - l2rImpulse
       val r2lNormal = rVector - r2lImpulse
       
-      //val l2rVelocityAfterCollision = l2rImpulse + (r2lImpulse - l2rImpulse)
-      //val r2lVelocityAfterCollision = r2lImpulse + (l2rImpulse - r2lImpulse)
       val l2rVelocityAfterCollision = l2rImpulse*((leftThing.mass-rightThing.mass)/(leftThing.mass+rightThing.mass)) + 
                                       r2lImpulse*((2*rightThing.mass)/(leftThing.mass + rightThing.mass))
                                       
@@ -86,17 +52,18 @@ println("Resolving " + leftThing + " collision with " + rightThing)
 
 println(leftThing + ":" + lVector + " - " + l2rImpulse + " -- " + l2rNormal + " --- " + l2rVelocityAfterCollision)
 println(rightThing + ":" + rVector + " - " + r2lImpulse + " -- " + r2lNormal + " --- " + r2lVelocityAfterCollision) 
+
       leftThing.setSpeedAndDirection(l2rNormal + l2rVelocityAfterCollision)
       rightThing.setSpeedAndDirection(r2lNormal + r2lVelocityAfterCollision)
     }
     
-    
-    
+      
     def collide(things : Seq[Thing]) {
       for (startFrom <- 0 until things.size) {
         for (right <- startFrom until things.size) {
           if (things(startFrom) != things(right)) {
-            if (things(startFrom).collidesWith(things(right)))  {                     
+            if (things(startFrom).collidesWith(things(right)))  {  
+println(things(startFrom) + " collides with " + things(right))              
               (things(startFrom), things(right)) match {
                 case (left : RoundThing, right : RoundThing) => resolveCollision(left, right)
                 case (left : RoundThing, right : Box) => resolveCollision(right, left)

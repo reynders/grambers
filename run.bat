@@ -1,1 +1,1 @@
-java -cp %SCALA_HOME%/lib/scala-library.jar;target/classes; %1
+java -cp %SCALA_HOME%/lib/scala-library.jar;target/classes; %1 %2 %3 %4

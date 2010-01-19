@@ -4,11 +4,13 @@ import scala.collection.mutable._
 
 abstract class Shape(val x : Double, val y : Double){
   
-  def collisionUnitVector(shape : Shape) : Vector = shape match {
-    case line : Line => line.shortestVectorTo(x, y).unitVector
-    case rectangle : Rectangle => rectangle.facingSide(x, y).shortestVectorTo(x, y).unitVector
-    case circle : Circle => new Vector((shape.x - x), (shape.y - y)).unitVector
-    case _ => println("Do not know how to calculate collisionUnitVector between " + this + " and " + shape)
+  def collisionUnitVector(leftShape : Shape, rightShape : Shape) : Vector = (leftShape, rightShape) match {
+    case (circle: Circle, line : Line) => line.shortestVectorTo(circle.x, circle.y).unitVector
+    case (line : Line, circle: Circle) => line.shortestVectorTo(circle.x, circle.y).unitVector
+    case (rectangle : Rectangle, circle : Circle) => rectangle.facingSide(circle.x, circle.y).shortestVectorTo(circle.x, circle.y).unitVector
+    case (circle : Circle, rectangle : Rectangle) => rectangle.facingSide(circle.x, circle.y).shortestVectorTo(circle.x, circle.y).unitVector
+    case (leftCircle : Circle, rightCircle : Circle) => new Vector((rightCircle.x - leftCircle.x), (rightCircle.y - leftCircle.y)).unitVector
+    case _ => println("Do not know how to calculate collisionUnitVector between " + leftShape + " and " + rightShape)
               new Vector(1, 0)
   }
 }
@@ -49,10 +51,6 @@ class Line(val startX : Double, val startY : Double, val endX : Double, val endY
   
   def distanceFrom(pointX : Double, pointY : Double) : Double = {
     shortestVectorTo(pointX, pointY).length
-  }
-
-  override def collisionUnitVector(shape : Shape) : Vector = {
-    shortestVectorTo(shape.x, shape.y)
   }
   
   override def toString : String = {

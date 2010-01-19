@@ -3,29 +3,6 @@ package grambers
 // Playfield class, used to demo the gaming library
 object Main {
     
-    def bigBang1() : Universe = {
-      val universe = new Universe(500, 200);
-      
-      val yellowRoundThing = new grambers.RoundThing(10);
-      yellowRoundThing.color = java.awt.Color.yellow
-      yellowRoundThing.speed = 2.2
-      yellowRoundThing.direction = 315.0
-      yellowRoundThing.location = (100, 100)
-      yellowRoundThing.doYourThing = (yellowRoundThing) => {yellowRoundThing.turn(0)}
-      
-      val redRoundThing = new grambers.RoundThing(10);
-      redRoundThing.color = java.awt.Color.red
-      redRoundThing.speed = 1.0
-      redRoundThing.direction = 135
-      redRoundThing.location = (150, 50)
-      redRoundThing.doYourThing = (redRoundThing) => {redRoundThing.turn(0)}
-      
-      universe.things += redRoundThing
-      universe.things += yellowRoundThing
-      
-      return universe
-    }
-
     def bigBang2BallsHeadOn() : Universe = {
       val universe = new Universe(500, 200);
       
@@ -72,7 +49,7 @@ object Main {
       return universe
     }
 
-    def bigBang_static() : Universe = {
+    def bigBangMovingAndStaticBall() : Universe = {
       val universe = new Universe(500, 200);
       
       val yellowRoundThing = new grambers.RoundThing(10);
@@ -117,7 +94,7 @@ object Main {
       blueBox.color = java.awt.Color.blue
       blueBox.speed = 0
       blueBox.direction = 180
-      blueBox.location = (300, 50)
+      blueBox.location = (200, 50)
       blueBox.mass = 10000.0
       blueBox.doYourThing = (redBox) => {blueBox.turn(0)}
       
@@ -129,10 +106,14 @@ object Main {
     }  
     
     def main(args:Array[String]) {
-        //val universe = bigBangTwoWallsAndABall
-        val universe = bigBangTwoBalls45Angle
-        
-        val observer = new Observer(universe, 500, 200)
-        observer.observe()
+      val universe = args(0) match {
+        case "2" => bigBang2BallsHeadOn
+        case "1" => bigBangTwoWallsAndABall
+        case "0" => bigBangTwoBalls45Angle
+        case _ => bigBangMovingAndStaticBall
+      }
+      
+      val observer = new Observer(universe, 500, 200)
+      observer.observe()
     }
 }
