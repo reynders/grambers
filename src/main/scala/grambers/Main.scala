@@ -49,7 +49,7 @@ object Main {
       return universe
     }
 
-    def bigBang5() : Universe = {
+    def bigBangTwoBalls45Angle() : Universe = {
       val universe = new Universe(500, 200);
       
       val yellowRoundThing = new grambers.RoundThing(10);
@@ -95,7 +95,7 @@ object Main {
       return universe
     }  
     
-    def bigBang() : Universe = {
+    def bigBangTwoWallsAndABall() : Universe = {
       val universe = new Universe(600, 300);
       
       val yellowRoundThing = new grambers.RoundThing(10);
@@ -129,7 +129,10 @@ object Main {
     }  
     
     def main(args:Array[String]) {
-        val observer = new Observer(bigBang(), 500, 200)
+        //val universe = bigBangTwoWallsAndABall
+        val universe = bigBangTwoBalls45Angle
+        
+        val observer = new Observer(universe, 500, 200)
         observer.observe()
     }
 }
