@@ -43,7 +43,6 @@ abstract class Thing (val w:Int, val h:Int) {
       direction = toDegrees(atan2(ySpeed, xSpeed))
       
       if (ySpeed < 0) direction += 360
-//println("Speed: " + speed + ", dir: " + direction)
     }
 
     
@@ -58,6 +57,8 @@ abstract class Thing (val w:Int, val h:Int) {
       return Math.sqrt((xDiff*xDiff) + (yDiff*yDiff)) 
     }
      
+    def shape : Shape;
+    
     def draw(g2 : Graphics2D );
         
     override def toString : String = {
@@ -93,7 +94,10 @@ println("Cirle enclosing box collides with box enclosing box, checking for colli
     
     return false
   }
-  
+ 
+  def shape : Shape = {
+    new Circle(location._1, location._2, radius)
+  }
   
   def draw(g2 : Graphics2D) {
     import java.awt.geom._
@@ -118,12 +122,14 @@ class Box(w:Int, h:Int) extends Thing(w, h) {
       case _ =>  return super.collidesWith(otherThing)
     }  
         
-    // See http://www.tonypa.pri.ee/vectors/tut07.html
-    // http://vband3d.tripod.com/visualbasic/tut_mixedcollisions.htm
-    // http://www.2dgamecreators.com/tutorials/gameprogramming/collision/T1%20Collision2.html#mozTocId39150
-      return false
+    return false
   }
 
+  def shape : Shape = {
+    new Rectangle(location._1, location._2, w, h)
+  }
+
+  
   def draw(g2: Graphics2D) {
     import java.awt.geom._
     val shape = new Rectangle2D.Double(location._1, location._2, w, h)

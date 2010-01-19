@@ -59,7 +59,11 @@ println(rightThing + ":" + rVector + " - " + r2lImpulse + " -- " + r2lNormal + "
 println("Resolving " + leftThing + " collision with " + rightThing)
       val lVector = new Vector(leftThing.xSpeed, leftThing.ySpeed)       
       val rVector = new Vector(rightThing.xSpeed, rightThing.ySpeed)
-      val collisionUnitVector = new Vector((rightThing.location._1 - leftThing.location._1), (rightThing.location._2 - leftThing.location._2)).unitVector
+      //val collisionUnitVector = new Vector((rightThing.location._1 - leftThing.location._1), (rightThing.location._2 - leftThing.location._2)).unitVector
+      
+      // Idea: get shape to calculate the collision unit vector based on the involved shapes. Rest of the method should be common
+      // so it could be refactored
+      val collisionUnitVector = leftThing.shape.collisionUnitVector(rightThing.shape)
       
       if (((lVector dot collisionUnitVector) - (rVector dot collisionUnitVector)) < 0) {
         println("Impact already happened, no need to act")

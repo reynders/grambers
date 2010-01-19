@@ -2,12 +2,18 @@ package grambers
 
 import scala.collection.mutable._
 
-abstract class Shape {
+abstract class Shape(val x : Double, val y : Double){
   
-  //def intersects(shape : Shape) : Boolean
+  def collisionUnitVector(shape : Shape) : Vector = shape match {
+    case line : Line => line.shortestVectorTo(x, y).unitVector
+    case rectangle : Rectangle => rectangle.facingSide(x, y).shortestVectorTo(x, y).unitVector
+    case circle : Circle => new Vector((shape.x - x), (shape.y - y)).unitVector
+    case _ => println("Do not know how to calculate collisionUnitVector between " + this + " and " + shape)
+              new Vector(1, 0)
+  }
 }
 
-class Line(val startX : Double, val startY : Double, val endX : Double, val endY : Double) extends Shape {
+class Line(val startX : Double, val startY : Double, val endX : Double, val endY : Double) extends Shape(startX, startY) {
  
   lazy val asVector = new Vector(endX - startX, endY - startY)
   lazy val asUnitVector = asVector.unitVector
@@ -22,32 +28,39 @@ class Line(val startX : Double, val startY : Double, val endX : Double, val endY
     case _ => 
       false      
   }
-  
-  def distanceFrom(pointX : Double, pointY : Double) : Double = {
+ 
+  def shortestVectorTo(pointX : Double, pointY : Double) : Vector = {
     val lineToPointVector = new Vector(pointX - startX, pointY - startY)
     val dotProduct = lineToPointVector.dot(this.asUnitVector)
 
     if (dotProduct > 0) {
       if (dotProduct <= this.length) {
         val pointProjectionOnLine = new Vector(pointX - startX, pointY - startY).projectionOn(this.asUnitVector)
-        val normalVector = new Vector(pointX - startX, pointY - startY) - pointProjectionOnLine
-        return normalVector.length
+        return new Vector(pointX - startX, pointY - startY) - pointProjectionOnLine      
       }
       else {
-        return new Vector(pointX - endX, pointY - endY).length
+        return new Vector(pointX - endX, pointY - endY)
       }
     }
     else {
-      return lineToPointVector.length
+      return lineToPointVector
     }
   }
   
+  def distanceFrom(pointX : Double, pointY : Double) : Double = {
+    shortestVectorTo(pointX, pointY).length
+  }
+
+  override def collisionUnitVector(shape : Shape) : Vector = {
+    shortestVectorTo(shape.x, shape.y)
+  }
+  
   override def toString : String = {
-    return "(" + startX + "," + startY + "-" + endX + "," + endY + ")"
+    return "Line(" + startX + "," + startY + "-" + endX + "," + endY + ")"
   }
 }
 
-class Circle(val x: Double, val y : Double, val r : Double) extends Shape {
+class Circle(x: Double, y : Double, val r : Double) extends Shape(x, y) {
   
     override def toString : String = {
       return "Circle(" + x + "," + y + ") : " + r + "r)"
@@ -58,7 +71,7 @@ class Circle(val x: Double, val y : Double, val r : Double) extends Shape {
   Rectangle is specified as w, h and center point (x, y) instead of left upper 
   and right lower corner so that rectangle can be at an angle if needed
   */
-class Rectangle(val x : Double, val y : Double, val w : Double, val h : Double) extends Shape {
+class Rectangle(x : Double, y : Double, val w : Double, val h : Double) extends Shape(x, y) {
 
   lazy val asLines = convertToLines
   lazy val minX = x - (w/2)
@@ -81,13 +94,6 @@ class Rectangle(val x : Double, val y : Double, val w : Double, val h : Double) 
     return lines
   }
   
-  def collidesWith (shape : Shape) : Boolean = shape match {
-    case circle : Circle => {
-      return collidesWith(circle)
-    }
-    case _ => return false  
-  }
- 
   /* Returns the side of the rectangle facing the given point.
    * Note: does not take corners into account but always returns one
    *       of the two sides of the corner
@@ -114,6 +120,13 @@ class Rectangle(val x : Double, val y : Double, val w : Double, val h : Double) 
       }
       
     return facingSide
+  }
+  
+  def collidesWith (shape : Shape) : Boolean = shape match {
+    case circle : Circle => {
+      return collidesWith(circle)
+    }
+    case _ => return false  
   }
   
   def collidesWith(circle : Circle) : Boolean = {
