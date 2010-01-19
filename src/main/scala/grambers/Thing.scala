@@ -7,6 +7,7 @@ abstract class Thing (val w:Int, val h:Int) {
     var location: (double, double) = (0, 0)
     var speed : Double = 0.0
     var direction : Double = 0
+    var mass : Double = 1.0
     var doYourThing : ((Thing) => Unit) = (thing) => {}
 
     // If the shape can change override this to return current enclosing box 

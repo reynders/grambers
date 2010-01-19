@@ -67,4 +67,21 @@ class ShapeTest extends TestCase {
     circle = new Circle(4, 0, 1.9)
     assertFalse(box.collidesWith(circle))
   }
+  
+  def testRectangleFacingSide {
+    var box = new Rectangle(0, 0, 4, 4)
+println("Sides: " + box.asLines);    
+    
+    var circle = new Circle(0, 3, 1)
+    assertEquals(box.side_up, box.facingSide(circle.x, circle.y))
+    
+    circle = new Circle(0, -3, 1)
+    assertEquals(box.side_down, box.facingSide(circle.x, circle.y))
+    
+    circle = new Circle(3, 0, 1)
+    assertEquals(box.side_right, box.facingSide(circle.x, circle.y))
+    
+    circle = new Circle(-3, 0, 1)
+    assertEquals(box.side_left, box.facingSide(circle.x, circle.y))
+  }
 }

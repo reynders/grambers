@@ -65,6 +65,10 @@ class Rectangle(val x : Double, val y : Double, val w : Double, val h : Double) 
   lazy val minY = y - (h/2)
   lazy val maxX = x + (w/2)
   lazy val maxY = y + (h/2)
+  lazy val side_down = asLines(0)
+  lazy val side_right = asLines(1)
+  lazy val side_up = asLines(2)
+  lazy val side_left = asLines(3)
   
   def convertToLines : Buffer[Line] = {
     val lines = new ArrayBuffer[Line]()
@@ -84,28 +88,39 @@ class Rectangle(val x : Double, val y : Double, val w : Double, val h : Double) 
     case _ => return false  
   }
  
-  def collidesWith(circle : Circle) : Boolean = {
-    val distance = 
-      if (circle.x < minX) {
-        asLines(3).distanceFrom(circle.x, circle.y)
+  /* Returns the side of the rectangle facing the given point.
+   * Note: does not take corners into account but always returns one
+   *       of the two sides of the corner
+   * Note: does not take rotation into account, cartesian aligned
+   * Note: if point is inside box returns always the same side
+   */
+  def facingSide(pointX : Double, pointY : Double) : Line = {
+    val facingSide = 
+      if (pointX < minX) {
+        asLines(3)
       } 
-      else if (circle.x > maxX) {
-        asLines(1).distanceFrom(circle.x, circle.y)
+      else if (pointX > maxX) {
+        asLines(1)
       }
-      else if (circle.y < minY) { 
-        asLines(0).distanceFrom(circle.x, circle.y)      
+      else if (pointY < minY) { 
+        asLines(0)      
       }
-      else if (circle.y > maxY) { 
-        asLines(2).distanceFrom(circle.x, circle.y)
+      else if (pointY > maxY) { 
+        asLines(2)
       }
       else {        
-        println(circle + " is inside " + this + ", do something!")
-        0.0
+        println("Point (" + x + "," + y + ") is inside " + this + ", do something!")
+        asLines(0)
       }
-    return circle.r >= distance
+      
+    return facingSide
   }
-
   
+  def collidesWith(circle : Circle) : Boolean = {
+    return circle.r >= facingSide(circle.x, circle.y).distanceFrom(circle.x, circle.y)
+  }
+  
+ 
   def overlaps(other : Rectangle) : Boolean = {
     return !((minY > other.maxY) || (maxY < other.minY) ||
              (maxX < other.minX) ||(minX > other.maxX))
