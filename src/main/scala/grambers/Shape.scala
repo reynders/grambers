@@ -7,7 +7,9 @@ abstract class Shape(val x : Double, val y : Double){
   def distanceFrom(shape : Shape) : Double = {
     new Vector(shape.x - x, shape.y - y).length
   }
-  
+}
+
+object Shape {
   def collisionUnitVector(leftShape : Shape, rightShape : Shape) : Vector = (leftShape, rightShape) match {
     case (circle: Circle, line : Line) => line.shortestVectorTo(circle.x, circle.y).unitVector
     case (line : Line, circle: Circle) => line.shortestVectorTo(circle.x, circle.y).unitVector
@@ -19,7 +21,10 @@ abstract class Shape(val x : Double, val y : Double){
   }
   
   def collidesWith(leftShape : Shape, rightShape : Shape) : Boolean = (leftShape, rightShape) match {
-    case (rectangle : Rectangle, circle : Circle) => circle.r >= rectangle.facingSide(circle.x, circle.y).distanceFrom(circle.x, circle.y) 
+    case (rectangle : Rectangle, circle : Circle) => {
+//println(circle.r + " vs " + rectangle.facingSide(circle.x, circle.y).distanceFrom(circle.x, circle.y) + " facing side " + rectangle.facingSide(circle.x, circle.y))     
+      circle.r >= rectangle.facingSide(circle.x, circle.y).distanceFrom(circle.x, circle.y)
+    }
     case (circle : Circle, rectangle : Rectangle) => circle.r >= rectangle.facingSide(circle.x, circle.y).distanceFrom(circle.x, circle.y) 
     case (leftCircle : Circle, rightCircle : Circle) => !((leftCircle.r + rightCircle.r) < leftCircle.distanceFrom(rightCircle))
     case (leftRectangle: Rectangle, rightRectangle : Rectangle) => leftRectangle.overlaps(rightRectangle)
@@ -53,16 +58,16 @@ class Line(val startX : Double, val startY : Double, val endX : Double, val endY
         val pointProjectionOnLine = new Vector(pointX - startX, pointY - startY).projectionOn(this.asUnitVector)
         return new Vector(pointX - startX, pointY - startY) - pointProjectionOnLine      
       }
-      else {
+      else {        
         return new Vector(pointX - endX, pointY - endY)
       }
     }
-    else {
+    else {     
       return lineToPointVector
     }
   }
   
-  def distanceFrom(pointX : Double, pointY : Double) : Double = {
+  def distanceFrom(pointX : Double, pointY : Double) : Double = {    
     shortestVectorTo(pointX, pointY).length
   }
   

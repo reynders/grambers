@@ -6,10 +6,10 @@ import java.awt.image._
 
 // Philosophy says that observer makes immaterial things material, thus the class that
 // does the rendering was named as Observer :) 
-class Observer (val universe : Universe, val WIDTH : int, val HEIGHT : int) {
+class Observer (val universe : Universe) {
 
     val FPS = 20;
-    val screenBuffer = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+    val screenBuffer = new BufferedImage(universe.WIDTH, universe.HEIGHT, BufferedImage.TYPE_INT_RGB);
     val sbg = screenBuffer.getGraphics().asInstanceOf[Graphics2D];
     val random = new Random()
     
@@ -36,7 +36,7 @@ class Observer (val universe : Universe, val WIDTH : int, val HEIGHT : int) {
 
         def clearScreenBuffer() {
             sbg.setColor(Color.green);
-            sbg.fillRect(0, 0, WIDTH, HEIGHT);
+            sbg.fillRect(0, 0, universe.WIDTH, universe.HEIGHT);
         }
         
         def fpsToMs(fps:int) : int = {
@@ -46,7 +46,7 @@ class Observer (val universe : Universe, val WIDTH : int, val HEIGHT : int) {
         def start() {
             add(ViewPanel)
             pack()
-            setSize(new Dimension(WIDTH, HEIGHT));
+            setSize(new Dimension(universe.WIDTH, universe.HEIGHT));
             show()
             while (true) {
                 repaint()

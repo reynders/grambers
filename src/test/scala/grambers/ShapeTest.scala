@@ -54,19 +54,19 @@ class ShapeTest extends TestCase {
   def testRectangleCollidesWithCircle {
     var box = new Rectangle(0, 0, 4, 4)
     var circle = new Circle(0, 3, 1)
-    assertTrue(box.collidesWith(box, circle))
+    assertTrue(Shape.collidesWith(box, circle))
     
     circle = new Circle(0, 3, 0.99)
-    assertFalse(box.collidesWith(box, circle))
+    assertFalse(Shape.collidesWith(box, circle))
 
     circle = new Circle(-4, 0, 2)
-    assertTrue(box.collidesWith(box, circle))
+    assertTrue(Shape.collidesWith(box, circle))
 
     circle = new Circle(4, 0, 1.9)
-    assertFalse(box.collidesWith(box, circle))
+    assertFalse(Shape.collidesWith(box, circle))
     
     circle = new Circle(3, 2.2, 2)
-    assertTrue(box.collidesWith(box, circle))
+    assertTrue(Shape.collidesWith(box, circle))
   }
   
   def testRectangleFacingSide {
@@ -89,7 +89,7 @@ class ShapeTest extends TestCase {
     var circle = new Circle(0, 0, 1)
     var box = new Rectangle(2, 0, 2, 2)
     var expectedVector = new Vector(-1, 0)
-    assertEquals(expectedVector, circle.collisionUnitVector(circle, box))
-    assertEquals(expectedVector, box.collisionUnitVector(box, circle))
+    assertEquals(expectedVector, Shape.collisionUnitVector(circle, box))
+    assertEquals(expectedVector, Shape.collisionUnitVector(box, circle))
   }
 }

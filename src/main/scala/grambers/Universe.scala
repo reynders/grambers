@@ -31,7 +31,7 @@ println("Resolving " + leftThing + " collision with " + rightThing)
       // Circle-circle case
       //val collisionUnitVector = new Vector((rightThing.location._1 - leftThing.location._1), (rightThing.location._2 - leftThing.location._2)).unitVector
       
-      val collisionUnitVector = leftThing.shape.collisionUnitVector(leftThing.shape, rightThing.shape)
+      val collisionUnitVector = Shape.collisionUnitVector(leftThing.shape, rightThing.shape)
 println("Collision vector: " + collisionUnitVector)
       if (((lVector dot collisionUnitVector) - (rVector dot collisionUnitVector)) < 0) {
         println("Impact already happened, no need to act")
@@ -61,9 +61,8 @@ println(rightThing + ":" + rVector + " - " + r2lImpulse + " -- " + r2lNormal + "
     def collide(things : Seq[Thing]) {
       for (startFrom <- 0 until things.size) {
         for (right <- startFrom until things.size) {
-          if (things(startFrom) != things(right)) {
-            if (things(startFrom).collidesWith(things(right)))  {  
-println(things(startFrom) + " collides with " + things(right))              
+          if (things(startFrom) != things(right)) {        
+            if (things(startFrom).collidesWith(things(right)))  {            
               (things(startFrom), things(right)) match {
                 case (left : RoundThing, right : RoundThing) => resolveCollision(left, right)
                 case (left : RoundThing, right : Box) => resolveCollision(right, left)

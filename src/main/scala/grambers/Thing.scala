@@ -16,12 +16,12 @@ abstract class Thing (val w:Int, val h:Int) {
         if (direction < 0 ) direction = 360 + direction
     }
 
-   def collidesWith(thing : Thing) : Boolean = {
-     this.shape.collidesWith(this.shape, thing.shape)
-   }
+    def collidesWith(thing : Thing) : Boolean = {
+      Shape.collidesWith(this.shape, thing.shape)
+    }
   
     def accelerate(amount : int) {
-        speed += amount
+      speed += amount
     }
 
     def xSpeed : Double = {
@@ -31,7 +31,6 @@ abstract class Thing (val w:Int, val h:Int) {
     def ySpeed : Double = {
       return speed * sin(toRadians(direction))
     }
-
 
     def setSpeedAndDirection(xSpeed : Double, ySpeed : Double) {
       speed = Math.sqrt(xSpeed * xSpeed + ySpeed * ySpeed)
@@ -70,7 +69,7 @@ class RoundThing(val radius:Int) extends Thing(radius*2, radius*2) {
   
   def draw(g2 : Graphics2D) {
     import java.awt.geom._
-    val shape = new Ellipse2D.Double(location._1, location._2, radius*2, radius*2)
+    val shape = new Ellipse2D.Double(location._1-w/2, location._2-h/2, radius*2, radius*2)
     val originalPaintColor = g2.getPaint()
     g2.setPaint(color)
     g2.fill(shape)
@@ -91,7 +90,7 @@ class Box(w:Int, h:Int) extends Thing(w, h) {
   
   def draw(g2: Graphics2D) {
     import java.awt.geom._
-    val shape = new Rectangle2D.Double(location._1, location._2, w, h)
+    val shape = new Rectangle2D.Double(location._1 - w/2, location._2-h/2, w, h)
     val originalPaintColor = g2.getPaint()
     g2.setPaint(color)
     g2.fill(shape)
@@ -99,6 +98,6 @@ class Box(w:Int, h:Int) extends Thing(w, h) {
   }
   
   override def toString : String = {
-    return "Box" + super.toString
+    return "Box" + super.toString + "," + w + "w," + h + "h"
   }
 }

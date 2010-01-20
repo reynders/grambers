@@ -72,7 +72,7 @@ class ThingTest extends TestCase {
         thing.location = (3, 5)
         thing.speed = 10.0
         thing.direction = 170
-        assertEquals("Box(3.0,5.0):10.0:170.0", thing.toString)
+        assertEquals("Box(3.0,5.0):10.0:170.0,1w,1h", thing.toString)
     }
     
     def testWidthAndHeigth() {
@@ -117,7 +117,16 @@ class ThingTest extends TestCase {
 
       assertTrue(circle_1.collidesWith(circle_2))
     }
+/*
+    def testCollidesWithAdjacentCollidingRoundThingAndBox() {
+      val box = new grambers.Box(100, 50, 20, 80)
+      box.location = (0, 0)
+      val circle = new grambers.RoundThing(125, 110)
+      circle_2.location = (2, 0)
 
+      assertTrue(circle_1.collidesWith(circle_2))
+    }
+*/
     
     def testCollidesWithOverlappingRoundThings() {
       val circle_1 = new grambers.RoundThing(2)

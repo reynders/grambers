@@ -104,16 +104,59 @@ object Main {
       
       return universe
     }  
+
+    def bigBangEdgesAndStuff() : Universe = {
+      val universe = new Universe(600, 300);
+      
+      val yellowRoundThing = new grambers.RoundThing(10);
+      yellowRoundThing.color = java.awt.Color.yellow
+      yellowRoundThing.speed = 1.0
+      yellowRoundThing.direction = 30.0
+      yellowRoundThing.location = (150, 50)
+      yellowRoundThing.doYourThing = (yellowRoundThing) => {yellowRoundThing.turn(0)}
+      
+
+      val blueBox = new grambers.Box(20, 50);
+      blueBox.color = java.awt.Color.blue
+      blueBox.speed = 0
+      blueBox.direction = 180
+      blueBox.location = (200, 50)
+      blueBox.mass = 10000.0
+      blueBox.doYourThing = (redBox) => {blueBox.turn(0)}
+      
+      universe.things += blueBox
+      universe.things += yellowRoundThing
+
+      addWalls(universe)      
+      return universe
+    }  
+    
+    def addWalls(universe:Universe) {
+      val box = new grambers.Box(universe.WIDTH, 1);
+      box.color = java.awt.Color.black
+      box.location = (universe.WIDTH/2, 10)
+      box.mass = 1000000.0
+      universe.things += box
+      
+      val box2 = new grambers.Box(universe.WIDTH, 1);
+      box2.color = java.awt.Color.black
+      box2.location = (universe.WIDTH/2, universe.HEIGHT-10)
+      box2.mass = 1000000.0
+      universe.things += box2
+      
+    }
+    
     
     def main(args:Array[String]) {
       val universe = args(0) match {
+        case "D" => bigBangEdgesAndStuff
         case "2" => bigBang2BallsHeadOn
         case "1" => bigBangTwoWallsAndABall
         case "0" => bigBangTwoBalls45Angle
         case _ => bigBangMovingAndStaticBall
       }
       
-      val observer = new Observer(universe, 500, 200)
+      val observer = new Observer(universe)
       observer.observe()
     }
 }
