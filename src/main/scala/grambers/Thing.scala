@@ -20,7 +20,7 @@ abstract class Thing (val w:Int, val h:Int) {
       Shape.collidesWith(this.shape, thing.shape)
     }
   
-    def accelerate(amount : int) {
+    def accelerate(amount : Double) {
       speed += amount
     }
 

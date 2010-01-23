@@ -71,7 +71,6 @@ class Observer (val universe : Universe) {
           var nextWorldUpdateTime = currentTimeMillis
           var measurementStartTime = currentTimeMillis          
           var worldUpdates = 0
-          var latestWorldUpdateTime = currentTimeMillis
           
           while (true) {
             val now = currentTimeMillis

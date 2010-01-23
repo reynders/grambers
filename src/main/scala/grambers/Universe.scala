@@ -71,13 +71,14 @@ println(rightThing + ":" + rVector + " - " + r2lImpulse + " -- " + r2lNormal + "
     def moveOneMillisecondWorth(things : Seq[Thing]) {
         for(thing <- things) {
             thing.doYourThing(thing)
-            
             var newX = (thing.location._1 + thing.xSpeed/1000)%WIDTH
             if (newX < 0 ) newX += WIDTH 
             var newY = (thing.location._2 + thing.ySpeed/1000)%HEIGHT
             if (newY < 0 ) newY += HEIGHT
+          
             thing.location = (newX, newY)
         }
+        
     }
     
     def advanceTime(msToAdvance : int) {      
