@@ -5,7 +5,7 @@ import java.lang.Math._
 
 class Universe(val WIDTH : int, val HEIGHT : int) {
     val things : ArrayBuffer[Thing] = new ArrayBuffer[Thing]
-    var ticksSinceBigBangIn = 0; 
+    var millisecondsSinceBigBang = 0; 
     
     def calculateCollisionAngle(leftThing : Thing, rightThing : Thing) : Double = {
       val xDiff : Double = (leftThing.location._1 - rightThing.location._1)
@@ -16,14 +16,6 @@ class Universe(val WIDTH : int, val HEIGHT : int) {
       return collisionAngle
     }
         
-    /*
-    http://www.phy.ntnu.edu.tw/ntnujava/index.php?topic=4
-      Vap2=((m1-m2)/(m1+m2))vap+ (2m2/(m1+m2))Vbp and
-      Vbp2=(2 m1/(m1+m2))Vap+((m2-m1)/(m2+m1))Vbp
-      The tangential component is not changed Van2=Van, and Vbn2=Vbn
-      4. Calculate the vector sum for velocity of each ball after collision
-      Va2=Vap2+Van2 and Vb2=Vb2p+Vbn2 (vector summation)
-    */
     def resolveCollision(leftThing : Thing, rightThing : Thing): Unit = {
 println("Resolving " + leftThing + " collision with " + rightThing)
       val lVector = new Vector(leftThing.xSpeed, leftThing.ySpeed)       
@@ -76,22 +68,23 @@ println(rightThing + ":" + rVector + " - " + r2lImpulse + " -- " + r2lNormal + "
       }
     }
 
-    def move(things : Seq[Thing]) {
+    def moveOneMillisecondWorth(things : Seq[Thing]) {
         for(thing <- things) {
             thing.doYourThing(thing)
-            var newX = (thing.location._1 + thing.xSpeed)%WIDTH
+            
+            var newX = (thing.location._1 + thing.xSpeed/1000)%WIDTH
             if (newX < 0 ) newX += WIDTH 
-            var newY = (thing.location._2 + thing.ySpeed)%HEIGHT
+            var newY = (thing.location._2 + thing.ySpeed/1000)%HEIGHT
             if (newY < 0 ) newY += HEIGHT
             thing.location = (newX, newY)
         }
     }
     
-    def advanceTime(msToAdvance : int) {
+    def advanceTime(msToAdvance : int) {      
       for(i <- 1 to msToAdvance) {
-        move(things)
+        moveOneMillisecondWorth(things)
         collide(things)
-        ticksSinceBigBangIn += 1
+        millisecondsSinceBigBang += 1
       }
     }
 }
