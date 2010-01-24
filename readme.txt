@@ -1,12 +1,18 @@
 Backlog
 -------
+* Static objects
+* Support for smooth animation between world state updates
+* Better demo that also supports performance profiling -Xprof
 * Walls of any angle
 * Shape to case class (http://programming-scala.labs.oreilly.com/ch06.html#CaseClasses)
 * Scalafy code 
-* Detach universe time from drawing speed
 * Detach view window coordinates from universe coordinates
-* Take into account the displacement between two moments of time in collisions
 * Support for sprites
+
+Done
+-----
+* Detach universe time from drawing speed
+
 
 Material 
 ---------

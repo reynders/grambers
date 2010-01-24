@@ -43,28 +43,14 @@ class Observer (val universe : Universe) {
         def fpsToMs(fps:int) : int = {
             return (1000 / fps)
         }
-        
-        def start_Old() {
-            add(ViewPanel)
-            pack()
-            setSize(new Dimension(universe.WIDTH, universe.HEIGHT));
-            show()
-            while (true) {
-                repaint()
-                universe.advanceTime(1)
-                val FPS = 20
-                Thread.sleep(fpsToMs(FPS))
-            }
-        }
-        
+
        
         def start {
           add(ViewPanel)
           pack()
           setSize(new Dimension(universe.WIDTH, universe.HEIGHT));
           show()
-          repaint()
-          
+          repaint()          
           import java.lang.System._
           val worldUpdatesPerSecond = 40;
           val millisecondsBetweenWorldUpdates = 1000 / worldUpdatesPerSecond

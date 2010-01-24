@@ -113,7 +113,7 @@ object Main {
       yellowRoundThing.speed = 10.0
       yellowRoundThing.direction = 30.0
       yellowRoundThing.location = (150, 50)
-      yellowRoundThing.doYourThing = (yellowRoundThing) => {yellowRoundThing.accelerate(0.1)}
+      yellowRoundThing.doYourThing = (yellowRoundThing) => {yellowRoundThing.accelerate(0.001)}
       
 
       val blueBox = new grambers.Box(20, 50);
