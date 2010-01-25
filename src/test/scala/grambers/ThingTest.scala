@@ -121,17 +121,7 @@ class ThingTest extends TestCase {
 
       assertTrue(circle_1.collidesWith(circle_2))
     }
-/*
-    def testCollidesWithAdjacentCollidingRoundThingAndBox() {
-      val box = new grambers.Box(100, 50, 20, 80)
-      box.location = (0, 0)
-      val circle = new grambers.RoundThing(125, 110)
-      circle_2.location = (2, 0)
 
-      assertTrue(circle_1.collidesWith(circle_2))
-    }
-*/
-    
     def testCollidesWithOverlappingRoundThings() {
       val circle_1 = new grambers.RoundThing(2)
       circle_1.location = (1, -1)

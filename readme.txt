@@ -1,5 +1,6 @@
 Backlog
 -------
+* Shape Point
 * Support for smooth animation between world state updates
 * Better demo that also supports performance profiling -Xprof
 * Walls of any angle
