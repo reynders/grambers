@@ -103,6 +103,7 @@ class Box(w:Int, h:Int) extends Thing(w, h) with StaticThing {
 }
 
 trait StaticThing extends Thing {
+  override def setSpeedAndDirection(xSpeed : Double, ySpeed : Double) = {}
 }
 
 trait MovingThing extends Thing {

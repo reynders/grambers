@@ -103,9 +103,13 @@ class ThingTest extends TestCase {
     def testCollidesWithAdjacentBoxes() {
       val box_1 = new grambers.Box(2, 2)      
       box_1.location = (2, 2)
-      val box_2 = new grambers.Box(2, 2)
+      box_1.direction = 0
+      box_1.speed = 100
+      val box_2 = new grambers.Box(2, 2)             
       box_2.location = (4, 2)
+      box_2.speed = 0
       assertTrue(box_1.collidesWith(box_2))
+      assertTrue(box_2.speed == 0)
     }
     
     def testCollidesWithAdjacentCollidingRoundThings() {

@@ -19,10 +19,7 @@ class Universe(val WIDTH : int, val HEIGHT : int) {
     def resolveCollision(leftThing : Thing, rightThing : Thing): Unit = {
 println("Resolving " + leftThing + " collision with " + rightThing)
       val lVector = new Vector(leftThing.xSpeed, leftThing.ySpeed)       
-      val rVector = new Vector(rightThing.xSpeed, rightThing.ySpeed)
-      // Circle-circle case
-      //val collisionUnitVector = new Vector((rightThing.location._1 - leftThing.location._1), (rightThing.location._2 - leftThing.location._2)).unitVector
-      
+      val rVector = new Vector(rightThing.xSpeed, rightThing.ySpeed)      
       val collisionUnitVector = Shape.collisionUnitVector(leftThing.shape, rightThing.shape)
 println("Collision vector: " + collisionUnitVector)
       if (((lVector dot collisionUnitVector) - (rVector dot collisionUnitVector)) < 0) {

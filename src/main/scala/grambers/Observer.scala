@@ -46,6 +46,7 @@ class Observer (val universe : Universe) {
         pack()
         setSize(new Dimension(universe.WIDTH, universe.HEIGHT));
         show()
+        resize(new Dimension(universe.WIDTH, universe.HEIGHT + 20));
         repaint()          
       }
        

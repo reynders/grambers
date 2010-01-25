@@ -1,6 +1,5 @@
 Backlog
 -------
-* Static objects
 * Support for smooth animation between world state updates
 * Better demo that also supports performance profiling -Xprof
 * Walls of any angle
@@ -12,6 +11,7 @@ Backlog
 Done
 -----
 * Detach universe time from drawing speed
+* Static objects
 
 
 Material 
