@@ -57,7 +57,6 @@ println(rightThing + ":" + rVector + " - " + r2lImpulse + " -- " + r2lNormal + "
                 case (left : RoundThing, right : RoundThing) => resolveCollision(left, right)
                 case (left : RoundThing, right : Box) => resolveCollision(right, left)
                 case (left : Box, right : RoundThing) => resolveCollision(left, right)
-                //case (left : Box, right : Box) => resolveCollision(left, right)
                 case (left : Thing, right : Thing) => println("Don't know how to handle collision between " + left + " and " + right)
               }
             }

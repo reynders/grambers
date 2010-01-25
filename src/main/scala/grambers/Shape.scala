@@ -2,7 +2,12 @@ package grambers
 
 import scala.collection.mutable._
 
-abstract class Shape(val x : Double, val y : Double){
+abstract class Shape(val center : Point) {
+  
+  def x : Double = center.x
+  def y : Double = center.y
+  
+  def this(x : Double, y : Double) = this(new Point(x, y))
   
   def distanceFrom(shape : Shape) : Double = {
     new Vector(shape.x - x, shape.y - y).length
@@ -31,6 +36,9 @@ object Shape {
     case _ => return false  
   }
   
+}
+
+class Point(val x : Double, val y : Double) {
 }
 
 class Line(val startX : Double, val startY : Double, val endX : Double, val endY : Double) extends Shape(startX, startY) {
