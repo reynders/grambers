@@ -21,21 +21,24 @@ class UniverseTest extends TestCase {
     def testCollideThings {
       val universe = new Universe(100, 100)
       val box_1 = new grambers.Box(2, 2)      
-      box_1.location = (2, 2)
-      val box_2 = new grambers.Box(2, 2)
-      box_2.location = (4, 2)
+      box_1.location = (1, 1)
+      val circle_1 = new grambers.RoundThing(2)
+      circle_1.location = (0, 0)
       val box_0_mock = (context.mock(classOf[grambers.Box])).asInstanceOf[grambers.Box]
 
       universe.things += box_0_mock      
       universe.things += box_1
-      universe.things += box_2
+      universe.things += circle_1
 
       context.checking(new Expectations {  
         allowing(box_0_mock).location;  will(returnValue((0.0, 0.0)))
         allowing(box_0_mock).w; will(returnValue(1))
         allowing(box_0_mock).h; will(returnValue(1))
 
-        exactly(2).of(box_0_mock).collidesWith(`with`(any(classOf[Thing])))
+        exactly(1).of(box_0_mock).collidesWith(`with`(any(classOf[Thing])))
+          will(returnValue(false))
+          
+        exactly(0).of(box_0_mock).collidesWith(`with`(any(classOf[StaticThing])))
           will(returnValue(false))
       }) 
       

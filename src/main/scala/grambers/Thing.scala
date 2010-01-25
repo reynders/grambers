@@ -59,7 +59,7 @@ abstract class Thing (val w:Int, val h:Int) {
     }
 }
 
-class RoundThing(val radius:Int) extends Thing(radius*2, radius*2) {
+class RoundThing(val radius:Int) extends Thing(radius*2, radius*2) with MovingThing {
   
   var color = java.awt.Color.yellow
    
@@ -81,7 +81,7 @@ class RoundThing(val radius:Int) extends Thing(radius*2, radius*2) {
   }
 }
 
-class Box(w:Int, h:Int) extends Thing(w, h) {
+class Box(w:Int, h:Int) extends Thing(w, h) with StaticThing {
   var color = java.awt.Color.black
 
   def shape : Shape = {
@@ -100,4 +100,10 @@ class Box(w:Int, h:Int) extends Thing(w, h) {
   override def toString : String = {
     return "Box" + super.toString + "," + w + "w," + h + "h"
   }
+}
+
+trait StaticThing extends Thing {
+}
+
+trait MovingThing extends Thing {
 }

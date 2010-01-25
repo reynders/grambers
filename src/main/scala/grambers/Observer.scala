@@ -5,8 +5,6 @@ import javax.swing._
 import java.awt._
 import java.awt.image._
 
-// Philosophy says that observer makes immaterial things material, thus the class that
-// does the rendering was named as Observer :) 
 class Observer (val universe : Universe) {
     
     val screenBuffer = new BufferedImage(universe.WIDTH, universe.HEIGHT, BufferedImage.TYPE_INT_RGB);
@@ -21,8 +19,8 @@ class Observer (val universe : Universe) {
         override def paint (g : Graphics) {
           super.paint(g)
           g match {
-                    case g2: Graphics2D => drawUniverse(g2)
-                    case _ => throw new ClassCastException
+            case g2: Graphics2D => drawUniverse(g2)
+            case _ => throw new ClassCastException
           }
         }
       }
@@ -41,11 +39,7 @@ class Observer (val universe : Universe) {
       def clearScreenBuffer() {
         sbg.setColor(Color.green);
         sbg.fillRect(0, 0, universe.WIDTH, universe.HEIGHT);
-      }
-        
-      //def fpsToMs(fps:int) : int = {
-        //return (1000 / fps)
-      //}
+      }        
 
       def initGraphics {
         add(ViewPanel)

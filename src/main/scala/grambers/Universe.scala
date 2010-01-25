@@ -53,8 +53,9 @@ println(rightThing + ":" + rVector + " - " + r2lImpulse + " -- " + r2lNormal + "
     def collide(things : Seq[Thing]) {
       for (startFrom <- 0 until things.size) {
         for (right <- startFrom until things.size) {
-          if (things(startFrom) != things(right)) {        
-            if (things(startFrom).collidesWith(things(right)))  {            
+          if (things(startFrom) != things(right) &&
+              !(things(startFrom).isInstanceOf[StaticThing] && things(right).isInstanceOf[StaticThing])) {
+            if (things(startFrom).collidesWith(things(right)))  {
               (things(startFrom), things(right)) match {
                 case (left : RoundThing, right : RoundThing) => resolveCollision(left, right)
                 case (left : RoundThing, right : Box) => resolveCollision(right, left)
