@@ -16,10 +16,10 @@ abstract class Shape(val center : Point) {
 
 object Shape {
   def collisionUnitVector(leftShape : Shape, rightShape : Shape) : Vector = (leftShape, rightShape) match {
-    case (circle: Circle, line : Line) => line.shortestVectorTo(circle.x, circle.y).unitVector
-    case (line : Line, circle: Circle) => line.shortestVectorTo(circle.x, circle.y).unitVector
-    case (rectangle : Rectangle, circle : Circle) => rectangle.facingSide(circle.x, circle.y).shortestVectorTo(circle.x, circle.y).unitVector
-    case (circle : Circle, rectangle : Rectangle) => rectangle.facingSide(circle.x, circle.y).shortestVectorTo(circle.x, circle.y).unitVector
+    case (circle: Circle, line : Line) => line.shortestVectorTo(circle.center).unitVector
+    case (line : Line, circle: Circle) => line.shortestVectorTo(circle.center).unitVector
+    case (rectangle : Rectangle, circle : Circle) => rectangle.facingSide(circle.center).shortestVectorTo(circle.center).unitVector
+    case (circle : Circle, rectangle : Rectangle) => rectangle.facingSide(circle.center).shortestVectorTo(circle.center).unitVector
     case (leftCircle : Circle, rightCircle : Circle) => new Vector((rightCircle.x - leftCircle.x), (rightCircle.y - leftCircle.y)).unitVector
     case _ => println("Do not know how to calculate collisionUnitVector between " + leftShape + " and " + rightShape)
               new Vector(1, 0)
@@ -28,9 +28,9 @@ object Shape {
   def collidesWith(leftShape : Shape, rightShape : Shape) : Boolean = (leftShape, rightShape) match {
     case (rectangle : Rectangle, circle : Circle) => {
 //println(circle.r + " vs " + rectangle.facingSide(circle.x, circle.y).distanceFrom(circle.x, circle.y) + " facing side " + rectangle.facingSide(circle.x, circle.y))     
-      circle.r >= rectangle.facingSide(circle.x, circle.y).distanceFrom(circle.x, circle.y)
+      circle.r >= rectangle.facingSide(circle.center).distanceFrom(circle.center)
     }
-    case (circle : Circle, rectangle : Rectangle) => circle.r >= rectangle.facingSide(circle.x, circle.y).distanceFrom(circle.x, circle.y) 
+    case (circle : Circle, rectangle : Rectangle) => circle.r >= rectangle.facingSide(circle.center).distanceFrom(circle.center) 
     case (leftCircle : Circle, rightCircle : Circle) => !((leftCircle.r + rightCircle.r) < leftCircle.distanceFrom(rightCircle))
     case (leftRectangle: Rectangle, rightRectangle : Rectangle) => leftRectangle.overlaps(rightRectangle)
     case _ => return false  
@@ -57,17 +57,18 @@ class Line(val startX : Double, val startY : Double, val endX : Double, val endY
       false      
   }
  
-  def shortestVectorTo(pointX : Double, pointY : Double) : Vector = {
-    val lineToPointVector = new Vector(pointX - startX, pointY - startY)
+  //def shortestVectorTo(pointX : Double, pointY : Double) : Vector = {
+  def shortestVectorTo(point : Point) : Vector = {
+    val lineToPointVector = new Vector(point.x - startX, point.y - startY)
     val dotProduct = lineToPointVector.dot(this.asUnitVector)
 
     if (dotProduct > 0) {
       if (dotProduct <= this.length) {
-        val pointProjectionOnLine = new Vector(pointX - startX, pointY - startY).projectionOn(this.asUnitVector)
-        return new Vector(pointX - startX, pointY - startY) - pointProjectionOnLine      
+        val pointProjectionOnLine = new Vector(point.x - startX, point.y - startY).projectionOn(this.asUnitVector)
+        return new Vector(point.x - startX, point.y - startY) - pointProjectionOnLine      
       }
       else {        
-        return new Vector(pointX - endX, pointY - endY)
+        return new Vector(point.x - endX, point.y - endY)
       }
     }
     else {     
@@ -75,8 +76,8 @@ class Line(val startX : Double, val startY : Double, val endX : Double, val endY
     }
   }
   
-  def distanceFrom(pointX : Double, pointY : Double) : Double = {    
-    shortestVectorTo(pointX, pointY).length
+  def distanceFrom(point : Point) : Double = {    
+    shortestVectorTo(point).length
   }
   
   override def toString : String = {
@@ -99,13 +100,13 @@ class Circle(center : Point, val r : Double) extends Shape(center) {
   */
 class Rectangle(center : Point, val w : Double, val h : Double) extends Shape(center) {
 
-  def this(x : Double, y : Double, w : Double, h : Double) = this(new Point(x, y), w, h)
+  //def this(x : Double, y : Double, w : Double, h : Double) = this(new Point(x, y), w, h)
   
   lazy val asLines = convertToLines
-  lazy val minX = x - (w/2)
-  lazy val minY = y - (h/2)
-  lazy val maxX = x + (w/2)
-  lazy val maxY = y + (h/2)
+  lazy val minX = center.x - (w/2)
+  lazy val minY = center.y - (h/2)
+  lazy val maxX = center.x + (w/2)
+  lazy val maxY = center.y + (h/2)
   lazy val side_down = asLines(0)
   lazy val side_right = asLines(1)
   lazy val side_up = asLines(2)
@@ -128,22 +129,23 @@ class Rectangle(center : Point, val w : Double, val h : Double) extends Shape(ce
    * Note: does not take rotation into account, cartesian aligned
    * Note: if point is inside box returns always the same side
    */
-  def facingSide(pointX : Double, pointY : Double) : Line = {
+  //def facingSide(pointX : Double, pointY : Double) : Line = {
+  def facingSide(point : Point) : Line = {
     val facingSide = 
-      if (pointX < minX) {
+      if (point.x < minX) {
         asLines(3)
       } 
-      else if (pointX > maxX) {
+      else if (point.x > maxX) {
         asLines(1)
       }
-      else if (pointY < minY) { 
+      else if (point.y < minY) { 
         asLines(0)      
       }
-      else if (pointY > maxY) { 
+      else if (point.y > maxY) { 
         asLines(2)
       }
       else {        
-        println("Point (" + x + "," + y + ") is inside " + this + ", do something!")
+        println("Point (" + point.x + "," + point.y + ") is inside " + this + ", do something!")
         asLines(0)
       }
       
@@ -156,7 +158,7 @@ class Rectangle(center : Point, val w : Double, val h : Double) extends Shape(ce
   }
     
   override def toString : String = {
-    return "Rectangle(" + x + "," + y + ") : " + w + "w, " + h + "h)"
+    return "Rectangle(" + center.x + "," + center.y + ") : " + w + "w, " + h + "h)"
   }  
 }
 

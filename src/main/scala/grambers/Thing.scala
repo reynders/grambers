@@ -85,7 +85,7 @@ class Box(w:Int, h:Int) extends Thing(w, h) with StaticThing {
   var color = java.awt.Color.black
 
   def shape : Shape = {
-    new Rectangle(location._1, location._2, w, h)
+    new Rectangle(new Point(location._1, location._2), w, h)
   }
   
   def draw(g2: Graphics2D) {
