@@ -3,9 +3,9 @@ package grambers
 import java.awt._
 import java.lang.Math._
 
-abstract class Thing (val w:Int, val h:Int) {
-    //var center: (double, double) = (0, 0)
-    var center : Point = new Point(0,0)
+abstract class Thing (var center : Point, val w:Double, val h:Double) {
+
+    def this(w : Double, h : Double) = this(new Point(0, 0), w, h)
     var speed : Double = 0.0 // "pixels" per second
     var direction : Double = 0 // 0-360
     var mass : Double = 1.0
@@ -56,16 +56,18 @@ abstract class Thing (val w:Int, val h:Int) {
     def draw(g2 : Graphics2D )
         
     override def toString : String = {
-        "(" + center.x + "," + center.y + "):" + speed + ":" + direction
+        "(" + center.x + "," + center.y + "):(" + w + "w," + h + "h):" + speed + "p/s:" + direction + "dg"
     }
 }
 
-class RoundThing(val radius:Int) extends Thing(radius*2, radius*2) with MovingThing {
+class RoundThing(c : Point, val radius:Double) extends Thing(c, radius*2, radius*2) with MovingThing {
+  
+  def this(radius : Double) = this(new Point(0, 0), radius)
   
   var color = java.awt.Color.yellow
    
-  def shape : Shape = {
-    new Circle(center.x, center.y, radius)
+  def shape : Shape = {      
+    new Circle(this.center.x, this.center.y, radius)
   }
   
   def draw(g2 : Graphics2D) {
@@ -78,7 +80,7 @@ class RoundThing(val radius:Int) extends Thing(radius*2, radius*2) with MovingTh
   }
   
   override def toString : String = {
-    return "RoundThing" + super.toString
+    return "RoundThing" + super.toString + ":" + radius + "r"
   }
 }
 

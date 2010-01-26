@@ -36,6 +36,9 @@ object Shape {
 }
 
 class Point(val x : Double, val y : Double) {
+  override def toString : String = {
+    return "P(" + x + "," + y + ")"
+  }
 }
 
 class Line(val startX : Double, val startY : Double, val endX : Double, val endY : Double) extends Shape(startX, startY) {

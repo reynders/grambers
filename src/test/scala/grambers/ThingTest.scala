@@ -71,16 +71,16 @@ class ThingTest extends TestCase {
         thing.center = new Point(3, 5)
         thing.speed = 10.0
         thing.direction = 170
-        assertEquals("Box(3.0,5.0):10.0:170.0,1w,1h", thing.toString)
+        assertEquals("Box(3.0,5.0):(1.0w,1.0h):10.0p/s:170.0dg,1w,1h", thing.toString)
     }
     
     def testWidthAndHeigth() {
       val circle = new grambers.RoundThing(3)
-      assertEquals(circle.w, 6)
-      assertEquals(circle.h, 6)
+      assertEquals(circle.w, 6.0)
+      assertEquals(circle.h, 6.0)
       val box = new grambers.Box(2, 2)
-      assertEquals(box.w, 2)
-      assertEquals(box.h, 2)
+      assertEquals(box.w, 2.0)
+      assertEquals(box.h, 2.0)
     }
     
     def testCollidesWithBoxesThatDoNotCollide() {
@@ -137,8 +137,8 @@ class ThingTest extends TestCase {
 
       val circle_2 = new grambers.RoundThing(1)
       circle_2.center = new Point(0, 2)
-
-      assertFalse(circle_1.collidesWith(circle_2))
+println("c1 : " + circle_1 + ":" + circle_2 + " collides: " + circle_1.collidesWith(circle_2))
+      assertEquals(false, circle_1.collidesWith(circle_2))
     }
     
     def testDistanceFrom() {
