@@ -84,7 +84,9 @@ class Line(val startX : Double, val startY : Double, val endX : Double, val endY
   }
 }
 
-class Circle(x: Double, y : Double, val r : Double) extends Shape(x, y) {
+class Circle(center : Point, val r : Double) extends Shape(center) {
+  
+  def this (x: Double, y : Double, r : Double) = this(new Point(x, y), r)
   
   override def toString : String = {
     return "Circle(" + x + "," + y + ") : " + r + "r)"
@@ -95,8 +97,10 @@ class Circle(x: Double, y : Double, val r : Double) extends Shape(x, y) {
   Rectangle is specified as w, h and center point (x, y) instead of left upper 
   and right lower corner so that rectangle can be at an angle if needed
   */
-class Rectangle(x : Double, y : Double, val w : Double, val h : Double) extends Shape(x, y) {
+class Rectangle(center : Point, val w : Double, val h : Double) extends Shape(center) {
 
+  def this(x : Double, y : Double, w : Double, h : Double) = this(new Point(x, y), w, h)
+  
   lazy val asLines = convertToLines
   lazy val minX = x - (w/2)
   lazy val minY = y - (h/2)
