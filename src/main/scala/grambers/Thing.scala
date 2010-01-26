@@ -60,7 +60,7 @@ abstract class Thing (var center : Point, val w:Double, val h:Double) {
     }
 }
 
-class RoundThing(c : Point, val radius:Double) extends Thing(c, radius*2, radius*2) with MovingThing {
+class RoundThing(var c : Point, val radius:Double) extends Thing(c, radius*2, radius*2) with MovingThing {
   
   def this(radius : Double) = this(new Point(0, 0), radius)
   
@@ -84,7 +84,10 @@ class RoundThing(c : Point, val radius:Double) extends Thing(c, radius*2, radius
   }
 }
 
-class Box(w:Int, h:Int) extends Thing(w, h) with StaticThing {
+class Box(c : Point, w:Int, h:Int) extends Thing(c, w, h) with StaticThing {
+  
+  def this(w : Int, h : Int) = this(Point(0, 0), w, h)
+  
   var color = java.awt.Color.black
 
   def shape : Shape = {

@@ -3,21 +3,17 @@ package grambers
 // Playfield class, used to demo the gaming library
 object Main {
     
-    def bigBang2BallsHeadOn() : Universe = {
-      val universe = new Universe(500, 200);
-      
-      val yellowRoundThing = new grambers.RoundThing(10);
+    def bigBang2BallsHeadOn(universe : Universe) : Universe = {     
+      val yellowRoundThing = new grambers.RoundThing(Point(100, 100), 10);
       yellowRoundThing.color = java.awt.Color.yellow
       yellowRoundThing.speed = 1.0
       yellowRoundThing.direction = 0.0
-      yellowRoundThing.center = new Point(50, 100)
       yellowRoundThing.doYourThing = (yellowRoundThing) => {yellowRoundThing.turn(0)}
       
-      val redRoundThing = new grambers.RoundThing(10);
+      val redRoundThing = new grambers.RoundThing(Point(130, 100), 10);
       redRoundThing.color = java.awt.Color.red
       redRoundThing.speed = 1.0
       redRoundThing.direction = 180.0
-      redRoundThing.center = new Point(100, 100)
       redRoundThing.doYourThing = (redRoundThing) => {redRoundThing.turn(0)}
       
       universe.things += redRoundThing
@@ -26,21 +22,17 @@ object Main {
       return universe
     }
 
-    def bigBangTwoBalls45Angle() : Universe = {
-      val universe = new Universe(500, 200);
-      
-      val yellowRoundThing = new grambers.RoundThing(10);
+    def bigBangTwoBalls45Angle(universe : Universe) : Universe = {     
+      val yellowRoundThing = new grambers.RoundThing(Point(50, 50), 10);
       yellowRoundThing.color = java.awt.Color.yellow
       yellowRoundThing.speed = 1.0
       yellowRoundThing.direction = 45.0
-      yellowRoundThing.center = new Point(50, 50)
       yellowRoundThing.doYourThing = (yellowRoundThing) => {yellowRoundThing.turn(0)}
       
-      val redRoundThing = new grambers.RoundThing(10);
+      val redRoundThing = new grambers.RoundThing(Point(100, 50), 10);
       redRoundThing.color = java.awt.Color.red
       redRoundThing.speed = 1.0
       redRoundThing.direction = 135
-      redRoundThing.center = new Point(100, 50)
       redRoundThing.doYourThing = (redRoundThing) => {redRoundThing.turn(0)}
       
       universe.things += redRoundThing
@@ -49,21 +41,17 @@ object Main {
       return universe
     }
 
-    def bigBangMovingAndStaticBall() : Universe = {
-      val universe = new Universe(500, 200);
-      
-      val yellowRoundThing = new grambers.RoundThing(10);
+    def bigBangMovingAndStaticBall(universe : Universe) : Universe = {
+      val yellowRoundThing = new grambers.RoundThing(Point(50, 50), 10);
       yellowRoundThing.color = java.awt.Color.yellow
       yellowRoundThing.speed = 1.0
       yellowRoundThing.direction = 0.0
-      yellowRoundThing.center = new Point(50, 50)
       yellowRoundThing.doYourThing = (yellowRoundThing) => {yellowRoundThing.turn(0)}
       
-      val redRoundThing = new grambers.RoundThing(10);
+      val redRoundThing = new grambers.RoundThing(Point(100, 50), 10);
       redRoundThing.color = java.awt.Color.red
       redRoundThing.speed = 2.0
       redRoundThing.direction = 180
-      redRoundThing.center = new Point(100, 50)
       redRoundThing.doYourThing = (redRoundThing) => {redRoundThing.turn(0)}
       
       universe.things += redRoundThing
@@ -72,14 +60,11 @@ object Main {
       return universe
     }  
     
-    def bigBangTwoWallsAndABall() : Universe = {
-      val universe = new Universe(600, 300);
-      
-      val yellowRoundThing = new grambers.RoundThing(10);
+    def bigBangTwoWallsAndABall(universe : Universe) : Universe = {      
+      val yellowRoundThing = new grambers.RoundThing(Point(150, 50), 10);
       yellowRoundThing.color = java.awt.Color.yellow
       yellowRoundThing.speed = 10.0
       yellowRoundThing.direction = 0.0
-      yellowRoundThing.center = new Point(150, 50)
       yellowRoundThing.doYourThing = (yellowRoundThing) => {yellowRoundThing.turn(0)}
       
       val redBox = new grambers.Box(20, 80);
@@ -105,14 +90,13 @@ object Main {
       return universe
     }  
 
-    def bigBangEdgesAndStuff() : Universe = {
+    def bigBangEdgesAndStuff(universe : Universe) : Universe = {
       val universe = new Universe(600, 300);
       
-      val yellowRoundThing = new grambers.RoundThing(10);
+      val yellowRoundThing = new grambers.RoundThing(Point(150, 50), 10);
       yellowRoundThing.color = java.awt.Color.yellow
       yellowRoundThing.speed = 10.0
       yellowRoundThing.direction = 30.0
-      yellowRoundThing.center = new Point(150, 50)
       yellowRoundThing.doYourThing = (yellowRoundThing) => {yellowRoundThing.accelerate(0.001)}
       
 
@@ -131,7 +115,7 @@ object Main {
       return universe
     }  
     
-    def addWalls(universe:Universe) {
+    def addWalls(universe : Universe) {
       val box = new grambers.Box(universe.WIDTH, 1);
       box.color = java.awt.Color.black
       box.center = new Point(universe.WIDTH/2, 10)
@@ -149,11 +133,11 @@ object Main {
     
     def main(args:Array[String]) {
       val universe = args(0) match {
-        case "D" => bigBangEdgesAndStuff
-        case "2" => bigBang2BallsHeadOn
-        case "1" => bigBangTwoWallsAndABall
-        case "0" => bigBangTwoBalls45Angle
-        case _ => bigBangMovingAndStaticBall
+        case "D" => bigBangEdgesAndStuff(new Universe(600, 300))
+        case "2" => bigBang2BallsHeadOn(new Universe(600, 300))
+        case "1" => bigBangTwoWallsAndABall(new Universe(600, 300))
+        case "0" => bigBangTwoBalls45Angle(new Universe(600, 300))
+        case _ => bigBangMovingAndStaticBall(new Universe(600, 300))
       }
       
       val observer = new Observer(universe)

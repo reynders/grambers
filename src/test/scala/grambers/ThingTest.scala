@@ -67,8 +67,7 @@ class ThingTest extends TestCase {
     }
 
     def testToString() {
-        val thing = new grambers.Box(1, 1)
-        thing.center = new Point(3, 5)
+        val thing = new grambers.Box(Point(3, 5), 1, 1)
         thing.speed = 10.0
         thing.direction = 170
         assertEquals("Box(3.0,5.0):(1.0w,1.0h):10.0p/s:170.0dg,1w,1h", thing.toString)
@@ -84,73 +83,51 @@ class ThingTest extends TestCase {
     }
     
     def testCollidesWithBoxesThatDoNotCollide() {
-      val box_1 = new grambers.Box(2, 2)
-      box_1.center = new Point(2, 2)
-      val box_2 = new grambers.Box(2, 2)
-      box_2.center = new Point(5, 5)
+      val box_1 = new grambers.Box(Point(2, 2), 2, 2)
+
+      val box_2 = new grambers.Box(Point(5, 5), 2, 2)
       assertFalse(box_1.collidesWith(box_2))
     }
     
     def testCollidesWithBoxesThatOverlap() {
-      val box_1 = new grambers.Box(4, 4)      
-      box_1.center = new Point(2, 2)
-      val box_2 = new grambers.Box(2, 2)
-      box_2.center = new Point(3, 3)
+      val box_1 = new grambers.Box(Point(2, 2), 4, 4)      
+      val box_2 = new grambers.Box(Point(3, 3), 2, 2)
       assertTrue(box_1.collidesWith(box_2))
     }
     
     def testCollidesWithAdjacentBoxes() {
-      val box_1 = new grambers.Box(2, 2)      
-      box_1.center = new Point(2, 2)
+      val box_1 = new grambers.Box(Point(2, 2), 2, 2)      
       box_1.direction = 0
       box_1.speed = 100
-      val box_2 = new grambers.Box(2, 2)             
-      box_2.center = new Point(4, 2)
+      val box_2 = new grambers.Box(Point(4, 2), 2, 2)             
       box_2.speed = 0
       assertTrue(box_1.collidesWith(box_2))
       assertTrue(box_2.speed == 0)
     }
     
     def testCollidesWithAdjacentCollidingRoundThings() {
-      val circle_1 = new grambers.RoundThing(1)
-      circle_1.center = new Point(0, 0)
-
-      val circle_2 = new grambers.RoundThing(1)
-      circle_2.center = new Point(2, 0)
-
+      val circle_1 = new grambers.RoundThing(Point(0, 0), 1)
+      val circle_2 = new grambers.RoundThing(Point(2, 0), 1)
       assertTrue(circle_1.collidesWith(circle_2))
     }
 
     def testCollidesWithOverlappingRoundThings() {
-      val circle_1 = new grambers.RoundThing(2)
-      circle_1.center = new Point(1, -1)
-
-      val circle_2 = new grambers.RoundThing(1)
-      circle_2.center = new Point(0, 0)
-
+      val circle_1 = new grambers.RoundThing(Point(1, -1), 2)
+      val circle_2 = new grambers.RoundThing(Point(0, 0), 1)
       assertTrue(circle_1.collidesWith(circle_2))
     }
 
     def testCollidesWithNonOverlappingRoundThings() {
-      val circle_1 = new grambers.RoundThing(1)
-      circle_1.center = new Point(0, -1)
-
-      val circle_2 = new grambers.RoundThing(1)
-      circle_2.center = new Point(0, 2)
-println("c1 : " + circle_1 + ":" + circle_2 + " collides: " + circle_1.collidesWith(circle_2))
+      val circle_1 = new grambers.RoundThing(Point(0, -1), 1)
+      val circle_2 = new grambers.RoundThing(Point(0, 2), 1)
       assertEquals(false, circle_1.collidesWith(circle_2))
     }
     
     def testDistanceFrom() {
-      val circle_1 = new grambers.RoundThing(1)
-      circle_1.center = new Point(0, 0)
-
-      val circle_2 = new grambers.RoundThing(1)
-      circle_2.center = new Point(2, 0)
-
+      val circle_1 = new grambers.RoundThing(Point(0, 0), 1)
+      val circle_2 = new grambers.RoundThing(Point(2, 0), 1)
       assertEquals(2.0, circle_1.distanceFrom(circle_2))
-      circle_1.center = new Point(2, -3)      
+      circle_1.center = Point(2, -3)      
       assertEquals(3.0, circle_1.distanceFrom(circle_2))
     }
-    
 }
