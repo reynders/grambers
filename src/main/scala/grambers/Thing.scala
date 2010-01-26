@@ -5,6 +5,7 @@ import java.lang.Math._
 
 abstract class Thing (val w:Int, val h:Int) {
     var location: (double, double) = (0, 0)
+    //var location : Point
     var speed : Double = 0.0 // "pixels" per second
     var direction : Double = 0 // 0-360
     var mass : Double = 1.0

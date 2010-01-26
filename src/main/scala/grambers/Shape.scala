@@ -26,10 +26,7 @@ object Shape {
   }
   
   def collidesWith(leftShape : Shape, rightShape : Shape) : Boolean = (leftShape, rightShape) match {
-    case (rectangle : Rectangle, circle : Circle) => {
-//println(circle.r + " vs " + rectangle.facingSide(circle.x, circle.y).distanceFrom(circle.x, circle.y) + " facing side " + rectangle.facingSide(circle.x, circle.y))     
-      circle.r >= rectangle.facingSide(circle.center).distanceFrom(circle.center)
-    }
+    case (rectangle : Rectangle, circle : Circle) => circle.r >= rectangle.facingSide(circle.center).distanceFrom(circle.center)
     case (circle : Circle, rectangle : Rectangle) => circle.r >= rectangle.facingSide(circle.center).distanceFrom(circle.center) 
     case (leftCircle : Circle, rightCircle : Circle) => !((leftCircle.r + rightCircle.r) < leftCircle.distanceFrom(rightCircle))
     case (leftRectangle: Rectangle, rightRectangle : Rectangle) => leftRectangle.overlaps(rightRectangle)
@@ -57,7 +54,6 @@ class Line(val startX : Double, val startY : Double, val endX : Double, val endY
       false      
   }
  
-  //def shortestVectorTo(pointX : Double, pointY : Double) : Vector = {
   def shortestVectorTo(point : Point) : Vector = {
     val lineToPointVector = new Vector(point.x - startX, point.y - startY)
     val dotProduct = lineToPointVector.dot(this.asUnitVector)
@@ -99,8 +95,6 @@ class Circle(center : Point, val r : Double) extends Shape(center) {
   and right lower corner so that rectangle can be at an angle if needed
   */
 class Rectangle(center : Point, val w : Double, val h : Double) extends Shape(center) {
-
-  //def this(x : Double, y : Double, w : Double, h : Double) = this(new Point(x, y), w, h)
   
   lazy val asLines = convertToLines
   lazy val minX = center.x - (w/2)
@@ -129,7 +123,6 @@ class Rectangle(center : Point, val w : Double, val h : Double) extends Shape(ce
    * Note: does not take rotation into account, cartesian aligned
    * Note: if point is inside box returns always the same side
    */
-  //def facingSide(pointX : Double, pointY : Double) : Line = {
   def facingSide(point : Point) : Line = {
     val facingSide = 
       if (point.x < minX) {
