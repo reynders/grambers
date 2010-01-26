@@ -8,8 +8,8 @@ class Universe(val WIDTH : int, val HEIGHT : int) {
     var millisecondsSinceBigBang = 0; 
     
     def calculateCollisionAngle(leftThing : Thing, rightThing : Thing) : Double = {
-      val xDiff : Double = (leftThing.location._1 - rightThing.location._1)
-      val yDiff : Double = (leftThing.location._2 - rightThing.location._2)
+      val xDiff : Double = (leftThing.center.x - rightThing.center.x)
+      val yDiff : Double = (leftThing.center.y - rightThing.center.y)
       
       val collisionAngle = toDegrees(atan(xDiff/ yDiff))
   
@@ -68,12 +68,12 @@ println(rightThing + ":" + rVector + " - " + r2lImpulse + " -- " + r2lNormal + "
     def moveOneMillisecondWorth(things : Seq[Thing]) {
         for(thing <- things) {
             thing.doYourThing(thing)
-            var newX = (thing.location._1 + thing.xSpeed/1000)%WIDTH
+            var newX = (thing.center.x + thing.xSpeed/1000)%WIDTH
             if (newX < 0 ) newX += WIDTH 
-            var newY = (thing.location._2 + thing.ySpeed/1000)%HEIGHT
+            var newY = (thing.center.y + thing.ySpeed/1000)%HEIGHT
             if (newY < 0 ) newY += HEIGHT
           
-            thing.location = (newX, newY)
+            thing.center = new Point(newX, newY)
         }
         
     }

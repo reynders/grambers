@@ -10,14 +10,14 @@ object Main {
       yellowRoundThing.color = java.awt.Color.yellow
       yellowRoundThing.speed = 1.0
       yellowRoundThing.direction = 0.0
-      yellowRoundThing.location = (50, 100)
+      yellowRoundThing.center = new Point(50, 100)
       yellowRoundThing.doYourThing = (yellowRoundThing) => {yellowRoundThing.turn(0)}
       
       val redRoundThing = new grambers.RoundThing(10);
       redRoundThing.color = java.awt.Color.red
       redRoundThing.speed = 1.0
       redRoundThing.direction = 180.0
-      redRoundThing.location = (100, 100)
+      redRoundThing.center = new Point(100, 100)
       redRoundThing.doYourThing = (redRoundThing) => {redRoundThing.turn(0)}
       
       universe.things += redRoundThing
@@ -33,14 +33,14 @@ object Main {
       yellowRoundThing.color = java.awt.Color.yellow
       yellowRoundThing.speed = 1.0
       yellowRoundThing.direction = 45.0
-      yellowRoundThing.location = (50, 50)
+      yellowRoundThing.center = new Point(50, 50)
       yellowRoundThing.doYourThing = (yellowRoundThing) => {yellowRoundThing.turn(0)}
       
       val redRoundThing = new grambers.RoundThing(10);
       redRoundThing.color = java.awt.Color.red
       redRoundThing.speed = 1.0
       redRoundThing.direction = 135
-      redRoundThing.location = (100, 50)
+      redRoundThing.center = new Point(100, 50)
       redRoundThing.doYourThing = (redRoundThing) => {redRoundThing.turn(0)}
       
       universe.things += redRoundThing
@@ -56,14 +56,14 @@ object Main {
       yellowRoundThing.color = java.awt.Color.yellow
       yellowRoundThing.speed = 1.0
       yellowRoundThing.direction = 0.0
-      yellowRoundThing.location = (50, 50)
+      yellowRoundThing.center = new Point(50, 50)
       yellowRoundThing.doYourThing = (yellowRoundThing) => {yellowRoundThing.turn(0)}
       
       val redRoundThing = new grambers.RoundThing(10);
       redRoundThing.color = java.awt.Color.red
       redRoundThing.speed = 2.0
       redRoundThing.direction = 180
-      redRoundThing.location = (100, 50)
+      redRoundThing.center = new Point(100, 50)
       redRoundThing.doYourThing = (redRoundThing) => {redRoundThing.turn(0)}
       
       universe.things += redRoundThing
@@ -79,14 +79,14 @@ object Main {
       yellowRoundThing.color = java.awt.Color.yellow
       yellowRoundThing.speed = 10.0
       yellowRoundThing.direction = 0.0
-      yellowRoundThing.location = (150, 50)
+      yellowRoundThing.center = new Point(150, 50)
       yellowRoundThing.doYourThing = (yellowRoundThing) => {yellowRoundThing.turn(0)}
       
       val redBox = new grambers.Box(20, 80);
       redBox.color = java.awt.Color.red
       redBox.speed = 0
       redBox.direction = 180
-      redBox.location = (100, 50)
+      redBox.center = new Point(100, 50)
       redBox.mass = 10000.0
       redBox.doYourThing = (redBox) => {redBox.turn(0)}
 
@@ -94,7 +94,7 @@ object Main {
       blueBox.color = java.awt.Color.blue
       blueBox.speed = 0
       blueBox.direction = 180
-      blueBox.location = (200, 50)
+      blueBox.center = new Point(200, 50)
       blueBox.mass = 10000.0
       blueBox.doYourThing = (redBox) => {blueBox.turn(0)}
       
@@ -112,7 +112,7 @@ object Main {
       yellowRoundThing.color = java.awt.Color.yellow
       yellowRoundThing.speed = 10.0
       yellowRoundThing.direction = 30.0
-      yellowRoundThing.location = (150, 50)
+      yellowRoundThing.center = new Point(150, 50)
       yellowRoundThing.doYourThing = (yellowRoundThing) => {yellowRoundThing.accelerate(0.001)}
       
 
@@ -120,7 +120,7 @@ object Main {
       blueBox.color = java.awt.Color.blue
       blueBox.speed = 0
       blueBox.direction = 180
-      blueBox.location = (200, 50)
+      blueBox.center = new Point(200, 50)
       blueBox.mass = 10000.0
       blueBox.doYourThing = (redBox) => {blueBox.turn(0)}
       
@@ -134,13 +134,13 @@ object Main {
     def addWalls(universe:Universe) {
       val box = new grambers.Box(universe.WIDTH, 1);
       box.color = java.awt.Color.black
-      box.location = (universe.WIDTH/2, 10)
+      box.center = new Point(universe.WIDTH/2, 10)
       box.mass = 1000000.0
       universe.things += box
       
       val box2 = new grambers.Box(universe.WIDTH, 1);
       box2.color = java.awt.Color.black
-      box2.location = (universe.WIDTH/2, universe.HEIGHT-10)
+      box2.center = new Point(universe.WIDTH/2, universe.HEIGHT-10)
       box2.mass = 1000000.0
       universe.things += box2
       

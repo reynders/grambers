@@ -4,8 +4,8 @@ import java.awt._
 import java.lang.Math._
 
 abstract class Thing (val w:Int, val h:Int) {
-    var location: (double, double) = (0, 0)
-    //var location : Point
+    //var center: (double, double) = (0, 0)
+    var center : Point = new Point(0,0)
     var speed : Double = 0.0 // "pixels" per second
     var direction : Double = 0 // 0-360
     var mass : Double = 1.0
@@ -45,8 +45,8 @@ abstract class Thing (val w:Int, val h:Int) {
     }
  
     def distanceFrom(otherThing : Thing) : Double = {
-      val xDiff = Math.abs(otherThing.location._1 - location._1)
-      val yDiff = Math.abs(otherThing.location._2 - location._2)
+      val xDiff = Math.abs(otherThing.center.x - center.x)
+      val yDiff = Math.abs(otherThing.center.y - center.y)
       
       return Math.sqrt((xDiff*xDiff) + (yDiff*yDiff)) 
     }
@@ -56,7 +56,7 @@ abstract class Thing (val w:Int, val h:Int) {
     def draw(g2 : Graphics2D )
         
     override def toString : String = {
-        "(" + location._1 + "," + location._2 + "):" + speed + ":" + direction
+        "(" + center.x + "," + center.y + "):" + speed + ":" + direction
     }
 }
 
@@ -65,12 +65,12 @@ class RoundThing(val radius:Int) extends Thing(radius*2, radius*2) with MovingTh
   var color = java.awt.Color.yellow
    
   def shape : Shape = {
-    new Circle(location._1, location._2, radius)
+    new Circle(center.x, center.y, radius)
   }
   
   def draw(g2 : Graphics2D) {
     import java.awt.geom._
-    val shape = new Ellipse2D.Double(location._1-w/2, location._2-h/2, radius*2, radius*2)
+    val shape = new Ellipse2D.Double(center.x-w/2, center.y-h/2, radius*2, radius*2)
     val originalPaintColor = g2.getPaint()
     g2.setPaint(color)
     g2.fill(shape)
@@ -86,12 +86,12 @@ class Box(w:Int, h:Int) extends Thing(w, h) with StaticThing {
   var color = java.awt.Color.black
 
   def shape : Shape = {
-    new Rectangle(new Point(location._1, location._2), w, h)
+    new Rectangle(new Point(center.x, center.y), w, h)
   }
   
   def draw(g2: Graphics2D) {
     import java.awt.geom._
-    val shape = new Rectangle2D.Double(location._1 - w/2, location._2-h/2, w, h)
+    val shape = new Rectangle2D.Double(center.x - w/2, center.y-h/2, w, h)
     val originalPaintColor = g2.getPaint()
     g2.setPaint(color)
     g2.fill(shape)

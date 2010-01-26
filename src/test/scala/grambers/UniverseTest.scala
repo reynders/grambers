@@ -21,9 +21,9 @@ class UniverseTest extends TestCase {
     def testCollideThings {
       val universe = new Universe(100, 100)
       val box_1 = new grambers.Box(2, 2)      
-      box_1.location = (1, 1)
+      box_1.center = new Point(1, 1)
       val circle_1 = new grambers.RoundThing(2)
-      circle_1.location = (0, 0)
+      circle_1.center = new Point(0, 0)
       val box_0_mock = (context.mock(classOf[grambers.Box])).asInstanceOf[grambers.Box]
 
       universe.things += box_0_mock      
@@ -31,7 +31,7 @@ class UniverseTest extends TestCase {
       universe.things += circle_1
 
       context.checking(new Expectations {  
-        allowing(box_0_mock).location;  will(returnValue((0.0, 0.0)))
+        allowing(box_0_mock).center;  will(returnValue(new Point(0.0, 0.0)))
         allowing(box_0_mock).w; will(returnValue(1))
         allowing(box_0_mock).h; will(returnValue(1))
 
@@ -50,10 +50,10 @@ class UniverseTest extends TestCase {
       val universe = new Universe(100, 100)
       
       val circle_1 = new grambers.RoundThing(1)
-      circle_1.location = (0, 0)
+      circle_1.center = new Point(0, 0)
       circle_1.direction = 45.0
       val circle_2 = new grambers.RoundThing(1)
-      circle_2.location = (1, 1)
+      circle_2.center = new Point(1, 1)
       circle_1.direction = -45.0
 
       assertEquals(45.0, universe.calculateCollisionAngle(circle_1, circle_2))
