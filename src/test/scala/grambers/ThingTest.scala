@@ -70,7 +70,7 @@ class ThingTest extends TestCase {
         val thing = new grambers.Box(Point(3, 5), 1, 1)
         thing.speed = 10.0
         thing.direction = 170
-        assertEquals("Box(3.0,5.0):(1.0w,1.0h):10.0p/s:170.0dg,1w,1h", thing.toString)
+        assertEquals("Box(3.0,5.0):(1.0w,1.0h):10.0p/s:170.0dg,1.0w,1.0h", thing.toString)
     }
     
     def testWidthAndHeigth() {

@@ -11,7 +11,7 @@ abstract class Thing (var center : Point, val w:Double, val h:Double) {
     var mass : Double = 1.0
     var doYourThing : ((Thing) => Unit) = (thing) => {}
 
-    def turn(degrees:int) {
+    def turn(degrees : Double) {
         direction += degrees
         direction %= 360
         if (direction < 0 ) direction = 360 + direction
@@ -103,9 +103,9 @@ object RoundThing {
   }
 }
 
-class Box(c : Point, w:Int, h:Int) extends Thing(c, w, h) with StaticThing {
+class Box(c : Point, w : Double, h : Double) extends Thing(c, w, h) with StaticThing {
   
-  def this(w : Int, h : Int) = this(Point(0, 0), w, h)
+  def this(w : Double, h : Double) = this(Point(0, 0), w, h)
   
   var color = java.awt.Color.black
 
@@ -124,5 +124,14 @@ class Box(c : Point, w:Int, h:Int) extends Thing(c, w, h) with StaticThing {
   
   override def toString : String = {
     return "Box" + super.toString + "," + w + "w," + h + "h"
+  }
+}
+
+object Box {
+  def apply(x : Double, y : Double, w : Double, h : Double, color : Color) : Box = {
+    val box = new Box(new Point(x, y), w, h)
+    box.color = color
+    box.mass = 1000000
+    return box
   }
 }

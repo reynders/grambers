@@ -1,6 +1,7 @@
 Backlog
 -------
-* Refactor the demo class (Main)
+* Bug: static things should have "infinite" mass when calculating collisiongs
+* Make it impossible to add a thing to universe that overlaps an existing one
 * Support for smooth animation between world state updates
 * Better demo that also supports performance profiling -Xprof
 * Walls of any angle
@@ -11,6 +12,7 @@ Backlog
 
 Done
 -----
+* Refactor the demo class (Main)
 * Shape Point
 * Detach universe time from drawing speed
 * Static objects
@@ -50,7 +52,6 @@ Global setup:
   git config --global user.email joonas.reynders@iki.fi
   Add your public key
         
-
 Next steps:
 
   mkdir grambers
@@ -62,21 +63,9 @@ Next steps:
   git remote add origin git@github.com:reynders/grambers.git
   git push origin master
       
-
 Existing Git Repo?
 
   cd existing_git_repo
   git remote add origin git@github.com:reynders/grambers.git
   git push origin master
-      
 
-Importing a Subversion Repo?
-
-  Click here
-      
-
-When you're done:
-
-  Continue
-
- 
