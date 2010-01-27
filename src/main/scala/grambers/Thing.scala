@@ -93,8 +93,9 @@ class RoundThing(var c : Point, val radius:Double) extends Thing(c, radius*2, ra
 }
 
 object RoundThing {
-  def apply(x : Double, y : Double, r : Double, color: Color, speed : Double, direction : Double) : RoundThing = {
+  def apply(x : Double, y : Double, r : Double, mass : Double, color: Color, speed : Double, direction : Double) : RoundThing = {
     val ball = new RoundThing(Point(x, y), r)
+    ball.mass = mass
     ball.color = color
     ball.speed = speed
     ball.direction = direction

@@ -91,13 +91,13 @@ object Main {
     
     def bigBangBallsAndWalls(universe : Universe) : Universe = {
       addWalls(universe)
-      var ball = RoundThing(10, 30, 10, Color.yellow, random()*10, random()*360)
+      var ball = RoundThing(10, 30, 10, 10, Color.yellow, random()*10, random()*360)
       addBall(universe, ball, (ball) => {ball.accelerate(0.001)})
  
-      ball = RoundThing(100, 100, 5, Color.red, random()*10, random()*360)
+      ball = RoundThing(100, 100, 5, 5, Color.red, random()*10, random()*360)
       addBall(universe, ball, (ball) => {ball.accelerate(0.001)})
       
-      ball = RoundThing(20, 150, 40, Color.black, random()*10, random()*360)
+      ball = RoundThing(20, 150, 40, 40, Color.black, random()*10, random()*360)
       addBall(universe, ball, (ball) => {ball.accelerate(0.001)})    
       
       val blueBox = new grambers.Box(20, 50);
