@@ -1,65 +1,11 @@
 package grambers
 
+import java.lang.Math._
+import java.awt.Color
+
 // Playfield class, used to demo the gaming library
 object Main {
-    
-    def bigBang2BallsHeadOn(universe : Universe) : Universe = {     
-      val yellowRoundThing = new grambers.RoundThing(Point(100, 100), 10);
-      yellowRoundThing.color = java.awt.Color.yellow
-      yellowRoundThing.speed = 1.0
-      yellowRoundThing.direction = 0.0
-      yellowRoundThing.doYourThing = (yellowRoundThing) => {yellowRoundThing.turn(0)}
-      
-      val redRoundThing = new grambers.RoundThing(Point(130, 100), 10);
-      redRoundThing.color = java.awt.Color.red
-      redRoundThing.speed = 1.0
-      redRoundThing.direction = 180.0
-      redRoundThing.doYourThing = (redRoundThing) => {redRoundThing.turn(0)}
-      
-      universe.things += redRoundThing
-      universe.things += yellowRoundThing
-      
-      return universe
-    }
-
-    def bigBangTwoBalls45Angle(universe : Universe) : Universe = {     
-      val yellowRoundThing = new grambers.RoundThing(Point(50, 50), 10);
-      yellowRoundThing.color = java.awt.Color.yellow
-      yellowRoundThing.speed = 1.0
-      yellowRoundThing.direction = 45.0
-      yellowRoundThing.doYourThing = (yellowRoundThing) => {yellowRoundThing.turn(0)}
-      
-      val redRoundThing = new grambers.RoundThing(Point(100, 50), 10);
-      redRoundThing.color = java.awt.Color.red
-      redRoundThing.speed = 1.0
-      redRoundThing.direction = 135
-      redRoundThing.doYourThing = (redRoundThing) => {redRoundThing.turn(0)}
-      
-      universe.things += redRoundThing
-      universe.things += yellowRoundThing
-      
-      return universe
-    }
-
-    def bigBangMovingAndStaticBall(universe : Universe) : Universe = {
-      val yellowRoundThing = new grambers.RoundThing(Point(50, 50), 10);
-      yellowRoundThing.color = java.awt.Color.yellow
-      yellowRoundThing.speed = 1.0
-      yellowRoundThing.direction = 0.0
-      yellowRoundThing.doYourThing = (yellowRoundThing) => {yellowRoundThing.turn(0)}
-      
-      val redRoundThing = new grambers.RoundThing(Point(100, 50), 10);
-      redRoundThing.color = java.awt.Color.red
-      redRoundThing.speed = 2.0
-      redRoundThing.direction = 180
-      redRoundThing.doYourThing = (redRoundThing) => {redRoundThing.turn(0)}
-      
-      universe.things += redRoundThing
-      universe.things += yellowRoundThing
-      
-      return universe
-    }  
-    
+        
     def bigBangTwoWallsAndABall(universe : Universe) : Universe = {      
       val yellowRoundThing = new grambers.RoundThing(Point(150, 50), 10);
       yellowRoundThing.color = java.awt.Color.yellow
@@ -102,8 +48,6 @@ object Main {
 
       val blueBox = new grambers.Box(20, 50);
       blueBox.color = java.awt.Color.blue
-      blueBox.speed = 0
-      blueBox.direction = 180
       blueBox.center = new Point(200, 50)
       blueBox.mass = 10000.0
       blueBox.doYourThing = (redBox) => {blueBox.turn(0)}
@@ -130,15 +74,50 @@ object Main {
       
     }
     
+    def addRandomBall(universe : Universe) {
+      val startX = random * universe.WIDTH
+      val startY = random * universe.HEIGHT      
+      val ball = new grambers.RoundThing(Point(startX, startY), random * 20);
+      ball.color = java.awt.Color.yellow
+      ball.speed = random * 20
+      ball.direction = random * 360
+      ball.doYourThing = (ball) => {ball.accelerate(0.001)}
+    }
+
+    def addBall(universe : Universe, ball : RoundThing, doYourThing : (Thing)=>Unit) {
+      ball.doYourThing = doYourThing
+      universe.things += ball
+    }
+    
+    def bigBangBallsAndWalls(universe : Universe) : Universe = {
+      addWalls(universe)
+      var ball = RoundThing(10, 30, 10, Color.yellow, random()*10, random()*360)
+      addBall(universe, ball, (ball) => {ball.accelerate(0.001)})
+ 
+      ball = RoundThing(100, 100, 5, Color.red, random()*10, random()*360)
+      addBall(universe, ball, (ball) => {ball.accelerate(0.001)})
+      
+      ball = RoundThing(20, 150, 40, Color.black, random()*10, random()*360)
+      addBall(universe, ball, (ball) => {ball.accelerate(0.001)})    
+      
+      val blueBox = new grambers.Box(20, 50);
+      blueBox.color = java.awt.Color.blue
+      blueBox.center = new Point(200, 50)
+      blueBox.mass = 10000.0
+      blueBox.doYourThing = (redBox) => {blueBox.turn(0)}     
+      universe.things += blueBox
+      return universe
+    }
     
     def main(args:Array[String]) {
-      val universe = args(0) match {
-        case "D" => bigBangEdgesAndStuff(new Universe(600, 300))
-        case "2" => bigBang2BallsHeadOn(new Universe(600, 300))
-        case "1" => bigBangTwoWallsAndABall(new Universe(600, 300))
-        case "0" => bigBangTwoBalls45Angle(new Universe(600, 300))
-        case _ => bigBangMovingAndStaticBall(new Universe(600, 300))
-      }
+      var universe = if (args.length > 0)
+        args(0) match {
+          case "2" => bigBangEdgesAndStuff(new Universe(600, 300))
+          case "1" => bigBangTwoWallsAndABall(new Universe(600, 300))
+          case _ => bigBangBallsAndWalls(new Universe(600, 300))
+        }
+      else 
+        bigBangBallsAndWalls(new Universe(600, 300))
       
       val observer = new Observer(universe)
       observer.observe()

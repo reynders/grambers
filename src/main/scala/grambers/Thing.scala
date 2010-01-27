@@ -60,6 +60,14 @@ abstract class Thing (var center : Point, val w:Double, val h:Double) {
     }
 }
 
+
+trait StaticThing extends Thing {
+  override def setSpeedAndDirection(xSpeed : Double, ySpeed : Double) = {}
+}
+
+trait MovingThing extends Thing {
+}
+
 class RoundThing(var c : Point, val radius:Double) extends Thing(c, radius*2, radius*2) with MovingThing {
   
   def this(radius : Double) = this(new Point(0, 0), radius)
@@ -81,6 +89,16 @@ class RoundThing(var c : Point, val radius:Double) extends Thing(c, radius*2, ra
   
   override def toString : String = {
     return "RoundThing" + super.toString + ":" + radius + "r"
+  }
+}
+
+object RoundThing {
+  def apply(x : Double, y : Double, r : Double, color: Color, speed : Double, direction : Double) : RoundThing = {
+    val ball = new RoundThing(Point(x, y), r)
+    ball.color = color
+    ball.speed = speed
+    ball.direction = direction
+    return ball
   }
 }
 
@@ -106,11 +124,4 @@ class Box(c : Point, w:Int, h:Int) extends Thing(c, w, h) with StaticThing {
   override def toString : String = {
     return "Box" + super.toString + "," + w + "w," + h + "h"
   }
-}
-
-trait StaticThing extends Thing {
-  override def setSpeedAndDirection(xSpeed : Double, ySpeed : Double) = {}
-}
-
-trait MovingThing extends Thing {
 }
