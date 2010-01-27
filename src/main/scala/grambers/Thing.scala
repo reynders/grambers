@@ -131,7 +131,7 @@ object Box {
   def apply(x : Double, y : Double, w : Double, h : Double, color : Color) : Box = {
     val box = new Box(new Point(x, y), w, h)
     box.color = color
-    box.mass = 1000000
+    box.mass = Math.MAX_DOUBLE / 2
     return box
   }
 }

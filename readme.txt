@@ -1,6 +1,7 @@
 Backlog
 -------
 * Bug: static things should have "infinite" mass when calculating collisiongs
+* Introduce gravitation force
 * Make it impossible to add a thing to universe that overlaps an existing one
 * Support for smooth animation between world state updates
 * Better demo that also supports performance profiling -Xprof
