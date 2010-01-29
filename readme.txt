@@ -1,9 +1,11 @@
 Backlog
 -------
+* Support for smooth animation between world state updates
+* Switch to use the scala 2.8 Swing implementation 
+  (http://www.scala-lang.org/sites/default/files/sids/imaier/Mon,%202009-11-02,%2008:55/scala-swing-design.pdf)
 * Bug: static things should have "infinite" mass when calculating collisiongs
 * Introduce gravitation force
 * Make it impossible to add a thing to universe that overlaps an existing one
-* Support for smooth animation between world state updates
 * Better demo that also supports performance profiling -Xprof
 * Walls of any angle
 * Shape to case class (http://programming-scala.labs.oreilly.com/ch06.html#CaseClasses)

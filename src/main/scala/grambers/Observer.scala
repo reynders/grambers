@@ -7,41 +7,43 @@ import java.awt.image._
 
 class Observer (val universe : Universe) {
     
-    val screenBuffer = new BufferedImage(universe.WIDTH, universe.HEIGHT, BufferedImage.TYPE_INT_RGB);
-    val sbg = screenBuffer.getGraphics().asInstanceOf[Graphics2D];
     val random = new Random()
     var fps = 0
     
     object WindowToWorld extends JFrame {
-      initGraphics  
+      
+      initGraphics        
       
       object ViewPanel extends JPanel {
-        override def paint (g : Graphics) {
-          super.paint(g)
+  
+        override def paintComponent (g : Graphics) {
+          super.paintComponent(g)
           g match {
             case g2: Graphics2D => drawUniverse(g2)
             case _ => throw new ClassCastException
           }
         }
-      }
 
-      def drawUniverse(g2 : Graphics2D) {
-        clearScreenBuffer()
-        sbg.setColor(Color.black);
-        for (thing <- universe.things) {
-          thing.draw(sbg)      
+        def drawUniverse(g2 : Graphics2D) {
+          clearScreenBuffer(g2)
+          g2.setColor(Color.black);
+          for (thing <- universe.things) {
+            thing.draw(g2)      
+          }
+
+          fps += 1
         }
 
-        g2.drawImage(screenBuffer, 0, 0, null);
-        fps += 1
+        def clearScreenBuffer(g2 : Graphics2D) {
+          g2.setColor(Color.green);
+          g2.fillRect(0, 0, universe.WIDTH, universe.HEIGHT);
+        }        
       }
-
-      def clearScreenBuffer() {
-        sbg.setColor(Color.green);
-        sbg.fillRect(0, 0, universe.WIDTH, universe.HEIGHT);
-      }        
-
+      
       def initGraphics {
+        
+        getRootPane.setDoubleBuffered(true)
+        
         add(ViewPanel)
         pack()
         setSize(new Dimension(universe.WIDTH, universe.HEIGHT));
@@ -51,7 +53,7 @@ class Observer (val universe : Universe) {
       }
        
       def start {          
-        val worldUpdatesPerSecond = 40;
+        val worldUpdatesPerSecond = 50;
         val millisecondsBetweenWorldUpdates = 1000 / worldUpdatesPerSecond
         var nextWorldUpdateTime = currentTimeMillis
                   
@@ -61,7 +63,9 @@ class Observer (val universe : Universe) {
           showStatistics            
             
           while (now > nextWorldUpdateTime) {             
-            universe.advanceTime(millisecondsBetweenWorldUpdates)
+            // We do not use REAL elapsed ms here because that would again be 
+            // computer speed dependant
+            universe.advanceTime(millisecondsBetweenWorldUpdates) 
             nextWorldUpdateTime += millisecondsBetweenWorldUpdates
             worldUpdates+=1                               
           }
