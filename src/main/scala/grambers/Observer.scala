@@ -25,7 +25,7 @@ class Observer (val universe : Universe) {
         }
 
         def drawUniverse(g2 : Graphics2D) {
-          clearScreenBuffer(g2)
+          //clearScreenBuffer(g2)
           g2.setColor(Color.black);
           for (thing <- universe.things) {
             thing.draw(g2)      
@@ -35,7 +35,7 @@ class Observer (val universe : Universe) {
         }
 
         def clearScreenBuffer(g2 : Graphics2D) {
-          g2.setColor(Color.green);
+          g2.setColor(Color.lightGray);
           g2.fillRect(0, 0, universe.WIDTH, universe.HEIGHT);
         }        
       }
