@@ -15,8 +15,8 @@ object Main {
         }
       )
       
-      universe.things += Box(100, 50, 20, 80, Color.red)
-      universe.things += Box(200, 50, 20, 100, Color.blue)
+      universe.addThing(Box(100, 50, 20, 80, Color.red))
+      universe.addThing(Box(200, 50, 20, 100, Color.blue))
             
       return universe
     }  
@@ -27,15 +27,15 @@ object Main {
       var ball = RoundThing(150, 50, 10, 10, Color.yellow, random()*10, random()*360)
       addBall(universe, ball, (ball) => {ball.accelerate(0.001)})
             
-      universe.things += Box(200, 50, 20, 50, Color.blue)
+      universe.addThing(Box(200, 50, 20, 50, Color.blue))
 
       addWalls(universe)      
       return universe
     }  
     
     def addWalls(universe : Universe) {
-      universe.things += Box(universe.WIDTH/2, 10, universe.WIDTH, 1, Color.blue)
-      universe.things += Box(universe.WIDTH/2, universe.HEIGHT-10, universe.WIDTH, 1, Color.blue)      
+      universe.addThing(Box(universe.WIDTH/2, 10, universe.WIDTH, 1, Color.blue))
+      universe.addThing(Box(universe.WIDTH/2, universe.HEIGHT-10, universe.WIDTH, 1, Color.blue))      
     }
     
     def addRandomBall(universe : Universe) {
@@ -46,11 +46,12 @@ object Main {
       ball.speed = random * 20
       ball.direction = random * 360
       ball.doYourThing = (ball) => {ball.accelerate(0.001)}
+      universe.addThing(ball)
     }
 
     def addBall(universe : Universe, ball : RoundThing, doYourThing : (Thing)=>Unit) {
       ball.doYourThing = doYourThing
-      universe.things += ball
+      universe.addThing(ball)
     }
     
     def bigBangBallsAndWalls(universe : Universe) : Universe = {
@@ -64,7 +65,7 @@ object Main {
       ball = RoundThing(20, 150, 40, 40, Color.black, random()*10, random()*360)
       addBall(universe, ball, (ball) => {ball.accelerate(0.001)})    
       
-      universe.things += Box(200, 50, 20, 50, Color.blue)
+      universe.addThing(Box(200, 50, 20, 50, Color.blue))
       return universe
     }
     

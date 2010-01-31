@@ -1,6 +1,7 @@
 Backlog
 -------
 * Support for smooth animation between world state updates
+* Polygon shapes
 * Switch to use the scala 2.8 Swing implementation 
   (http://www.scala-lang.org/sites/default/files/sids/imaier/Mon,%202009-11-02,%2008:55/scala-swing-design.pdf)
 * Bug: static things should have "infinite" mass when calculating collisiongs

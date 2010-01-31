@@ -27,10 +27,13 @@ class Observer (val universe : Universe) {
         def drawUniverse(g2 : Graphics2D) {
           //clearScreenBuffer(g2)
           g2.setColor(Color.black);
-          for (thing <- universe.things) {
-            thing.draw(g2)      
-          }
+          //for (thing <- universe.things) {
+          //  thing.draw(g2)      
+          //}
 
+          universe.staticThings.foreach(_.draw(g2))
+          universe.movingThings.foreach(_.draw(g2))
+          
           fps += 1
         }
 
@@ -51,6 +54,19 @@ class Observer (val universe : Universe) {
         resize(new Dimension(universe.WIDTH, universe.HEIGHT + 25));
         repaint()          
       }
+
+        
+      var measurementStartTime = currentTimeMillis      
+      val measurementSamplePeriodMs = 5000
+      var worldUpdates = 0
+        
+      def showStatistics {
+        if (currentTimeMillis - measurementStartTime > 5000) {
+          println((fps/(measurementSamplePeriodMs/1000)) + " FPS, " + (worldUpdates/(measurementSamplePeriodMs/1000)) + " world updates")
+          fps = 0; worldUpdates = 0; measurementStartTime = currentTimeMillis ; 
+        }
+      }
+
        
       def start {          
         val worldUpdatesPerSecond = 50;
@@ -71,17 +87,6 @@ class Observer (val universe : Universe) {
           }
             
           repaint()
-        }
-      }
-        
-      var measurementStartTime = currentTimeMillis      
-      val measurementSamplePeriodMs = 5000
-      var worldUpdates = 0
-        
-      def showStatistics {
-        if (currentTimeMillis - measurementStartTime > 5000) {
-          println((fps/(measurementSamplePeriodMs/1000)) + " FPS, " + (worldUpdates/(measurementSamplePeriodMs/1000)) + " world updates")
-          fps = 0; worldUpdates = 0; measurementStartTime = currentTimeMillis ; 
         }
       }
     }

@@ -26,9 +26,9 @@ class UniverseTest extends TestCase {
       circle_1.center = new Point(0, 0)
       val box_0_mock = (context.mock(classOf[grambers.Box])).asInstanceOf[grambers.Box]
 
-      universe.things += box_0_mock      
-      universe.things += box_1
-      universe.things += circle_1
+      universe.addThing(box_0_mock)      
+      universe.addThing(box_1)
+      universe.addThing(circle_1)
 
       context.checking(new Expectations {  
         allowing(box_0_mock).center;  will(returnValue(new Point(0.0, 0.0)))
@@ -42,7 +42,7 @@ class UniverseTest extends TestCase {
           will(returnValue(false))
       }) 
       
-      universe.collide(universe.things)      
+      universe.collide(universe.movingThings, universe.staticThings)      
       context.assertIsSatisfied
     }
     
@@ -58,25 +58,4 @@ class UniverseTest extends TestCase {
 
       assertEquals(45.0, universe.calculateCollisionAngle(circle_1, circle_2))
     }
-    
-    def testScalaCollectionPerformance {
-      val arrayList = new java.util.ArrayList[Int](1)
-      val scalaList = List(1)
-      
-      val t1 = System.currentTimeMillis()
-      for (i <- 0 to 10000) {
-        val number = i
-        arrayList.add(i)
-      }
-      val t2 = System.currentTimeMillis()
-
-      val t3 = System.currentTimeMillis()
-      for (i <- 0 to 10000) {
-        val number = i
-        i::scalaList
-      }
-      val t4 = System.currentTimeMillis()
-      println("arrayList: " + (t2-t1) + "ms, scalaList: " + (t4-t3) + "ms")
-    }      
-      
 }

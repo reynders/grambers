@@ -4,8 +4,18 @@ import scala.collection.mutable._
 import java.lang.Math._
 
 class Universe(val WIDTH : int, val HEIGHT : int) {
-    val things : ArrayBuffer[Thing] = new ArrayBuffer[Thing]
+    val staticThings : ArrayBuffer[StaticThing] = new ArrayBuffer[StaticThing]
+    val movingThings : ArrayBuffer[MovingThing] = new ArrayBuffer[MovingThing]
+    
     var millisecondsSinceBigBang = 0; 
+    
+    def addThing(thing : Thing) {
+      thing match {
+        case movingThing : MovingThing => movingThings += movingThing
+        case staticThing : StaticThing => staticThings += staticThing
+        case _ => println("addThing does not know what to do with " + thing)
+      }
+    }
     
     def calculateCollisionAngle(leftThing : Thing, rightThing : Thing) : Double = {
       val xDiff : Double = (leftThing.center.x - rightThing.center.x)
@@ -21,7 +31,7 @@ println("Resolving " + leftThing + " collision with " + rightThing)
       val lVector = new Vector(leftThing.xSpeed, leftThing.ySpeed)       
       val rVector = new Vector(rightThing.xSpeed, rightThing.ySpeed)      
       val collisionUnitVector = Shape.collisionUnitVector(leftThing.shape, rightThing.shape)
-println("Collision vector: " + collisionUnitVector)
+//println("Collision vector: " + collisionUnitVector)
       if (((lVector dot collisionUnitVector) - (rVector dot collisionUnitVector)) < 0) {
         println("Impact already happened, no need to act")
         return
@@ -39,49 +49,44 @@ println("Collision vector: " + collisionUnitVector)
       val r2lVelocityAfterCollision = l2rImpulse*((2*leftThing.mass)/(leftThing.mass+rightThing.mass)) + 
                                       r2lImpulse*((rightThing.mass-leftThing.mass)/(rightThing.mass + leftThing.mass))
 
-println(leftThing + ":" + lVector + " - " + l2rImpulse + " -- " + l2rNormal + " --- " + l2rVelocityAfterCollision)
-println(rightThing + ":" + rVector + " - " + r2lImpulse + " -- " + r2lNormal + " --- " + r2lVelocityAfterCollision) 
+//println(leftThing + ":" + lVector + " - " + l2rImpulse + " -- " + l2rNormal + " --- " + l2rVelocityAfterCollision)
+//println(rightThing + ":" + rVector + " - " + r2lImpulse + " -- " + r2lNormal + " --- " + r2lVelocityAfterCollision) 
 
       leftThing.setSpeedAndDirection(l2rNormal + l2rVelocityAfterCollision)
       rightThing.setSpeedAndDirection(r2lNormal + r2lVelocityAfterCollision)
     }
     
-      
-    def collide(things : Seq[Thing]) {
-      for (startFrom <- 0 until things.size) {
-        for (right <- startFrom until things.size) {
-          if (things(startFrom) != things(right) &&
-              !(things(startFrom).isInstanceOf[StaticThing] && things(right).isInstanceOf[StaticThing])) {
-            if (things(startFrom).collidesWith(things(right)))  {
-              (things(startFrom), things(right)) match {
-                case (left : RoundThing, right : RoundThing) => resolveCollision(left, right)
-                case (left : RoundThing, right : Box) => resolveCollision(right, left)
-                case (left : Box, right : RoundThing) => resolveCollision(left, right)
-                case (left : Thing, right : Thing) => println("Don't know how to handle collision between " + left + " and " + right)
-              }
-            }
-          }
-        }
-      }
+    // TODO: Refactor  
+    def collide(movingThings : Seq[MovingThing], staticThings : Seq[StaticThing]) {
+      movingThings.foreach(leftMovingThing => {
+        movingThings.foreach(rightMovingThing => {
+          if (leftMovingThing != rightMovingThing && leftMovingThing.collidesWith(rightMovingThing))
+            resolveCollision(leftMovingThing, rightMovingThing)
+        })
+        
+        staticThings.foreach(staticThing => {
+          if (staticThing.collidesWith(leftMovingThing))
+            resolveCollision(staticThing, leftMovingThing)
+        })
+      })
     }
 
-    def moveOneMillisecondWorth(things : Seq[Thing]) {
-        for(thing <- things) {
-            thing.doYourThing(thing)
-            var newX = (thing.center.x + thing.xSpeed/1000)%WIDTH
+    def moveOneMillisecondWorth(movingThings : Seq[MovingThing]) {
+        for(movingThing <- movingThings) {
+            movingThing.doYourThing(movingThing)
+            var newX = (movingThing.center.x + movingThing.xSpeed/1000)%WIDTH
             if (newX < 0 ) newX += WIDTH 
-            var newY = (thing.center.y + thing.ySpeed/1000)%HEIGHT
+            var newY = (movingThing.center.y + movingThing.ySpeed/1000)%HEIGHT
             if (newY < 0 ) newY += HEIGHT
           
-            thing.center = new Point(newX, newY)
-        }
-        
+            movingThing.center = Point(newX, newY)
+        }        
     }
     
     def advanceTime(msToAdvance : int) {      
       for(i <- 1 to msToAdvance) {
-        moveOneMillisecondWorth(things)
-        collide(things)
+        moveOneMillisecondWorth(movingThings)
+        collide(movingThings, staticThings)
         millisecondsSinceBigBang += 1
       }
     }
