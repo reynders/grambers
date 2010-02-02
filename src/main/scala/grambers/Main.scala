@@ -60,7 +60,11 @@ object Main {
       addBall(universe, ball, (ball) => {ball.accelerate(0.001)})
  
 <<<<<<< HEAD
+<<<<<<< HEAD
       ball = RoundThing(100, 100, 5, 5, Color.red, 100, random()*360)
+=======
+      ball = RoundThing(100, 100, 5, 5, Color.red, random() * 100, random()*360)
+>>>>>>> 86d785df52f8306ccad60f05e867ddd80cee1ab7
 =======
       ball = RoundThing(100, 100, 5, 5, Color.red, random() * 100, random()*360)
 >>>>>>> 86d785df52f8306ccad60f05e867ddd80cee1ab7
