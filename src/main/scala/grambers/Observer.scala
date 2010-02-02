@@ -27,9 +27,6 @@ class Observer (val universe : Universe) {
         def drawUniverse(g2 : Graphics2D) {
           //clearScreenBuffer(g2)
           g2.setColor(Color.black);
-          //for (thing <- universe.things) {
-          //  thing.draw(g2)      
-          //}
 
           universe.staticThings.foreach(_.draw(g2))
           universe.movingThings.foreach(_.draw(g2))
@@ -45,14 +42,12 @@ class Observer (val universe : Universe) {
       
       def initGraphics {
         
-        getRootPane.setDoubleBuffered(true)
+        getRootPane.setDoubleBuffered(true)        
         
         add(ViewPanel)
         pack()
-        setSize(new Dimension(universe.WIDTH, universe.HEIGHT));
+        setSize(new Dimension(universe.WIDTH, universe.HEIGHT+25));
         show()
-        resize(new Dimension(universe.WIDTH, universe.HEIGHT + 25));
-        repaint()          
       }
 
         
@@ -83,7 +78,7 @@ class Observer (val universe : Universe) {
             // computer speed dependant
             universe.advanceTime(millisecondsBetweenWorldUpdates) 
             nextWorldUpdateTime += millisecondsBetweenWorldUpdates
-            worldUpdates+=1                               
+            worldUpdates+=1           
           }
             
           repaint()

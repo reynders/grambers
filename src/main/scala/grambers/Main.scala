@@ -56,13 +56,17 @@ object Main {
     
     def bigBangBallsAndWalls(universe : Universe) : Universe = {
       addWalls(universe)
-      var ball = RoundThing(10, 30, 10, 10, Color.yellow, random()*10, random()*360)
+      var ball = RoundThing(10, 30, 10, 10, Color.yellow, random()*50, random()*360)
       addBall(universe, ball, (ball) => {ball.accelerate(0.001)})
  
+<<<<<<< HEAD
       ball = RoundThing(100, 100, 5, 5, Color.red, 100, random()*360)
+=======
+      ball = RoundThing(100, 100, 5, 5, Color.red, random() * 100, random()*360)
+>>>>>>> 86d785df52f8306ccad60f05e867ddd80cee1ab7
       addBall(universe, ball, (ball) => {ball.accelerate(0.001)})
       
-      ball = RoundThing(20, 150, 40, 40, Color.black, random()*10, random()*360)
+      ball = RoundThing(20, 150, 40, 40, Color.black, random()*50, random()*360)
       addBall(universe, ball, (ball) => {ball.accelerate(0.001)})    
       
       universe.addThing(Box(200, 50, 20, 50, Color.blue))

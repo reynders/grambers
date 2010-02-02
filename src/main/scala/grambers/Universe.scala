@@ -56,7 +56,7 @@ println("Resolving " + leftThing + " collision with " + rightThing)
       rightThing.setSpeedAndDirection(r2lNormal + r2lVelocityAfterCollision)
     }
     
-    // TODO: Refactor  
+
     def collide(movingThings : Seq[MovingThing], staticThings : Seq[StaticThing]) {
       movingThings.foreach(leftMovingThing => {
         movingThings.foreach(rightMovingThing => {
@@ -72,7 +72,7 @@ println("Resolving " + leftThing + " collision with " + rightThing)
     }
 
     def moveOneMillisecondWorth(movingThings : Seq[MovingThing]) {
-        for(movingThing <- movingThings) {
+        movingThings.foreach(movingThing => {
             movingThing.doYourThing(movingThing)
             var newX = (movingThing.center.x + movingThing.xSpeed/1000)%WIDTH
             if (newX < 0 ) newX += WIDTH 
@@ -80,7 +80,7 @@ println("Resolving " + leftThing + " collision with " + rightThing)
             if (newY < 0 ) newY += HEIGHT
           
             movingThing.center = Point(newX, newY)
-        }        
+        })
     }
     
     def advanceTime(msToAdvance : int) {      
