@@ -13,8 +13,8 @@ class Observer (val universe : Universe) {
   val random = new Random()
   var fps = 0
     
-  def xViewTranslate = universe.WIDTH/2 - position.x
-  def yViewTranslate = universe.HEIGHT/2 - position.y
+  def xViewTranslation = -1 * (position.x - w/2)
+  def yViewTranslation = -1 * (position.y - h/2)
  
   object WindowToWorld extends JFrame {
       
@@ -34,7 +34,7 @@ class Observer (val universe : Universe) {
         val at = g2.getTransform();
         //g2d.transform(...);
         //g2.setColor(Color.black);
-        g2.translate(xViewTranslate, yViewTranslate)
+        g2.translate(xViewTranslation, yViewTranslation)
         universe.staticThings.foreach(_.draw(g2))
         universe.movingThings.foreach(_.draw(g2))
 
@@ -54,7 +54,7 @@ class Observer (val universe : Universe) {
       getRootPane.setDoubleBuffered(true)                
       add(ViewPanel)
       pack()
-      setSize(new Dimension(universe.WIDTH, universe.HEIGHT+25));
+      setSize(new Dimension(w, h));
       show()
     }
   }
@@ -69,7 +69,25 @@ class Observer (val universe : Universe) {
       fps = 0; worldUpdates = 0; measurementStartTime = currentTimeMillis ; 
     }
   }
-    
+  
+  var xDir = 1
+  var yDir = 1
+  var lastUpdate = currentTimeMillis
+  
+  // DEMO, replace with real implementation
+  def move {
+    if (currentTimeMillis - lastUpdate > 1000) {
+      if (position.x + (w/2) > universe.WIDTH)
+        xDir *= -1
+      if (position.y + (h/2) > universe.HEIGHT)
+        yDir *= -1   
+      
+      println("Setting position from " + position + " to .x " + Point(position.x + xDir, position.y + yDir) )
+      position = Point(position.x + xDir, position.y + yDir)  
+      lastUpdate = currentTimeMillis
+    }
+  }
+  
   def observe() {    
     val worldUpdatesPerSecond = 50;
     val millisecondsBetweenWorldUpdates = 1000 / worldUpdatesPerSecond
@@ -88,6 +106,8 @@ class Observer (val universe : Universe) {
       }
       
       WindowToWorld.repaint() 
+      
+      move
     }
   }
 }
