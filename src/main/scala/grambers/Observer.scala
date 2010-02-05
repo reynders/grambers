@@ -7,6 +7,9 @@ import java.awt.image._
 
 class Observer (val universe : Universe) {
     
+    var position : Point = Point(universe.WIDTH/2, universe.HEIGHT/2)
+    var w : Int = universe.WIDTH
+    var h : Int = universe.HEIGHT
     val random = new Random()
     var fps = 0
     
