@@ -36,8 +36,10 @@ object Main {
     }  
     
     def addWalls(universe : Universe) {
-      universe.addThing(Box(universe.WIDTH/2, 10, universe.WIDTH, 1, Color.blue))
-      universe.addThing(Box(universe.WIDTH/2, universe.HEIGHT-10, universe.WIDTH, 1, Color.blue))      
+      universe.addThing(Box(universe.WIDTH/2, 5, universe.WIDTH, 1, Color.blue))
+      universe.addThing(Box(universe.WIDTH/2, universe.HEIGHT-5, universe.WIDTH, 1, Color.blue))    
+      universe.addThing(Box(5, universe.HEIGHT/2, 1, universe.HEIGHT, Color.blue))
+      universe.addThing(Box(universe.WIDTH-5, universe.HEIGHT/2, 1, universe.HEIGHT, Color.blue))
     }
     
     def addRandomBall(universe : Universe) {
@@ -58,20 +60,20 @@ object Main {
     
     def bigBangBallsAndWalls(universe : Universe) {
       addWalls(universe)
-      var ball = RoundThing(10, 30, 10, 10, Color.yellow, random()*50, random()*360)
+      var ball = RoundThing(100, 100, 10, 10, Color.yellow, random()*50, random()*360)
       addBall(universe, ball, (ball) => {ball.accelerate(0.001)})
  
       ball = RoundThing(500, 100, 5, 5, Color.red, random() * 100, random()*360)
       addBall(universe, ball, (ball) => {ball.accelerate(0.001)})
       
-      ball = RoundThing(20, 150, 40, 40, Color.black, random()*50, random()*360)
+      ball = RoundThing(50, 150, 40, 40, Color.black, random()*50, random()*360)
       addBall(universe, ball, (ball) => {ball.accelerate(0.001)})    
       
       universe.addThing(Box(200, 50, 20, 50, Color.blue))
       
       val observer = new Observer(universe)
-      observer.w = 250
-      observer.h = 250
+      //observer.w = 250
+      //observer.h = 250
       observer.observe()
     }
     

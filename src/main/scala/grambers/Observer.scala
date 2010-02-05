@@ -107,7 +107,7 @@ class Observer (val universe : Universe) {
       
       WindowToWorld.repaint() 
       
-      move
+      //move
     }
   }
 }
