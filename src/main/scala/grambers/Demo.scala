@@ -4,7 +4,7 @@ import java.lang.Math._
 import java.awt.Color
 
 // Playfield class, used to demo the gaming library
-object Main {
+object Demo {
     
     def bigBangTwoWallsAndABall(universe : Universe) {      
 
