@@ -13,6 +13,9 @@ class Observer (val universe : Universe) {
   val random = new Random()
   var fps = 0
     
+  def xViewTranslate = universe.WIDTH/2 - position.x
+  def yViewTranslate = universe.HEIGHT/2 - position.y
+ 
   object WindowToWorld extends JFrame {
       
     initGraphics        
@@ -28,11 +31,15 @@ class Observer (val universe : Universe) {
       }
 
       def drawUniverse(g2 : Graphics2D) {
-        //clearScreenBuffer(g2)
-        g2.setColor(Color.black);
+        val at = g2.getTransform();
+        //g2d.transform(...);
+        //g2.setColor(Color.black);
+        g2.translate(xViewTranslate, yViewTranslate)
         universe.staticThings.foreach(_.draw(g2))
         universe.movingThings.foreach(_.draw(g2))
-          
+
+        g2.setTransform(at);
+
         fps += 1
       }
 
