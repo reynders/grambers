@@ -5,6 +5,10 @@ import javax.swing._
 import java.awt._
 import java.awt.image._
 
+class Camera {
+  def move(observer : Observer) = {}
+}
+
 class Observer (val universe : Universe) {
     
   var position : Point = Point(universe.WIDTH/2, universe.HEIGHT/2)
@@ -12,6 +16,7 @@ class Observer (val universe : Universe) {
   var h : Int = universe.HEIGHT
   val random = new Random()
   var fps = 0
+  var camera : Camera = new Camera
     
   def xViewTranslation = -1 * (position.x - w/2)
   def yViewTranslation = -1 * (position.y - h/2)
@@ -89,8 +94,8 @@ class Observer (val universe : Universe) {
   
   def observe {    
       WindowToWorld.repaint()
+      camera.move(this)
       showStatistics
-  }
-  
+  } 
 }
 

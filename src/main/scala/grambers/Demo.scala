@@ -2,6 +2,7 @@ package grambers
 
 import java.lang.Math._
 import java.awt.Color
+import java.lang.System._
 
 // Playfield class, used to demo the gaming library
 object Demo {
@@ -75,8 +76,27 @@ object Demo {
       universe.addThing(Box(200, 50, 20, 50, Color.blue))
       
       val observer = new Observer(universe)
-
+      observer.camera = createDemoCamera
       universe.run(observer)
+    }
+    
+    def createDemoCamera : Camera = new Camera {
+      var xDir = 1
+      var yDir = 1
+      var lastUpdate = currentTimeMillis
+    
+      override def move(observer : Observer) {
+        if (currentTimeMillis - lastUpdate > 1000) {
+          if (observer.position.x + (observer.w/2) > observer.universe.WIDTH)
+            xDir *= -1
+          if (observer.position.y + (observer.h/2) > observer.universe.HEIGHT)
+            yDir *= -1   
+    
+          println("Setting position from " + observer.position + " to .x " + Point(observer.position.x + xDir, observer.position.y + yDir) )
+          observer.position = Point(observer.position.x + xDir, observer.position.y + yDir)  
+          lastUpdate = currentTimeMillis
+        }
+      }
     }
     
     def ballsAndWallsDemo {
