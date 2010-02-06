@@ -76,23 +76,36 @@ object Demo {
       universe.addThing(Box(200, 50, 20, 50, Color.blue))
       
       val observer = new Observer(universe)
-      observer.camera = createDemoCamera
+      observer.camera = createBallFollowingDemoCamera(ball)
+      observer.w = 400
+      observer.h = 200
+      observer.position = Point(universe.WIDTH/2, universe.HEIGHT/2)
       universe.run(observer)
     }
+
+    def createBallFollowingDemoCamera(ball : RoundThing) : Camera = new Camera {
     
-    def createDemoCamera : Camera = new Camera {
+      override def move(observer : Observer) {
+        observer.position = ball.center
+      }
+    }
+
+    
+    def createCollidingDemoCamera : Camera = new Camera {
       var xDir = 1
       var yDir = 1
       var lastUpdate = currentTimeMillis
     
       override def move(observer : Observer) {
-        if (currentTimeMillis - lastUpdate > 1000) {
-          if (observer.position.x + (observer.w/2) > observer.universe.WIDTH)
+        if (currentTimeMillis - lastUpdate > 500) {
+          if ((observer.position.x + (observer.w/2) >= observer.universe.WIDTH) ||
+              (observer.position.x - (observer.w/2) <= 0))
             xDir *= -1
-          if (observer.position.y + (observer.h/2) > observer.universe.HEIGHT)
+          if ((observer.position.y + (observer.h/2) >= observer.universe.HEIGHT) ||
+              (observer.position.y - (observer.h/2) <= 0))
             yDir *= -1   
     
-          println("Setting position from " + observer.position + " to .x " + Point(observer.position.x + xDir, observer.position.y + yDir) )
+          //println("Setting position from " + observer.position + " to " + Point(observer.position.x + xDir, observer.position.y + yDir) )
           observer.position = Point(observer.position.x + xDir, observer.position.y + yDir)  
           lastUpdate = currentTimeMillis
         }
