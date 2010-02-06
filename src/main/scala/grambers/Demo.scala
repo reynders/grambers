@@ -6,8 +6,10 @@ import java.awt.Color
 // Playfield class, used to demo the gaming library
 object Demo {
     
-    def bigBangTwoWallsAndABall(universe : Universe) {      
+    def twoWallsAndABallDemo {      
 
+      val universe = new Universe(800, 400)
+      
       var ball = RoundThing(150, 50, 10, 10, Color.yellow, 1, 0)
       addBall(universe, ball, (ball) => {
           ball.accelerate(0.001)
@@ -19,10 +21,10 @@ object Demo {
       universe.addThing(Box(200, 50, 20, 100, Color.blue))
             
       val observer = new Observer(universe)
-      observer.observe()
+      universe.run(observer)
     }  
 
-    def bigBangEdgesAndStuff(universe : Universe) {
+    def edgesAndStuffDemo {
       val universe = new Universe(600, 300);
 
       var ball = RoundThing(150, 50, 10, 10, Color.yellow, random()*10, random()*360)
@@ -32,7 +34,7 @@ object Demo {
 
       addWalls(universe)      
       val observer = new Observer(universe)
-      observer.observe()
+      universe.run(observer)
     }  
     
     def addWalls(universe : Universe) {
@@ -57,10 +59,11 @@ object Demo {
       ball.doYourThing = doYourThing
       universe.addThing(ball)
     }
-    
-    def bigBangBallsAndWalls(universe : Universe) {
+
+    def ballsAndWallsAndCameraDemo {
+      val universe = new Universe(800, 400)
       addWalls(universe)
-      var ball = RoundThing(100, 100, 10, 10, Color.yellow, random()*50, random()*360)
+      var ball = RoundThing(200, 100, 10, 10, Color.yellow, random()*50, random()*360)
       addBall(universe, ball, (ball) => {ball.accelerate(0.001)})
  
       ball = RoundThing(500, 100, 5, 5, Color.red, random() * 100, random()*360)
@@ -72,19 +75,38 @@ object Demo {
       universe.addThing(Box(200, 50, 20, 50, Color.blue))
       
       val observer = new Observer(universe)
-      //observer.w = 250
-      //observer.h = 250
-      observer.observe()
+
+      universe.run(observer)
+    }
+    
+    def ballsAndWallsDemo {
+      val universe = new Universe(800, 400)
+      addWalls(universe)
+      var ball = RoundThing(200, 100, 10, 10, Color.yellow, random()*50, random()*360)
+      addBall(universe, ball, (ball) => {ball.accelerate(0.001)})
+ 
+      ball = RoundThing(500, 100, 5, 5, Color.red, random() * 100, random()*360)
+      addBall(universe, ball, (ball) => {ball.accelerate(0.001)})
+      
+      ball = RoundThing(50, 150, 40, 40, Color.black, random()*50, random()*360)
+      addBall(universe, ball, (ball) => {ball.accelerate(0.001)})    
+      
+      universe.addThing(Box(200, 50, 20, 50, Color.blue))
+      
+      val observer = new Observer(universe)
+
+      universe.run(observer)
     }
     
     def main(args:Array[String]) {
       if (args.length > 0)
         args(0) match {
-          case "2" => bigBangEdgesAndStuff(new Universe(600, 300))
-          case "1" => bigBangTwoWallsAndABall(new Universe(600, 300))
-          case _ => bigBangBallsAndWalls(new Universe(800, 400))
+          case "3" => ballsAndWallsAndCameraDemo
+          case "2" => edgesAndStuffDemo
+          case "1" => twoWallsAndABallDemo
+          case _ => ballsAndWallsDemo
         }
       else 
-        bigBangBallsAndWalls(new Universe(600, 300))
+        ballsAndWallsDemo
     }
 }

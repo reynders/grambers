@@ -61,12 +61,11 @@ class Observer (val universe : Universe) {
 
   var measurementStartTime = currentTimeMillis      
   val measurementSamplePeriodMs = 5000
-  var worldUpdates = 0
         
   def showStatistics {
-    if (currentTimeMillis - measurementStartTime > 5000) {
-      println((fps/(measurementSamplePeriodMs/1000)) + " FPS, " + (worldUpdates/(measurementSamplePeriodMs/1000)) + " world updates")
-      fps = 0; worldUpdates = 0; measurementStartTime = currentTimeMillis ; 
+    if (currentTimeMillis - measurementStartTime > measurementSamplePeriodMs) {
+      println((fps/(measurementSamplePeriodMs/1000)) + " FPS, " + (universe.worldUpdates/(measurementSamplePeriodMs/1000)) + " world updates")
+      fps = 0; universe.worldUpdates = 0; measurementStartTime = currentTimeMillis ; 
     }
   }
   
@@ -88,27 +87,10 @@ class Observer (val universe : Universe) {
     }
   }
   
-  def observe() {    
-    val worldUpdatesPerSecond = 50;
-    val millisecondsBetweenWorldUpdates = 1000 / worldUpdatesPerSecond
-    var nextWorldUpdateTime = currentTimeMillis
-                 
-    while (true) {
-      val now = currentTimeMillis
-      showStatistics            
-            
-      while (now > nextWorldUpdateTime) {             
-        // We do not use REAL elapsed ms here because that would again be 
-        // computer speed dependant
-        universe.advanceTime(millisecondsBetweenWorldUpdates)         
-        nextWorldUpdateTime += millisecondsBetweenWorldUpdates        
-        worldUpdates+=1             
-      }
-      
-      WindowToWorld.repaint() 
-      
-      //move
-    }
+  def observe {    
+      WindowToWorld.repaint()
+      showStatistics
   }
+  
 }
 
