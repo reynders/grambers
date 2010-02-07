@@ -28,7 +28,7 @@ class Observer (val universe : Universe) {
     object ViewPanel extends JPanel {
   
       override def paintComponent (g : Graphics) {
-        super.paintComponent(g)
+        //super.paintComponent(g)
         g match {
           case g2: Graphics2D => drawUniverse(g2)
           case _ => throw new ClassCastException
