@@ -81,6 +81,7 @@ class RoundThing(var c : Point, val radius:Double) extends Thing(c, radius*2, ra
   def draw(g2 : Graphics2D) {
     import java.awt.geom._
     val shape = new Ellipse2D.Double(center.x-w/2, center.y-h/2, radius*2, radius*2)
+    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
     val originalPaintColor = g2.getPaint()
     g2.setPaint(color)
     g2.fill(shape)
@@ -116,6 +117,7 @@ class Box(c : Point, w : Double, h : Double) extends Thing(c, w, h) with StaticT
   def draw(g2: Graphics2D) {
     import java.awt.geom._
     val shape = new Rectangle2D.Double(center.x - w/2, center.y-h/2, w, h)
+    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
     val originalPaintColor = g2.getPaint()
     g2.setPaint(color)
     g2.fill(shape)
