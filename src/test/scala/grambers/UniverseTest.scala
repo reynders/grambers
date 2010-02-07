@@ -58,4 +58,5 @@ class UniverseTest extends TestCase {
 
       assertEquals(45.0, universe.calculateCollisionAngle(circle_1, circle_2))
     }
+    
 }

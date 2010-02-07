@@ -3,6 +3,7 @@ package grambers
 import java.awt._
 import java.lang.Math._
 import java.awt.geom._
+import java.lang.System._
 
 abstract class Thing (var center : Point, val w:Double, val h:Double) {
 
@@ -54,7 +55,7 @@ abstract class Thing (var center : Point, val w:Double, val h:Double) {
      
     def shape : Shape
     
-    def draw(g2 : Graphics2D )
+    def draw(g2 : Graphics2D, position : Point )
         
     override def toString : String = {
         "(" + center.x + "," + center.y + "):(" + w + "w," + h + "h):" + speed + "p/s:" + direction + "dg"
@@ -80,10 +81,9 @@ class RoundThing(var c : Point, val radius:Double) extends Thing(c, radius*2, ra
   }
   
   val image = new Ellipse2D.Double(center.x-w/2, center.y-h/2, radius*2, radius*2)
-  
-  def draw(g2 : Graphics2D) {
-    //val shape = new Ellipse2D.Double(center.x-w/2, center.y-h/2, radius*2, radius*2) 
-    image.setFrame(center.x - w/2, center.y-h/2, w, h)
+
+  def draw(g2 : Graphics2D, position : Point) {
+    image.setFrame((position.x - w/2), (position.y-h/2), w, h)
     g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
     val originalPaintColor = g2.getPaint()
     g2.setPaint(color)
@@ -95,6 +95,7 @@ class RoundThing(var c : Point, val radius:Double) extends Thing(c, radius*2, ra
     return "RoundThing" + super.toString + ":" + radius + "r"
   }
 }
+
 
 object RoundThing {
   def apply(x : Double, y : Double, r : Double, mass : Double, color: Color, speed : Double, direction : Double) : RoundThing = {
@@ -119,9 +120,8 @@ class Box(c : Point, w : Double, h : Double) extends Thing(c, w, h) with StaticT
   
   val image = new Rectangle2D.Double(center.x - w/2, center.y-h/2, w, h)
   
-  def draw(g2: Graphics2D) {
-    //val shape = new Rectangle2D.Double(center.x - w/2, center.y-h/2, w, h)
-    image.setFrame(center.x - w/2, center.y-h/2, w, h)
+  def draw(g2: Graphics2D, position : Point) {    
+    image.setFrame((position.x - w/2), (position.y-h/2), w, h)
     g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
     val originalPaintColor = g2.getPaint()
     g2.setPaint(color)

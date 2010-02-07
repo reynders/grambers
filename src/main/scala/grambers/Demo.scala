@@ -131,9 +131,17 @@ object Demo {
       universe.run(observer)
     }
     
+    def debugDemo {
+      val universe = new Universe(400, 200)
+      addWalls(universe)
+      addBall(universe, RoundThing(100, 100, 10, 10, Color.red, 100, 0), (ball) => {})
+      universe.run(new Observer(universe))
+    }
+    
     def main(args:Array[String]) {
       if (args.length > 0)
         args(0) match {
+          case "D" => debugDemo
           case "3" => ballsAndWallsAndCameraDemo
           case "2" => edgesAndStuffDemo
           case "1" => twoWallsAndABallDemo

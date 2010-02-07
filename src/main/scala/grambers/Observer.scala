@@ -18,9 +18,18 @@ class Observer (val universe : Universe) {
   var fps = 0
   var camera : Camera = new Camera
     
+  var alpha = 0.0
+  
   def xViewTranslation = -1 * (position.x - w/2)
   def yViewTranslation = -1 * (position.y - h/2)
- 
+  
+  def positionConsideringAlpha(thing : Thing) : Point = {
+    val xPoint = thing.center.x + (thing.xSpeed * (alpha/1000))
+    val yPoint = thing.center.y + (thing.ySpeed * (alpha/1000))
+//println(thing + " : " + alpha + ":" + Point(xPoint, yPoint))    
+    return Point(xPoint, yPoint)
+  }
+  
   object WindowToWorld extends JFrame {
       
     initGraphics        
@@ -34,14 +43,15 @@ class Observer (val universe : Universe) {
           case _ => throw new ClassCastException
         }
       }
-
+           
       def drawUniverse(g2 : Graphics2D) {
+          
         val at = g2.getTransform();
         //g2d.transform(...);
         //g2.setColor(Color.black);
         g2.translate(xViewTranslation, yViewTranslation)
-        universe.staticThings.foreach(_.draw(g2))
-        universe.movingThings.foreach(_.draw(g2))
+        universe.staticThings.foreach(thing => thing.draw(g2, thing.center))
+        universe.movingThings.foreach(thing => thing.draw(g2, positionConsideringAlpha(thing)))
 
         g2.setTransform(at);
 
@@ -69,7 +79,8 @@ class Observer (val universe : Universe) {
         
   def showStatistics {
     if (currentTimeMillis - measurementStartTime > measurementSamplePeriodMs) {
-      println((fps/(measurementSamplePeriodMs/1000)) + " FPS, " + (universe.worldUpdates/(measurementSamplePeriodMs/1000)) + " world updates")
+      println((fps/(measurementSamplePeriodMs/1000)) + " FPS, " + (universe.worldUpdates/(measurementSamplePeriodMs/1000)) + " world updates, " + 
+               alpha + " alphaBetweenFrames")
       fps = 0; universe.worldUpdates = 0; measurementStartTime = currentTimeMillis ; 
     }
   }
@@ -91,11 +102,12 @@ class Observer (val universe : Universe) {
       lastUpdate = currentTimeMillis
     }
   }
-  
-  def observe {    
-      WindowToWorld.repaint()
-      camera.move(this)
-      showStatistics
+    
+  def observe(ms : Long) {    
+    alpha = ms
+    WindowToWorld.repaint() 
+    camera.move(this)
+    showStatistics
   } 
 }
 
