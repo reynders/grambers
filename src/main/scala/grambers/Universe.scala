@@ -94,6 +94,7 @@ println("Resolving " + leftThing + " collision with " + rightThing)
     }
   }
 
+  def msSinceLastWorldUpdate : Long = (currentTimeMillis-lastWorldUpdateTime)
   
   var worldUpdates = 0
   val worldUpdatesPerSecond = 50    
@@ -115,7 +116,7 @@ println("Resolving " + leftThing + " collision with " + rightThing)
         worldUpdates+=1             
       }
 
-      observer.observe(currentTimeMillis-lastWorldUpdateTime)
+      observer.observe()
     }
   }    
 }
