@@ -20,7 +20,7 @@ class Observer (val universe : Universe) {
     
   def xViewTranslation = -1 * (position.x - w/2)
   def yViewTranslation = -1 * (position.y - h/2)
-  
+
   def positionConsideringAlpha(thing : Thing) : Point = {
     val alpha = universe.msSinceLastWorldUpdate
     val xPoint = thing.center.x + (thing.xSpeed * (alpha/1000))
