@@ -130,4 +130,9 @@ class ThingTest extends TestCase {
       circle_1.center = Point(2, -3)      
       assertEquals(3.0, circle_1.distanceFrom(circle_2))
     }
+    
+    def testCreateImageRoundThing = {
+      val thing = new ImageRoundThing(Point(0, 0), 25, "resources/gfx/ball_50x50.gif")
+      assertTrue(1==1)
+    }
 }

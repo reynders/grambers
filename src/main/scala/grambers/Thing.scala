@@ -142,3 +142,33 @@ object Box {
     return box
   }
 }
+
+import java.awt.image._
+import java.io._
+
+class ImageRoundThing(var cntr : Point, val rad:Double, fileName : String) extends RoundThing(cntr, rad) with MovingThing {
+  
+  //def this(radius : Double) = this(new Point(0, 0), radius)
+   
+  val img : BufferedImage = javax.imageio.ImageIO.read(new File(fileName)).asInstanceOf[BufferedImage]
+  
+  override def draw(g2: Graphics2D, position : Point) {    
+    g2.drawImage(img, (position.x - w/2).toInt, (position.y-h/2).toInt, null)
+  }
+
+  
+  override def toString : String = {
+    return "RoundThing" + super.toString + ":" + radius + "r"
+  }
+}
+
+object ImageRoundThing {
+  def apply(x : Double, y : Double, r : Double, mass : Double, fileName : String, speed : Double, direction : Double) : ImageRoundThing = {
+    val ball = new ImageRoundThing(Point(x, y), r, fileName)
+    ball.mass = mass
+    ball.speed = speed
+    ball.direction = direction
+    return ball
+  }
+}
+
