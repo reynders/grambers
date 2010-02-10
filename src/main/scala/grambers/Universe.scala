@@ -94,11 +94,7 @@ println("Resolving " + leftThing + " collision with " + rightThing)
     }
   }
 
-  def msSinceLastWorldUpdate : Long = {
-    var diff = currentTimeMillis-lastWorldUpdateTime
-    if (diff > 1000) diff = 0
-    return diff
-  }
+  def msSinceLastWorldUpdate : Long = currentTimeMillis-lastWorldUpdateTime
   
   var worldUpdates = 0
   val worldUpdatesPerSecond = 50    
