@@ -135,7 +135,7 @@ object Demo {
       val universe = new Universe(500, 200)
       addWalls(universe)
       
-      val ball = ImageRoundThing(100, 100, 25, 25, "resources/gfx/ball_50x50.gif", random() * 100, random()*360)
+      val ball = ImageRoundThing(100, 100, 23, 23, "resources/gfx/ball_50x50.gif", random() * 100, random()*360)
       addBall(universe, ball, (ball) => {ball.accelerate(0.005)})
       
       universe.run(new Observer(universe))
