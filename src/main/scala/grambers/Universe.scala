@@ -2,15 +2,17 @@ package grambers
 
 import scala.collection.mutable._
 import java.lang.Math._
-//import java.lang.System._
 
 class Universe(val WIDTH : int, val HEIGHT : int) {
+  
   val staticThings : ArrayBuffer[StaticThing] = new ArrayBuffer[StaticThing]
   val movingThings : ArrayBuffer[MovingThing] = new ArrayBuffer[MovingThing]
   
   var millisecondsSinceBigBang = 0; 
   
   def currentTimeMillis : Long = System.nanoTime / 1000000
+
+  
   
   def addThing(thing : Thing) {
     thing match {
@@ -94,6 +96,7 @@ println("Resolving " + leftThing + " collision with " + rightThing)
     }
   }
 
+  
   def msSinceLastWorldUpdate : Long = currentTimeMillis-lastWorldUpdateTime
   
   var worldUpdates = 0
@@ -101,6 +104,7 @@ println("Resolving " + leftThing + " collision with " + rightThing)
   var lastWorldUpdateTime = 0l
   
   def run(observer : Observer) {      
+    
     val millisecondsBetweenWorldUpdates = 1000 / worldUpdatesPerSecond
     var nextWorldUpdateTime = currentTimeMillis
                  

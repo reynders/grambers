@@ -31,7 +31,18 @@ class Observer (val universe : Universe) {
   object WindowToWorld extends JFrame {
       
     initGraphics        
-      
+    
+    import java.awt.event._
+    object ObserverKeyListener extends KeyAdapter {
+      override def keyPressed(e : KeyEvent) = {
+        val c = e.getKeyCode();
+        if ( c != KeyEvent.CHAR_UNDEFINED ) {
+          println("Caught key event " + c)
+          e.consume();
+        }
+      }
+    }
+    
     object ViewPanel extends JPanel {
   
       override def paintComponent (g : Graphics) {
@@ -63,12 +74,13 @@ class Observer (val universe : Universe) {
     }
       
     def initGraphics {
-        
+      
+      addKeyListener(ObserverKeyListener)
       getRootPane.setDoubleBuffered(true)                
       add(ViewPanel)
       pack()
       setSize(new Dimension(w, h));
-      show()
+      setVisible(true)
     }
   }
 

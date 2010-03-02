@@ -25,7 +25,7 @@
             <groupId>org.jmock</groupId>
             <artifactId>jmock-legacy</artifactId>
             <version>${jmock-version}</version>
-        </dependency>
+        </dependency>  
 	</dependencies>
 	<repositories>
 		<repository>
