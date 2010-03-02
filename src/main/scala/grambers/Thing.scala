@@ -70,13 +70,6 @@ trait StaticThing extends Thing {
 trait MovingThing extends Thing {
 }
 
-trait KeyboardControllable extends Thing {
-  def left = turn(-1)
-  def right = turn(1)
-  def up = accelerate(1)
-  def down = accelerate(-1)
-}
-
 class RoundThing(var c : Point, val radius:Double) extends Thing(c, radius*2, radius*2) with MovingThing {
   
   def this(radius : Double) = this(new Point(0, 0), radius)

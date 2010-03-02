@@ -21,7 +21,7 @@ object Demo {
       universe.addThing(Box(100, 50, 20, 80, Color.red))
       universe.addThing(Box(200, 50, 20, 100, Color.blue))
             
-      val observer = new Observer(universe)
+      val observer = new Observer(universe, ball)
       universe.run(observer)
     }  
 
@@ -34,7 +34,7 @@ object Demo {
       universe.addThing(Box(200, 50, 20, 50, Color.blue))
 
       addWalls(universe)      
-      val observer = new Observer(universe)
+      val observer = new Observer(universe, ball)
       universe.run(observer)
     }  
     
@@ -75,7 +75,7 @@ object Demo {
       
       universe.addThing(Box(200, 50, 20, 50, Color.blue))
       
-      val observer = new Observer(universe)
+      val observer = new Observer(universe, ball)
       observer.camera = createBallFollowingDemoCamera(ball)
       observer.w = 400
       observer.h = 200
@@ -126,7 +126,7 @@ object Demo {
       
       universe.addThing(Box(200, 50, 20, 50, Color.blue))
       
-      val observer = new Observer(universe)
+      val observer = new Observer(universe, ball)
 
       universe.run(observer)
     }
@@ -138,7 +138,7 @@ object Demo {
       val ball = ImageRoundThing(100, 100, 23, 23, "resources/gfx/ball_50x50.gif", random() * 100, random()*360)
       addBall(universe, ball, (ball) => {ball.accelerate(0.005)})
       
-      universe.run(new Observer(universe))
+      universe.run(new Observer(universe, ball))
     }
     
     def main(args:Array[String]) {
