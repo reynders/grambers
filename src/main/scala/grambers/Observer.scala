@@ -12,6 +12,8 @@ class Camera {
 class Observer (val universe : Universe, var thingInFocus : Thing) {
     
   var position : Point = Point(universe.WIDTH/2, universe.HEIGHT/2)
+  var thingInControl = thingInFocus
+  
   var w : Int = universe.WIDTH
   var h : Int = universe.HEIGHT
   val random = new Random()
@@ -26,9 +28,9 @@ class Observer (val universe : Universe, var thingInFocus : Thing) {
   def yViewTranslation = -1 * (position.y - h/2)
 
   def positionConsideringAlpha(thing : Thing) : Point = {
-    val alpha = universe.msSinceLastWorldUpdate
-    val xPoint = thing.center.x + (thing.xSpeed * (alpha/1000))
-    val yPoint = thing.center.y + (thing.ySpeed * (alpha/1000))
+    val alpha = universe.msSinceLastWorldUpdate/1000
+    val xPoint = thing.center.x + (thing.xSpeed * alpha)
+    val yPoint = thing.center.y + (thing.ySpeed * alpha)
     return Point(xPoint, yPoint)
   }
   
@@ -40,10 +42,15 @@ class Observer (val universe : Universe, var thingInFocus : Thing) {
     object ObserverKeyListener extends KeyAdapter {
       override def keyPressed(e : KeyEvent) = {
         val c = e.getKeyCode();
-        if ( c != KeyEvent.CHAR_UNDEFINED ) {
-          println("Caught key event " + c)
-          e.consume();
+        c match {
+          case KeyEvent.VK_LEFT => thingInControl.turn(-1)
+          case KeyEvent.VK_RIGHT => thingInControl.turn(1)
+          case KeyEvent.VK_DOWN => thingInControl.accelerate(-1)
+          case KeyEvent.VK_UP => thingInControl.accelerate(1)
+          case _ => println("Caught key event " + c)
         }
+        
+        e.consume();
       }
     }
     

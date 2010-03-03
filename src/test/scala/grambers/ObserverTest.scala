@@ -7,7 +7,7 @@ class ObserverTest extends TestCase {
   
   def testObserverViewTranslations {
     val universe = new Universe(200, 100)
-    val observer = new Observer(universe)
+    val observer = new Observer(universe, new grambers.RoundThing(Point(1, -1), 2))
     observer.w = 100
     observer.h = 50
     assertEquals(-50.0, observer.xViewTranslation)
