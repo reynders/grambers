@@ -149,14 +149,32 @@ import java.io._
 class ImageRoundThing(var cntr : Point, val rad:Double, fileName : String) extends RoundThing(cntr, rad) with MovingThing {
   
   //def this(radius : Double) = this(new Point(0, 0), radius)
-   
+  val ROTATED_IMAGE_COUNT = 36   
   val img : BufferedImage = javax.imageio.ImageIO.read(new File(fileName)).asInstanceOf[BufferedImage]
+  val rotatedImage = createRotatedImages(img)
+  
+  import scala.collection.mutable._
+  def createRotatedImages(image : BufferedImage) : Buffer[Image] = {
+    val images = new ArrayBuffer[Image]()
+    //val g2d = image.getGraphics.asInstanceOf[Graphics2D]
+
+    for(i <- 0 until ROTATED_IMAGE_COUNT) {
+      val rotatedImage = new BufferedImage(image.getWidth, image.getHeight, BufferedImage.TYPE_4BYTE_ABGR)
+      val g2d = rotatedImage.createGraphics.asInstanceOf[Graphics2D]
+      val at = AffineTransform.getRotateInstance(toRadians(i*(360/ROTATED_IMAGE_COUNT)), image.getWidth/2, image.getHeight/2)
+      g2d.drawImage(image, new AffineTransformOp(at, AffineTransformOp.TYPE_NEAREST_NEIGHBOR), 0, 0)
+      images += rotatedImage
+    }
+    
+    return images
+  }
+    
+  def getRotatedImageNumberBasedOnDirection : Int = direction.toInt / (360 / ROTATED_IMAGE_COUNT)
   
   override def draw(g2: Graphics2D, position : Point) {    
-    g2.drawImage(img, (position.x - w/2).toInt, (position.y-h/2).toInt, null)
+    g2.drawImage(rotatedImage(getRotatedImageNumberBasedOnDirection), (position.x - w/2).toInt, (position.y-h/2).toInt, null)
   }
 
-  
   override def toString : String = {
     return "RoundThing" + super.toString + ":" + radius + "r"
   }
