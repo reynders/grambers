@@ -18,6 +18,9 @@ class Observer (val universe : Universe, var thingInFocus : Thing) {
   var h : Int = universe.HEIGHT
   val random = new Random()
   var fps = 0
+  
+var debug : Boolean = false
+  
   var camera : Camera = new Camera {
                           override def move(observer : Observer) = {
                             observer.position = thingInFocus.center
@@ -28,12 +31,12 @@ class Observer (val universe : Universe, var thingInFocus : Thing) {
   def yViewTranslation = -1 * (position.y - h/2)
 
   def positionConsideringAlpha(thing : Thing) : Point = {
-    val alpha = universe.msSinceLastWorldUpdate/1000
+    val alpha : Double = if (!debug) universe.msSinceLastWorldUpdate/1000 else 0.0
     val xPoint = thing.center.x + (thing.xSpeed * alpha)
     val yPoint = thing.center.y + (thing.ySpeed * alpha)
     return Point(xPoint, yPoint)
   }
-  
+    
   object WindowToWorld extends JFrame {
       
     initGraphics        
@@ -47,6 +50,8 @@ class Observer (val universe : Universe, var thingInFocus : Thing) {
           case KeyEvent.VK_RIGHT => thingInControl.turn(1)
           case KeyEvent.VK_DOWN => thingInControl.accelerate(-1)
           case KeyEvent.VK_UP => thingInControl.accelerate(1)
+          case KeyEvent.VK_D => println("Debug is ON"); debug = true
+          case KeyEvent.VK_O => println("Debug is OFF"); debug = false
           case _ => println("Caught key event " + c)
         }
         

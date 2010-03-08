@@ -1,21 +1,24 @@
 Backlog
 -------
-* Support for smooth animation between world state updates
+* Debug problem with flickering animation
+* IOC (http://programming-scala.labs.oreilly.com/ch13.html#DependencyInjectionInScala)
+* Eclipse Scala IDE
 * Polygon shapes
 * Switch to use the scala 2.8 Swing implementation 
   (http://www.scala-lang.org/sites/default/files/sids/imaier/Mon,%202009-11-02,%2008:55/scala-swing-design.pdf)
 * Bug: static things should have "infinite" mass when calculating collisiongs
 * Introduce gravitation force
 * Make it impossible to add a thing to universe that overlaps an existing one
-* Better demo that also supports performance profiling -Xprof
 * Walls of any angle
 * Shape to case class (http://programming-scala.labs.oreilly.com/ch06.html#CaseClasses)
 * Scalafy code 
-* Detach view window coordinates from universe coordinates
-* Support for sprites
 
 Done
 -----
+* Detach view window coordinates from universe coordinates
+* Support for sprites
+* Better demo that also supports performance profiling -Xprof
+* Support for smooth animation between world state updates
 * Refactor the demo class (Main)
 * Shape Point
 * Detach universe time from drawing speed
