@@ -12,8 +12,6 @@ class Universe(val WIDTH : int, val HEIGHT : int) {
   
   def currentTimeMillis : Long = System.nanoTime / 1000000
 
-  
-  
   def addThing(thing : Thing) {
     thing match {
       case movingThing : MovingThing => movingThings += movingThing
@@ -24,8 +22,7 @@ class Universe(val WIDTH : int, val HEIGHT : int) {
   
   def calculateCollisionAngle(leftThing : Thing, rightThing : Thing) : Double = {
     val xDiff : Double = (leftThing.center.x - rightThing.center.x)
-    val yDiff : Double = (leftThing.center.y - rightThing.center.y)
-    
+    val yDiff : Double = (leftThing.center.y - rightThing.center.y)    
     val collisionAngle = toDegrees(atan(xDiff/ yDiff))
 
     return collisionAngle
@@ -53,9 +50,6 @@ println("Resolving " + leftThing + " collision with " + rightThing)
                                     
     val r2lVelocityAfterCollision = l2rImpulse*((2*leftThing.mass)/(leftThing.mass+rightThing.mass)) + 
                                     r2lImpulse*((rightThing.mass-leftThing.mass)/(rightThing.mass + leftThing.mass))
-
-//println(leftThing + ":" + lVector + " - " + l2rImpulse + " -- " + l2rNormal + " --- " + l2rVelocityAfterCollision)
-//println(rightThing + ":" + rVector + " - " + r2lImpulse + " -- " + r2lNormal + " --- " + r2lVelocityAfterCollision) 
 
     leftThing.setSpeedAndDirection(l2rNormal + l2rVelocityAfterCollision)
     rightThing.setSpeedAndDirection(r2lNormal + r2lVelocityAfterCollision)
@@ -89,14 +83,13 @@ println("Resolving " + leftThing + " collision with " + rightThing)
   }
   
   def advanceTime(msToAdvance : int) {      
-    for(i <- 1 to msToAdvance) {
+    for(i <- 1 to msToAdvance) {     
       moveOneMillisecondWorth(movingThings)
       collide(movingThings, staticThings)
       millisecondsSinceBigBang += 1
     }
   }
 
-  
   def msSinceLastWorldUpdate : Long = currentTimeMillis-lastWorldUpdateTime
   
   var worldUpdates = 0
@@ -112,9 +105,10 @@ println("Resolving " + leftThing + " collision with " + rightThing)
       val now = currentTimeMillis
          
       while (now > nextWorldUpdateTime) {             
-        // We do not use REAL elapsed ms here because that would again be 
-        // computer speed dependant
-        advanceTime(millisecondsBetweenWorldUpdates)         
+// Bug is probably here: we do for example 20ms advances, every other
+// time we back up 19ms, every other time not
+//        advanceTime(millisecondsBetweenWorldUpdates)   
+        advanceTime((now - nextWorldUpdateTime).toInt)
         nextWorldUpdateTime += millisecondsBetweenWorldUpdates        
         lastWorldUpdateTime = now
         worldUpdates+=1             

@@ -19,7 +19,7 @@ class Observer (val universe : Universe, var thingInFocus : Thing) {
   val random = new Random()
   var fps = 0
   
-var debug : Boolean = false
+var alphaFix : Boolean = false
   
   var camera : Camera = new Camera {
                           override def move(observer : Observer) = {
@@ -31,9 +31,17 @@ var debug : Boolean = false
   def yViewTranslation = -1 * (position.y - h/2)
 
   def positionConsideringAlpha(thing : Thing) : Point = {
-    val alpha : Double = if (!debug) universe.msSinceLastWorldUpdate/1000 else 0.0
+    val alpha : Double = if (alphaFix) universe.msSinceLastWorldUpdate.toDouble/1000 else 0.0
     val xPoint = thing.center.x + (thing.xSpeed * alpha)
     val yPoint = thing.center.y + (thing.ySpeed * alpha)
+/*
+if (universe.msSinceLastWorldUpdate % 10 == 0 )
+  println("msSinceLastWorldUpdate: " + universe.msSinceLastWorldUpdate + ", " +
+          "thing.center.x: " + thing.center.x + ", " +
+          "thing.xSpeed: " + thing.xSpeed + ", " +
+          "alpha: " + alpha + ", " +
+          "xPoint: " + xPoint)
+*/          
     return Point(xPoint, yPoint)
   }
     
@@ -50,8 +58,7 @@ var debug : Boolean = false
           case KeyEvent.VK_RIGHT => thingInControl.turn(1)
           case KeyEvent.VK_DOWN => thingInControl.accelerate(-1)
           case KeyEvent.VK_UP => thingInControl.accelerate(1)
-          case KeyEvent.VK_D => println("Debug is ON"); debug = true
-          case KeyEvent.VK_O => println("Debug is OFF"); debug = false
+          case KeyEvent.VK_A => alphaFix = !alphaFix; println("Setting alphaFix to " + alphaFix); 
           case _ => println("Caught key event " + c)
         }
         

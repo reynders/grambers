@@ -140,10 +140,21 @@ object Demo {
       
       universe.run(new Observer(universe, ball))
     }
+
+    def debugDemo {
+      val universe = new Universe(800, 200)
+      addWalls(universe)
+      
+      val ball = ImageRoundThing(100, 100, 23, 23, "resources/gfx/ball_50x50.gif", 10, 0)
+      addBall(universe, ball, (ball) => {})
+      
+      universe.run(new Observer(universe, ball))
+    }
     
     def main(args:Array[String]) {
       if (args.length > 0)
         args(0) match {
+          case "D" => debugDemo
           case "I" => imageDemo
           case "3" => ballsAndWallsAndCameraDemo
           case "2" => edgesAndStuffDemo
