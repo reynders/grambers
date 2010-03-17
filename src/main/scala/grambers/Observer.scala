@@ -75,15 +75,22 @@ if (universe.msSinceLastWorldUpdate % 10 == 0 )
           case _ => throw new ClassCastException
         }
       }
-           
+
+var previousX = 0
+      
       def drawUniverse(g2 : Graphics2D) {
-          
         val at = g2.getTransform();
         //g2d.transform(...);
         //g2.setColor(Color.black);
         g2.translate(xViewTranslation, yViewTranslation)
         universe.staticThings.foreach(thing => thing.draw(g2, thing.center))
-        universe.movingThings.foreach(thing => thing.draw(g2, positionConsideringAlpha(thing)))
+        universe.movingThings.foreach(thing => { 
+              thing.draw(g2, positionConsideringAlpha(thing))
+if (positionConsideringAlpha(thing).x.toInt != previousX) {
+  previousX = positionConsideringAlpha(thing).x.toInt
+  println("New X: " + previousX);
+}
+        })
 
         g2.setTransform(at);
 
