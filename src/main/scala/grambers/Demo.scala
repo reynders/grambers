@@ -147,8 +147,12 @@ object Demo {
       
       val ball = ImageRoundThing(100, 100, 23, 23, "resources/gfx/ball_50x50.gif", 10, 0)
       addBall(universe, ball, (ball) => {})
+      val observer = new Observer(universe, ball)
+      observer.camera = new Camera {      
+        override def move(observer : Observer) {}
+      }
       
-      universe.run(new Observer(universe, ball))
+      universe.run(observer)
     }
     
     def main(args:Array[String]) {

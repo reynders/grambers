@@ -171,8 +171,15 @@ class ImageRoundThing(var cntr : Point, val rad:Double, fileName : String) exten
     
   def getRotatedImageNumberBasedOnDirection : Int = direction.toInt / (360 / ROTATED_IMAGE_COUNT)
   
+var previousX = 0
+
   override def draw(g2: Graphics2D, position : Point) {
-println("Drawing to x " + (position.x - w/2).toInt)    
+
+if (previousX != (position.x - w/2).toInt) {    
+  previousX = (position.x - w/2).toInt
+  println("Drawing to x " + previousX)
+}
+
     g2.drawImage(rotatedImage(getRotatedImageNumberBasedOnDirection), (position.x - w/2).toInt, (position.y-h/2).toInt, null)
   }
 
