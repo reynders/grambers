@@ -34,14 +34,7 @@ var alphaFix : Boolean = false
     val alpha : Double = if (alphaFix) universe.msSinceLastWorldUpdate.toDouble/1000 else 0.0
     val xPoint = thing.center.x + (thing.xSpeed * alpha)
     val yPoint = thing.center.y + (thing.ySpeed * alpha)
-/*
-if (universe.msSinceLastWorldUpdate % 10 == 0 )
-  println("msSinceLastWorldUpdate: " + universe.msSinceLastWorldUpdate + ", " +
-          "thing.center.x: " + thing.center.x + ", " +
-          "thing.xSpeed: " + thing.xSpeed + ", " +
-          "alpha: " + alpha + ", " +
-          "xPoint: " + xPoint)
-*/          
+        
     return Point(xPoint, yPoint)
   }
     
@@ -75,8 +68,6 @@ if (universe.msSinceLastWorldUpdate % 10 == 0 )
           case _ => throw new ClassCastException
         }
       }
-
-var previousX = 0
       
       def drawUniverse(g2 : Graphics2D) {
         val at = g2.getTransform();
@@ -86,10 +77,6 @@ var previousX = 0
         universe.staticThings.foreach(thing => thing.draw(g2, thing.center))
         universe.movingThings.foreach(thing => { 
               thing.draw(g2, positionConsideringAlpha(thing))
-if (positionConsideringAlpha(thing).x.toInt != previousX) {
-  previousX = positionConsideringAlpha(thing).x.toInt
-  println("New X: " + previousX);
-}
         })
 
         g2.setTransform(at);
