@@ -17,7 +17,7 @@ class Observer (val universe : Universe, var thingInFocus : Thing) {
   var w : Int = universe.WIDTH
   var h : Int = universe.HEIGHT
   val random = new Random()
-  var fps = 0
+//  var fps = 0
   
 var alphaFix : Boolean = false
   
@@ -71,8 +71,6 @@ var alphaFix : Boolean = false
       
       def drawUniverse(g2 : Graphics2D) {
         val at = g2.getTransform();
-        //g2d.transform(...);
-        //g2.setColor(Color.black);
         g2.translate(xViewTranslation, yViewTranslation)
         universe.staticThings.foreach(thing => thing.draw(g2, thing.center))
         universe.movingThings.foreach(thing => { 
@@ -81,7 +79,7 @@ var alphaFix : Boolean = false
 
         g2.setTransform(at);
 
-        fps += 1
+        Config.fps += 1
       }
 
       def clearScreenBuffer(g2 : Graphics2D) {
@@ -90,31 +88,19 @@ var alphaFix : Boolean = false
       }        
     }
       
-    def initGraphics {
-      
+    def initGraphics {      
       addKeyListener(ObserverKeyListener)
       getRootPane.setDoubleBuffered(true)                
       add(ViewPanel)
       pack()
-      setSize(new Dimension(w, h));
+      setSize(new Dimension(w+20, h+40));
       setVisible(true)
     }
   }
 
-  var measurementStartTime = currentTimeMillis      
-  val measurementSamplePeriodMs = 5000
-        
-  def showStatistics {
-    if (currentTimeMillis - measurementStartTime > measurementSamplePeriodMs) {
-      println((fps/(measurementSamplePeriodMs/1000)) + " FPS, " + (universe.worldUpdates/(measurementSamplePeriodMs/1000)) + " world updates")
-      fps = 0; universe.worldUpdates = 0; measurementStartTime = currentTimeMillis ; 
-    }
-  }
-  
   def observe() {    
     WindowToWorld.repaint() 
     camera.move(this)
-    showStatistics
   } 
 }
 

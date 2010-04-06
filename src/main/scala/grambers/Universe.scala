@@ -92,7 +92,7 @@ println("Resolving " + leftThing + " collision with " + rightThing)
 
   def msSinceLastWorldUpdate : Long = currentTimeMillis-lastWorldUpdateTime
   
-  var worldUpdates = 0
+//  var worldUpdates = 0
   val worldUpdatesPerSecond = 50    
   var lastWorldUpdateTime = 0l
   
@@ -111,7 +111,7 @@ println("Resolving " + leftThing + " collision with " + rightThing)
         advanceTime((now - nextWorldUpdateTime).toInt)
         nextWorldUpdateTime += millisecondsBetweenWorldUpdates        
         lastWorldUpdateTime = now
-        worldUpdates+=1             
+        Config.worldUpdates += 1             
       }
 
       observer.observe()
@@ -135,10 +135,16 @@ println("Resolving " + leftThing + " collision with " + rightThing)
         advanceTime((now - lastWorldUpdateTime).toInt)
         nextWorldUpdateTime = now + millisecondsBetweenWorldUpdates        
         lastWorldUpdateTime = now
-        worldUpdates+=1             
+        
+        Config.worldUpdates += 1             
       }
 
       observer.observe()
+      
+      if (Config.measurementSamplePeriodMs > 5000) {
+        Config.showAnimationStatistics
+        Config.resetAnimationMeasurements
+      }
     }
   }   
 }
