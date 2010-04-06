@@ -18,9 +18,7 @@ class Observer (val universe : Universe, var thingInFocus : Thing) {
   var h : Int = universe.HEIGHT
   val random = new Random()
 //  var fps = 0
-  
-var alphaFix : Boolean = false
-  
+    
   var camera : Camera = new Camera {
                           override def move(observer : Observer) = {
                             observer.position = thingInFocus.center
@@ -31,7 +29,7 @@ var alphaFix : Boolean = false
   def yViewTranslation = -1 * (position.y - h/2)
 
   def positionConsideringAlpha(thing : Thing) : Point = {
-    val alpha : Double = if (alphaFix) universe.msSinceLastWorldUpdate.toDouble/1000 else 0.0
+    val alpha : Double = if (Config.alphaFixOn) universe.msSinceLastWorldUpdate.toDouble/1000 else 0.0
     val xPoint = thing.center.x + (thing.xSpeed * alpha)
     val yPoint = thing.center.y + (thing.ySpeed * alpha)
         
@@ -51,7 +49,7 @@ var alphaFix : Boolean = false
           case KeyEvent.VK_RIGHT => thingInControl.turn(1)
           case KeyEvent.VK_DOWN => thingInControl.accelerate(-1)
           case KeyEvent.VK_UP => thingInControl.accelerate(1)
-          case KeyEvent.VK_A => alphaFix = !alphaFix; println("Setting alphaFix to " + alphaFix); 
+          case KeyEvent.VK_A => Config.alphaFixOn = !Config.alphaFixOn; println("Setting alphaFix to " + Config.alphaFixOn); 
           case _ => println("Caught key event " + c)
         }
         
@@ -90,6 +88,7 @@ var alphaFix : Boolean = false
       
     def initGraphics {      
       addKeyListener(ObserverKeyListener)
+      setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       getRootPane.setDoubleBuffered(true)                
       add(ViewPanel)
       pack()

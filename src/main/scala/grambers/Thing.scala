@@ -175,9 +175,10 @@ var previousX = 0
 
   override def draw(g2: Graphics2D, position : Point) {
 
-if (previousX != (position.x - w/2).toInt) {    
-  previousX = (position.x - w/2).toInt
-  println("Drawing to x " + previousX)
+var currentX = position.x.toInt
+if (previousX != currentX) {    
+  println("Drawing to x " + currentX + " : " + (currentX - previousX))
+  previousX = currentX
 }
 
     g2.drawImage(rotatedImage(getRotatedImageNumberBasedOnDirection), (position.x - w/2).toInt, (position.y-h/2).toInt, null)

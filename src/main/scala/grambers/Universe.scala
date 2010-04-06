@@ -136,7 +136,8 @@ println("Resolving " + leftThing + " collision with " + rightThing)
         nextWorldUpdateTime = now + millisecondsBetweenWorldUpdates        
         lastWorldUpdateTime = now
         
-        Config.worldUpdates += 1             
+        Config.worldUpdates += 1     
+        println("World updated!!!")        
       }
 
       observer.observe()
