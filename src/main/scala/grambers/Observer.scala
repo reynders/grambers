@@ -28,8 +28,26 @@ class Observer (val universe : Universe, var thingInFocus : Thing) {
   def xViewTranslation = -1 * (position.x - w/2)
   def yViewTranslation = -1 * (position.y - h/2)
 
+  var previousAlpha = 0.0
+  
   def positionConsideringAlpha(thing : Thing) : Point = {
-    val alpha : Double = if (Config.alphaFixOn) universe.msSinceLastWorldUpdate.toDouble/1000 else 0.0
+    def alpha : Double = {
+        var alpha = 0.0
+        if (Config.alphaFixOn) {
+          if (!universe.updatingWorld) {     
+            alpha = universe.msSinceLastWorldUpdate.toDouble/1000
+            previousAlpha = alpha
+          }
+          else {
+            println("World is updating, returning previous alpha " + previousAlpha)
+            alpha = previousAlpha
+          }
+          return alpha
+        }
+        else 
+          return 0.0
+    }
+    
     val xPoint = thing.center.x + (thing.xSpeed * alpha)
     val yPoint = thing.center.y + (thing.ySpeed * alpha)
         
@@ -66,7 +84,17 @@ class Observer (val universe : Universe, var thingInFocus : Thing) {
           case _ => throw new ClassCastException
         }
       }
-      
+    
+   /* 
+    override def paintComponent(g : Graphics) {
+      	val bf = getBufferStrategy();
+        val g2d = bf.getDrawGraphics.asInstanceOf[Graphics2D]
+        drawUniverse(g2d)
+        g2d.dispose();
+        //bf.show();
+        //Toolkit.getDefaultToolkit().sync();
+    }*/
+    
       def drawUniverse(g2 : Graphics2D) {
         val at = g2.getTransform();
         g2.translate(xViewTranslation, yViewTranslation)
@@ -76,7 +104,7 @@ class Observer (val universe : Universe, var thingInFocus : Thing) {
         })
 
         g2.setTransform(at);
-
+        g2.dispose
         Config.fps += 1
       }
 
@@ -89,7 +117,7 @@ class Observer (val universe : Universe, var thingInFocus : Thing) {
     def initGraphics {      
       addKeyListener(ObserverKeyListener)
       setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-      getRootPane.setDoubleBuffered(true)                
+      //getRootPane.setDoubleBuffered(true)                
       add(ViewPanel)
       pack()
       setSize(new Dimension(w+20, h+40));
