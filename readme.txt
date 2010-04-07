@@ -1,6 +1,8 @@
 Backlog
 -------
-* Debug problem with flickering animation
+* Debug problem with flickering animation =>
+  rewrite game loop to update objects for only specific point of time, 
+  then interpolate until next update
 * IOC (http://programming-scala.labs.oreilly.com/ch13.html#DependencyInjectionInScala)
 * Eclipse Scala IDE
 * Polygon shapes
