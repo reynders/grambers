@@ -93,37 +93,12 @@ println("Resolving " + leftThing + " collision with " + rightThing)
   def msSinceLastWorldUpdate : Long = currentTimeMillis-lastWorldUpdateTime
   
 //  var worldUpdates = 0
-  val worldUpdatesPerSecond = 25    
-  var lastWorldUpdateTime = 0l
-  
-  def run2(observer : Observer) {      
-    
-    val millisecondsBetweenWorldUpdates = 1000 / worldUpdatesPerSecond
-    var nextWorldUpdateTime = currentTimeMillis
-                 
-    while (true) {
-      val now = currentTimeMillis
-         
-      while (now > nextWorldUpdateTime) {             
-// Bug is probably here: we do for example 20ms advances, every other
-// time we back up 19ms, every other time not
-//        advanceTime(millisecondsBetweenWorldUpdates)   
-        advanceTime((now - nextWorldUpdateTime).toInt)
-        nextWorldUpdateTime += millisecondsBetweenWorldUpdates        
-        lastWorldUpdateTime = now
-        Config.worldUpdates += 1             
-      }
-
-      observer.observe()
-    }
-  }    
-  
-  var updatingWorld = false
+  val worldUpdatesPerSecond = 50    
+  var lastWorldUpdateTime = 0l 
   
   def run(observer : Observer) {      
     
     val millisecondsBetweenWorldUpdates = 1000 / worldUpdatesPerSecond
-
     var now = currentTimeMillis
     var nextWorldUpdateTime = now
     lastWorldUpdateTime = now
@@ -133,14 +108,12 @@ println("Resolving " + leftThing + " collision with " + rightThing)
       now = currentTimeMillis
       
       if (now >= nextWorldUpdateTime) { 
-        updatingWorld = true
         //println("Advancing time " + (now - lastWorldUpdateTime).toInt)
         advanceTime((now - lastWorldUpdateTime).toInt)
         nextWorldUpdateTime = now + millisecondsBetweenWorldUpdates        
         lastWorldUpdateTime = now
         
         Config.worldUpdates += 1
-        updatingWorld = false
         println("World updated!!!")        
       }
 

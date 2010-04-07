@@ -28,26 +28,8 @@ class Observer (val universe : Universe, var thingInFocus : Thing) {
   def xViewTranslation = -1 * (position.x - w/2)
   def yViewTranslation = -1 * (position.y - h/2)
 
-  var previousAlpha = 0.0
-  
   def positionConsideringAlpha(thing : Thing) : Point = {
-    def alpha : Double = {
-        var alpha = 0.0
-        if (Config.alphaFixOn) {
-          if (!universe.updatingWorld) {     
-            alpha = universe.msSinceLastWorldUpdate.toDouble/1000
-            previousAlpha = alpha
-          }
-          else {
-            println("World is updating, returning previous alpha " + previousAlpha)
-            alpha = previousAlpha
-          }
-          return alpha
-        }
-        else 
-          return 0.0
-    }
-    
+    def alpha : Double = if (Config.alphaFixOn) universe.msSinceLastWorldUpdate.toDouble/1000 else 0.0
     val xPoint = thing.center.x + (thing.xSpeed * alpha)
     val yPoint = thing.center.y + (thing.ySpeed * alpha)
         
