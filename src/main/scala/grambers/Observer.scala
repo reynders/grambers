@@ -17,7 +17,6 @@ class Observer (val universe : Universe, var thingInFocus : Thing) {
   var w : Int = universe.WIDTH
   var h : Int = universe.HEIGHT
   val random = new Random()
-//  var fps = 0
     
   var camera : Camera = new Camera {
                           override def move(observer : Observer) = {
@@ -29,10 +28,10 @@ class Observer (val universe : Universe, var thingInFocus : Thing) {
   def yViewTranslation = -1 * (position.y - h/2)
 
   def positionConsideringAlpha(thing : Thing) : Point = {
-    def alpha : Double = if (Config.alphaFixOn) universe.msSinceLastWorldUpdate.toDouble/1000 else 0.0
+    var alpha : Double = if (Config.alphaFixOn) universe.msSinceLastWorldUpdate.toDouble/1000 else 0.0
+    //println(Config.currentTimeMillis + " : Current alpha is " + alpha)
     val xPoint = thing.center.x + (thing.xSpeed * alpha)
     val yPoint = thing.center.y + (thing.ySpeed * alpha)
-        
     return Point(xPoint, yPoint)
   }
     
@@ -60,7 +59,7 @@ class Observer (val universe : Universe, var thingInFocus : Thing) {
     object ViewPanel extends JPanel {
   
       override def paintComponent (g : Graphics) {
-        //super.paintComponent(g)
+        super.paintComponent(g)
         g match {
           case g2: Graphics2D => drawUniverse(g2)
           case _ => throw new ClassCastException

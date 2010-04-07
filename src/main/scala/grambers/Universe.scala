@@ -91,30 +91,31 @@ println("Resolving " + leftThing + " collision with " + rightThing)
   }
 
   def msSinceLastWorldUpdate : Long = currentTimeMillis-lastWorldUpdateTime
-  
-//  var worldUpdates = 0
-  val worldUpdatesPerSecond = 50    
-  var lastWorldUpdateTime = 0l 
+  var lastWorldUpdateTime = 0l
+  var worldUpdateOngoing = false
   
   def run(observer : Observer) {      
-    
+
+    val worldUpdatesPerSecond = 50    
     val millisecondsBetweenWorldUpdates = 1000 / worldUpdatesPerSecond
     var now = currentTimeMillis
     var nextWorldUpdateTime = now
-    lastWorldUpdateTime = now
-    
+    lastWorldUpdateTime = now 
+
     while (true) {    
       
       now = currentTimeMillis
       
-      if (now >= nextWorldUpdateTime) { 
-        //println("Advancing time " + (now - lastWorldUpdateTime).toInt)
+      if (now >= nextWorldUpdateTime) {
+        worldUpdateOngoing = true
+        //println(currentTimeMillis + " : Advancing time " + (now - lastWorldUpdateTime).toInt)
         advanceTime((now - lastWorldUpdateTime).toInt)
         nextWorldUpdateTime = now + millisecondsBetweenWorldUpdates        
         lastWorldUpdateTime = now
         
+        worldUpdateOngoing = false
         Config.worldUpdates += 1
-        println("World updated!!!")        
+        //println(currentTimeMillis + " : World updated!!!")        
       }
 
       observer.observe()

@@ -177,7 +177,7 @@ var previousX = 0
 
 var currentX = position.x.toInt
 if (previousX != currentX) {    
-  println("Drawing to x " + currentX + " : " + (currentX - previousX))
+  println(Config.currentTimeMillis + " : Drawing to x " + currentX + " : " + (currentX - previousX))
   previousX = currentX
 }
 
