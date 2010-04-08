@@ -10,8 +10,6 @@ class Universe(val WIDTH : int, val HEIGHT : int) {
   
   var millisecondsSinceBigBang = 0; 
   
-  def currentTimeMillis : Long = System.nanoTime / 1000000
-
   def addThing(thing : Thing) {
     thing match {
       case movingThing : MovingThing => movingThings += movingThing
@@ -70,54 +68,38 @@ println("Resolving " + leftThing + " collision with " + rightThing)
     })
   }
 
-  def moveOneMillisecondWorth(movingThings : Seq[MovingThing]) {
+  def moveMovingThings(movingThings : Seq[MovingThing], msElapsed : Long) {
     movingThings.foreach(movingThing => {
       movingThing.doYourThing(movingThing)
-      var newX = (movingThing.center.x + movingThing.xSpeed/1000)%WIDTH
+      var newX = (movingThing.center.x + msElapsed*movingThing.xSpeed/1000)%WIDTH
       if (newX < 0 ) newX += WIDTH 
-      var newY = (movingThing.center.y + movingThing.ySpeed/1000)%HEIGHT
+      var newY = (movingThing.center.y + msElapsed*movingThing.ySpeed/1000)%HEIGHT
       if (newY < 0 ) newY += HEIGHT
     
       movingThing.center = Point(newX, newY)
     })
   }
   
-  def advanceTime(msToAdvance : int) {      
-    for(i <- 1 to msToAdvance) {     
-      moveOneMillisecondWorth(movingThings)
-      collide(movingThings, staticThings)
-      millisecondsSinceBigBang += 1
-    }
-  }
-
-  def msSinceLastWorldUpdate : Long = currentTimeMillis-lastWorldUpdateTime
-  var lastWorldUpdateTime = 0l
-  var worldUpdateOngoing = false
-  
   def run(observer : Observer) {      
-
-    val worldUpdatesPerSecond = 50    
-    val millisecondsBetweenWorldUpdates = 1000 / worldUpdatesPerSecond
-    var now = currentTimeMillis
+    
+    var now = Config.currentTimeMillis
     var nextWorldUpdateTime = now
-    lastWorldUpdateTime = now 
+    var lastWorldUpdateTime = now 
 
     while (true) {    
       
-      now = currentTimeMillis
+      now = Config.currentTimeMillis
       
       if (now >= nextWorldUpdateTime) {
-        worldUpdateOngoing = true
-        //println(currentTimeMillis + " : Advancing time " + (now - lastWorldUpdateTime).toInt)
-        advanceTime((now - lastWorldUpdateTime).toInt)
-        nextWorldUpdateTime = now + millisecondsBetweenWorldUpdates        
-        lastWorldUpdateTime = now
-        
-        worldUpdateOngoing = false
+        collide(movingThings, staticThings)
+        nextWorldUpdateTime = now + (1000 / Config.worldUpdatesPerSecond)        
         Config.worldUpdates += 1
-        //println(currentTimeMillis + " : World updated!!!")        
+        println("World updated")
       }
-
+      
+      moveMovingThings(movingThings, Config.currentTimeMillis - lastWorldUpdateTime)
+      lastWorldUpdateTime = Config.currentTimeMillis
+      
       observer.observe()
       
       if (Config.measurementSamplePeriodMs > 5000) {

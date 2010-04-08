@@ -1,6 +1,7 @@
 package grambers
 
 object Config {
+  val worldUpdatesPerSecond = 50
   var fps = 0
   var worldUpdates = 0
   var measurementStartTime = currentTimeMillis    

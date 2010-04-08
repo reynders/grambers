@@ -1,11 +1,17 @@
+import scala.collection.mutable._
+
+object MyTestCollection extends ArrayBuffer {
+  val value = 1
+}
+
 class Test {
-  def print(t : Test) : Boolean = {
-    return true
+  val myTestCollection = MyTestCollection
+
+  def print(t : Test) : Int = {
+    return t.myTestCollection.value
   }
 }
 
-class Test2 extends Test {
-}
+val myTest = new Test
 
-val myTest = new Test2
 println(myTest.print(myTest))

@@ -27,14 +27,6 @@ class Observer (val universe : Universe, var thingInFocus : Thing) {
   def xViewTranslation = -1 * (position.x - w/2)
   def yViewTranslation = -1 * (position.y - h/2)
 
-  def positionConsideringAlpha(thing : Thing) : Point = {
-    var alpha : Double = if (Config.alphaFixOn) universe.msSinceLastWorldUpdate.toDouble/1000 else 0.0
-    //println(Config.currentTimeMillis + " : Current alpha is " + alpha)
-    val xPoint = thing.center.x + (thing.xSpeed * alpha)
-    val yPoint = thing.center.y + (thing.ySpeed * alpha)
-    return Point(xPoint, yPoint)
-  }
-    
   object WindowToWorld extends JFrame {
       
     initGraphics        
@@ -80,9 +72,7 @@ class Observer (val universe : Universe, var thingInFocus : Thing) {
         val at = g2.getTransform();
         g2.translate(xViewTranslation, yViewTranslation)
         universe.staticThings.foreach(thing => thing.draw(g2, thing.center))
-        universe.movingThings.foreach(thing => { 
-              thing.draw(g2, positionConsideringAlpha(thing))
-        })
+        universe.movingThings.foreach(thing => thing.draw(g2, thing.center))
 
         g2.setTransform(at);
         g2.dispose
