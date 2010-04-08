@@ -1,5 +1,6 @@
 Backlog
 -------
+* Try out git branching
 * Debug problem with flickering animation =>
   rewrite game loop to update objects for only specific point of time, 
   then interpolate until next update
