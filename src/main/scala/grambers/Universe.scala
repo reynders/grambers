@@ -94,7 +94,7 @@ println("Resolving " + leftThing + " collision with " + rightThing)
         collide(movingThings, staticThings)
         nextWorldUpdateTime = now + (1000 / Config.worldUpdatesPerSecond)        
         Config.worldUpdates += 1
-        println("World updated")
+        //println("World updated")
       }
       
       moveMovingThings(movingThings, Config.currentTimeMillis - lastWorldUpdateTime)
@@ -102,7 +102,7 @@ println("Resolving " + leftThing + " collision with " + rightThing)
       
       observer.observe()
       
-      if (Config.measurementSamplePeriodMs > 5000) {
+      if (Config.measurementSamplePeriodMs > 1000) {
         Config.showAnimationStatistics
         Config.resetAnimationMeasurements
       }

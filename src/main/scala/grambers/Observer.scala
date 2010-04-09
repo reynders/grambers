@@ -58,16 +58,6 @@ class Observer (val universe : Universe, var thingInFocus : Thing) {
         }
       }
     
-   /* 
-    override def paintComponent(g : Graphics) {
-      	val bf = getBufferStrategy();
-        val g2d = bf.getDrawGraphics.asInstanceOf[Graphics2D]
-        drawUniverse(g2d)
-        g2d.dispose();
-        //bf.show();
-        //Toolkit.getDefaultToolkit().sync();
-    }*/
-    
       def drawUniverse(g2 : Graphics2D) {
         val at = g2.getTransform();
         g2.translate(xViewTranslation, yViewTranslation)
@@ -88,7 +78,7 @@ class Observer (val universe : Universe, var thingInFocus : Thing) {
     def initGraphics {      
       addKeyListener(ObserverKeyListener)
       setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-      //getRootPane.setDoubleBuffered(true)                
+      getRootPane.setDoubleBuffered(true)                
       add(ViewPanel)
       pack()
       setSize(new Dimension(w+20, h+40));
