@@ -1,6 +1,5 @@
 Backlog
 -------
-* Try out git branching locally
 * Debug problem with flickering animation =>
   rewrite game loop to update objects for only specific point of time, 
   then interpolate until next update
@@ -18,6 +17,7 @@ Backlog
 
 Done
 -----
+* Try out git branching locally
 * Detach view window coordinates from universe coordinates
 * Support for sprites
 * Better demo that also supports performance profiling -Xprof
