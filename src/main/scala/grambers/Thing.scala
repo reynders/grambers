@@ -122,7 +122,7 @@ class Box(c : Point, w : Double, h : Double) extends Thing(c, w, h) with StaticT
   
   def draw(g2: Graphics2D, position : Point) {    
     image.setFrame((position.x - w/2), (position.y-h/2), w, h)
-    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+    //g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
     val originalPaintColor = g2.getPaint()
     g2.setPaint(color)
     g2.fill(image)
