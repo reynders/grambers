@@ -3,7 +3,7 @@ package grambers
 import scala.collection.mutable._
 import java.lang.Math._
 
-class Universe(val WIDTH : int, val HEIGHT : int) {
+class Universe(val WIDTH : Int, val HEIGHT : Int) {
   
   val staticThings : ArrayBuffer[StaticThing] = new ArrayBuffer[StaticThing]
   val movingThings : ArrayBuffer[MovingThing] = new ArrayBuffer[MovingThing]

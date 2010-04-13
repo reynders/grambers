@@ -16,7 +16,7 @@ class Observer (val universe : Universe, var thingInFocus : Thing) {
   
   var w : Int = universe.WIDTH
   var h : Int = universe.HEIGHT
-  val random = new Random()
+  val random = new java.util.Random()
     
   var camera : Camera = new Camera {
                           override def move(observer : Observer) = {
