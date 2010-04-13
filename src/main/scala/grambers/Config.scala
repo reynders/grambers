@@ -21,5 +21,6 @@ object Config {
               (worldUpdates/(measurementSamplePeriodMs/1000)) + " world updates")       
   }
   
-  def currentTimeMillis : Long = System.currentTimeMillis //System.nanoTime / 1000000
+  def currentTimeMillis : Long = // System.currentTimeMillis 
+                                 System.nanoTime / 1000000
 }

@@ -78,7 +78,7 @@ class Observer (val universe : Universe, var thingInFocus : Thing) {
     def initGraphics {      
       addKeyListener(ObserverKeyListener)
       setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-      getRootPane.setDoubleBuffered(true)                
+      //getRootPane.setDoubleBuffered(true)                
       add(ViewPanel)
       pack()
       setSize(new Dimension(w+20, h+40));
