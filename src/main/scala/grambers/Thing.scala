@@ -161,7 +161,12 @@ class ImageRoundThing(var cntr : Point, val rad:Double, fileName : String) exten
     for(i <- 0 until ROTATED_IMAGE_COUNT) {
       val rotatedImage = new BufferedImage(image.getWidth, image.getHeight, BufferedImage.TYPE_4BYTE_ABGR)
       val g2d = rotatedImage.createGraphics.asInstanceOf[Graphics2D]
+      
       val at = AffineTransform.getRotateInstance(toRadians(i*(360/ROTATED_IMAGE_COUNT)), image.getWidth/2, image.getHeight/2)
+
+      g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+      g2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_DEFAULT);
+
       g2d.drawImage(image, new AffineTransformOp(at, AffineTransformOp.TYPE_NEAREST_NEIGHBOR), 0, 0)
       images += rotatedImage
     }
