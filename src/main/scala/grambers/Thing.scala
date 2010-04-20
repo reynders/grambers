@@ -159,6 +159,7 @@ class ImageRoundThing(var cntr : Point, val rad:Double, fileName : String) exten
     //val g2d = image.getGraphics.asInstanceOf[Graphics2D]
 
     for(i <- 0 until ROTATED_IMAGE_COUNT) {
+      //val rotatedImage = image.getGraphics().asInstanceOf[Graphics2D].getDeviceConfiguration().createCompatibleImage(image.getWidth, image.getHeight, Transparency.TRANSLUCENT)
       val rotatedImage = new BufferedImage(image.getWidth, image.getHeight, BufferedImage.TYPE_4BYTE_ABGR)
       val g2d = rotatedImage.createGraphics.asInstanceOf[Graphics2D]
       

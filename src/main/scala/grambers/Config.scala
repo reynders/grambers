@@ -5,7 +5,7 @@ object Config {
   var fps = 0
   var worldUpdates = 0
   var measurementStartTime = currentTimeMillis    
-  var alphaFixOn : Boolean = true
+  var debugOn : Boolean = false
 
   def measurementSamplePeriodMs : Long = {
     currentTimeMillis - measurementStartTime

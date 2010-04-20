@@ -40,7 +40,7 @@ class Observer (val universe : Universe, var thingInFocus : Thing) {
           case KeyEvent.VK_RIGHT => thingInControl.turn(1)
           case KeyEvent.VK_DOWN => thingInControl.accelerate(-1)
           case KeyEvent.VK_UP => thingInControl.accelerate(1)
-          case KeyEvent.VK_A => Config.alphaFixOn = !Config.alphaFixOn; println("Setting alphaFix to " + Config.alphaFixOn); 
+          case KeyEvent.VK_D => Config.debugOn = !Config.debugOn; println("Setting debug to " + Config.debugOn); 
           case _ => println("Caught key event " + c)
         }
         
