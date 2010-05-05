@@ -2,9 +2,10 @@ package grambers
 import junit.framework._
 import Assert._
 import org.jmock.Mockery
-import org.jmock.lib.legacy.ClassImposteriser;
+import org.jmock.lib.legacy.ClassImposteriser
 import org.jmock.Expectations
 import org.jmock.Expectations._
+import net.iharder.Base64
 
 class UniverseTest extends TestCase {
 
@@ -59,4 +60,8 @@ class UniverseTest extends TestCase {
       assertEquals(45.0, universe.calculateCollisionAngle(circle_1, circle_2))
     }
     
+    def testBase64Decode {
+      val byteArray : Array[Byte] = Base64.decode("H4sIAAAAAAAAAO3NoREAMAgEsLedAfafE4+s6l0jolNJiif18tt/Fj8AAMC9ARtYg28AEAAA")
+      assertTrue(byteArray(0) != 0)
+    }
 }
