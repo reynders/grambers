@@ -71,4 +71,13 @@ class UniverseTest extends TestCase {
       assertTrue(!encoded.equals("testgzip"))
       assertEquals("testgzip", new String(Base64.decode(encoded)))
     }
+    
+    def testTiledDecode {
+      val byteArray : Array[Byte] = Base64.decode("H4sIAAAAAAAAC2NkYGBggmJGKMbFZwZiAJN2z9cwAAAA")
+      for (i <- 0 until byteArray.size) {
+        if (i%4 == 0)
+          println(i + ":" + BigInt(byteArray.slice(i, i+4).reverse))
+      }
+      assertTrue(1==1)
+    }
 }
