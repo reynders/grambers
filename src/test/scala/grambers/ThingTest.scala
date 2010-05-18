@@ -146,7 +146,9 @@ class ThingTest extends TestCase {
     }
     
     def testFileLoad = {
-      val file = scala.io.Source.fromFile(new java.io.File("resources/maps/test.tmx")).mkString
+      import scala.xml._
+      //val file = scala.io.Source.fromFile(new java.io.File("resources/maps/test.tmx")).mkString
+      val file = XML.loadFile("resources/maps/test.tmx").text
       println("File: " + file)
       
       assertTrue(1==1)
