@@ -144,13 +144,4 @@ class ThingTest extends TestCase {
       thing.direction = 359
       assertEquals((thing.ROTATED_IMAGE_COUNT-1), thing.getRotatedImageNumberBasedOnDirection)
     }
-    
-    def testFileLoad = {
-      import scala.xml._
-      //val file = scala.io.Source.fromFile(new java.io.File("resources/maps/test.tmx")).mkString
-      val file = XML.loadFile("resources/maps/test.tmx").text
-      println("File: " + file)
-      
-      assertTrue(1==1)
-    }
 }
