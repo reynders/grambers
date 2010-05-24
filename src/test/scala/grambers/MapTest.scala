@@ -6,6 +6,11 @@ import net.iharder.Base64
 
 class MapTest extends TestCase {
 
+  def testWorldPointToTilePoint {
+    val map = new Map
+    assertEquals(Point(0, 0), map.worldPointToTileIndex(Point(0, 0)))
+  }
+  
   def testBase64Decode {
       val byteArray : Array[Byte] = Base64.decode("dGVzdA==") 
       assertEquals("test", new String(byteArray))

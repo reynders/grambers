@@ -61,6 +61,7 @@ class Observer (val universe : Universe, var thingInFocus : Thing) {
       def drawUniverse(g2 : Graphics2D) {
         val at = g2.getTransform();
         g2.translate(xViewTranslation, yViewTranslation)
+        universe.map.drawBackground(g2, position, w, h)
         universe.staticThings.foreach(thing => thing.draw(g2, thing.center))
         universe.movingThings.foreach(thing => thing.draw(g2, thing.center))
 

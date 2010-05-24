@@ -36,6 +36,11 @@ object Shape {
 }
 
 class Point(val x : Double, val y : Double) {
+  override def equals(that : Any) = that match {    
+    case point : Point => (this.x == point.x && this.y == point.y)
+    case _ => false      
+  }
+
   override def toString : String = {
     return "P(" + x + "," + y + ")"
   }

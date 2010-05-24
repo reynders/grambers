@@ -5,6 +5,10 @@ import Assert._
 
 class ShapeTest extends TestCase {
 
+  def testPointEquality {
+    assertEquals(Point(0,0), Point(0,0))
+  }
+  
   def testRectangleAsLines {
     val rectangle = new Rectangle(new Point(10, 10), 10, 10)
     val lines = rectangle.asLines

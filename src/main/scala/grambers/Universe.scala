@@ -8,6 +8,8 @@ class Universe(val WIDTH : Int, val HEIGHT : Int) {
   val staticThings : ArrayBuffer[StaticThing] = new ArrayBuffer[StaticThing]
   val movingThings : ArrayBuffer[MovingThing] = new ArrayBuffer[MovingThing]
   
+  val map : Map = new Map
+  
   var millisecondsSinceBigBang = 0; 
   
   def addThing(thing : Thing) {
