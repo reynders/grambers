@@ -8,7 +8,10 @@ class MapTest extends TestCase {
 
   def testWorldPointToTilePoint {
     val map = new Map
-    assertEquals(Point(0, 0), map.worldPointToTileIndex(Point(0, 0)))
+    assertEquals((0, 0), map.worldPointToTileIndex(Point(0, 0)))
+    assertEquals((1, 1), map.worldPointToTileIndex(Point(map.tileW, map.tileH)))
+    assertEquals((0, 1), map.worldPointToTileIndex(Point(map.tileW/2, map.tileH)))
+    assertEquals((1, 0), map.worldPointToTileIndex(Point(map.tileW, map.tileH/2)))
   }
   
   def testBase64Decode {

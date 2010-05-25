@@ -6,7 +6,9 @@ import java.awt._
 
 class Map {
   val testTile : BufferedImage = javax.imageio.ImageIO.read(new java.io.File("resources/gfx/testtile.gif")).asInstanceOf[BufferedImage]
-
+  val tileW = 32
+  val tileH = 32
+  
   def drawBackground(g2 : Graphics2D, center : Point, w : Int, h : Int) {
 //    val backgroundImage = getBackground(Point(center.x - w/2, center.y - h/2)),
 //                                        Point(center.x + w/2, center.y + w/2))
@@ -21,7 +23,6 @@ class Map {
 
   }
   
-  def worldPointToTileIndex(worldPoint : Point) : Point = {
-    return Point(0, 0)
-  }
+  def worldPointToTileIndex(worldPoint : Point) : (Int, Int) = ((worldPoint.x.toInt / tileW.toInt), 
+                                                                (worldPoint.y.toInt / tileH.toInt))
 }
