@@ -33,7 +33,7 @@ class Map {
   def drawTiles(g2 : Graphics2D, leftUpperPoint : Point, rightLowerPoint : Point) {
    val lup = worldPointToTileIndex(leftUpperPoint)
    val rlp = worldPointToTileIndex(rightLowerPoint)
-println("Drawing from " + lup + " to " + rlp + " (from " + leftUpperPoint + " to " + rightLowerPoint)   
+//println("Drawing from " + lup + " to " + rlp + " (from " + leftUpperPoint + " to " + rightLowerPoint)   
    for (x <- lup._1 to rlp._1) 
      for (y <- lup._2 to rlp._2) 
        g2.drawImage(tiles(x)(y).image, x*tileW, y*tileH, null)
