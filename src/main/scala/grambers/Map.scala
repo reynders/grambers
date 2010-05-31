@@ -6,6 +6,7 @@ import java.awt._
 import scala.collection.mutable._
 
 class Map {
+
   val tileW = 128
   val tileH = 128
   var tiles = fakeLoadMap("fakemap")
@@ -41,6 +42,14 @@ class Map {
   
   def worldPointToTileIndex(worldPoint : Point) : (Int, Int) = ((worldPoint.x.toInt / tileW.toInt), 
                                                                 (worldPoint.y.toInt / tileH.toInt))
+}
+
+class TileSet(name : String, id : Int) {
+  val tiles = new ArrayBuffer[Tile]()
+}
+
+class Layer {
+  val tileMap = ArrayBuffer[ArrayBuffer[(Int, Int)]]()
 }
 
 class Tile (val image : BufferedImage){
