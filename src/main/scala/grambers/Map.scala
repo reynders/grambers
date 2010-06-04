@@ -4,6 +4,7 @@ import javax.swing._
 import java.awt.image._
 import java.awt._
 import scala.collection.mutable._
+import scala.xml._
 
 class Map {
 
@@ -25,7 +26,6 @@ class Map {
 
    for (x <- lup._1 to rlp._1) 
     for (y <- lup._2 to rlp._2) {
-       //g2.drawImage(tiles(x)(y).image, x*tileW, y*tileH, null)
        val tileIndex = layers(0).tileMap(x)(y)
        g2.drawImage(getTile(0, (x, y)).image, x*tileW, y*tileH, null)
     }
@@ -63,14 +63,27 @@ object Tile {
 
 object MapLoader {
   
-  def loadMap(mapName : String) : Map = {
-    val map = new Map
-    map.tileSets = loadTileSets
-    map.layers = loadLayers
+  def loadMap(mapFileName : String) : Map = {
+    var map = new Map
+    
+    try {
+      map = parseMapFromXml(XML.loadFile(mapFileName))
+    } catch {
+      case e:java.io.FileNotFoundException => println("Unknown map " + mapFileName)
+    }
+    
     return map
   }
   
-  def loadTileSets : ArrayBuffer[TileSet] = {
+  def parseMapFromXml(mapXml : Elem) : Map = {
+    val map = new Map
+    map.tileSets = parseTileSets
+    map.layers = parseLayers(mapXml)
+    return map
+  }
+
+  
+  def parseTileSets : ArrayBuffer[TileSet] = {
     val testTileSet = new TileSet("testTileSet_1", 0)
     val testTile = Tile("resources/gfx/testtile.gif")
     testTileSet.tiles += testTile
@@ -78,7 +91,19 @@ object MapLoader {
     return ArrayBuffer(testTileSet)
   }
 
-  def loadLayers : ArrayBuffer[Layer] = {
+  def parseLayers(mapXml : Elem) : ArrayBuffer[Layer] = {
+    val layers = new ArrayBuffer[Layer]()
+    
+    val layerElem = mapXml \\ "layer"
+    
+    layerElem.foreach { layer => 
+      val layer = new Layer
+      layers += layer
+    }
+    return layers
+  }
+
+  def dummyParseLayers(mapXml : Elem) : ArrayBuffer[Layer] = {
     val layers = new ArrayBuffer[Layer]()
     
     val testLayer = new Layer

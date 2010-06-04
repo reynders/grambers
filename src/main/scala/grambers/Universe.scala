@@ -8,7 +8,7 @@ class Universe(val WIDTH : Int, val HEIGHT : Int) {
   val staticThings : ArrayBuffer[StaticThing] = new ArrayBuffer[StaticThing]
   val movingThings : ArrayBuffer[MovingThing] = new ArrayBuffer[MovingThing]
   
-  val map : Map = MapLoader.loadMap("test")
+  val map : Map = MapLoader.loadMap("test.tmx")
   
   var millisecondsSinceBigBang = 0; 
   

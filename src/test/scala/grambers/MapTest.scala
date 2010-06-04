@@ -43,4 +43,23 @@ class MapTest extends TestCase {
       
       assertTrue(xml.startsWith("<map"))
     }
+    
+    val testMapXml = <map version="1.0" orientation="orthogonal" width="4" height="3" tilewidth="32" tileheight="32">
+                    <tileset firstgid="1" name="tileset0" tilewidth="32" tileheight="32">
+                      <image source="tile/examples/sewer_tileset.png"/>
+                    </tileset>
+                    <tileset firstgid="37" name="tileset1" tilewidth="32" tileheight="32">
+                      <image source="tile/examples/tmw_desert_spacing.png"/>
+                    </tileset>
+                    <layer name="Layer 1" width="4" height="3">
+                      <data encoding="base64" compression="gzip">
+                        H4sIAAAAAAAAC1NlYGBggmJ1IGZE4oPYpkh8cyAGAPAUonAwAAAA
+                      </data>
+                    </layer>
+                  </map>
+                  
+     def testParseLayersFromMapXml {
+       val layers = MapLoader.parseLayers(testMapXml)
+       assertEquals(1, layers.size)
+     }
 }
