@@ -44,7 +44,7 @@ class TileSet(name : String, id : Int) {
   val tiles = new ArrayBuffer[Tile]()
 }
 
-class Layer {
+class Layer(name : String, w : Int, h : Int) {
   val tileMap = ArrayBuffer[ArrayBuffer[(Int, Int)]]()
 }
 
@@ -96,13 +96,14 @@ object MapLoader {
     
     val layerElem = mapXml \\ "layer"
     
-    layerElem.foreach { layer => 
-      val layer = new Layer
+    layerElem.foreach { layerNode => 
+      val layer = Layer(layerNode)
       layers += layer
     }
     return layers
   }
 
+  /*
   def dummyParseLayers(mapXml : Elem) : ArrayBuffer[Layer] = {
     val layers = new ArrayBuffer[Layer]()
     
@@ -118,5 +119,13 @@ object MapLoader {
     layers += testLayer
     
     return layers
+  }
+  */
+}
+
+object Layer {
+  def apply(xml : Node) : Layer = {
+    val layer = new Layer((xml \ "@name").text, (xml \ "@width").text.toInt, (xml \ "@height").text.toInt)
+    return layer  
   }
 }
