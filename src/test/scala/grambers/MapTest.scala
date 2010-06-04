@@ -62,4 +62,10 @@ class MapTest extends TestCase {
        val layers = MapLoader.parseLayers(testMapXml)
        assertEquals(1, layers.size)
      }
+     
+     def testParseLayerDataFromMapXml {
+       val tileMap = Layer.parseLayerData("H4sIAAAAAAAAC1NlYGBggmJ1IGZE4oPYpkh8cyAGAPAUonAwAAAA", 4, 3)
+       assertEquals(4, tileMap.size)
+       assertEquals(3, tileMap(0).size)
+     }
 }

@@ -44,9 +44,34 @@ class TileSet(name : String, id : Int) {
   val tiles = new ArrayBuffer[Tile]()
 }
 
-class Layer(name : String, w : Int, h : Int) {
-  val tileMap = ArrayBuffer[ArrayBuffer[(Int, Int)]]()
+class Layer(val name : String, val w : Int, val h : Int) {
+  var tileMap = new ArrayBuffer[ArrayBuffer[(Int, Int)]]() 
 }
+
+object Layer {
+  def apply(xml : Node) : Layer = {
+    val layer = new Layer((xml \ "@name").text, 
+                          (xml \ "@width").text.toInt, 
+                          (xml \ "@height").text.toInt)
+                          
+    layer.tileMap = parseLayerData((xml \\ "data").text.trim, layer.w, layer.h)
+    return layer
+  }
+  
+  def parseLayerData(base64GzipTileMapString : String, w : Int, h : Int) : ArrayBuffer[ArrayBuffer[(Int, Int)]] = {
+    val tileMap = new ArrayBuffer[ArrayBuffer[(Int, Int)]]()
+    import net.iharder.Base64
+    val byteArray : Array[Byte] = Base64.decode(base64GzipTileMapString)
+    for (i <- 0 until byteArray.size) {
+        if (i%4 == 0)
+          println(i + ": (" + ((i/4)%w) + "," + ((i/4)/w)+ ")" + 
+                  BigInt(byteArray.slice(i, i+4).reverse))
+    }
+
+    return tileMap
+  }
+}
+
 
 class Tile(val image : BufferedImage){
   val w : Int = image.getWidth
@@ -123,9 +148,3 @@ object MapLoader {
   */
 }
 
-object Layer {
-  def apply(xml : Node) : Layer = {
-    val layer = new Layer((xml \ "@name").text, (xml \ "@width").text.toInt, (xml \ "@height").text.toInt)
-    return layer  
-  }
-}
