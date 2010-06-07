@@ -37,7 +37,7 @@ class Map {
        val tileIndex = layers(layerId).tileMap(coord._1)(coord._2)
        return tileSets(tileIndex._1).tiles(tileIndex._2)                                                                  
   }
-                                                                
+  
 }
 
 class TileSet(name : String, id : Int) {
@@ -58,18 +58,40 @@ object Layer {
     return layer
   }
   
+  // Awful shit!
   def parseLayerData(base64GzipTileMapString : String, w : Int, h : Int) : ArrayBuffer[ArrayBuffer[(Int, Int)]] = {
-    val tileMap = new ArrayBuffer[ArrayBuffer[(Int, Int)]]()
+    val tileMap = createInitialTileMap(w, h)
     import net.iharder.Base64
     val byteArray : Array[Byte] = Base64.decode(base64GzipTileMapString)
     for (i <- 0 until byteArray.size) {
-        if (i%4 == 0)
-          println(i + ": (" + ((i/4)%w) + "," + ((i/4)/w)+ ")" + 
-                  BigInt(byteArray.slice(i, i+4).reverse))
+      if (i%4 == 0) {
+        val tileIndex = BigInt(byteArray.slice(i, i+4).reverse).toInt
+        val coord : (Int, Int) = (((i/4)%w), ((i/4)/w))
+        println(i + ":" + coord + "=" + tileIndex)
+        tileMap(coord._1)(coord._2) = absoluteTileIndexToTileSetAndIndex(tileIndex)
+      }
     }
 
     return tileMap
   }
+
+  // Insanity
+  def createInitialTileMap(w : Int, h : Int) : ArrayBuffer[ArrayBuffer[(Int, Int)]] ={
+    val tileMap = new ArrayBuffer[ArrayBuffer[(Int, Int)]]()
+    for (x <- 0 until w) {
+      val column = new ArrayBuffer[(Int, Int)](h)
+      for (y <- 0 until h) {
+        column += ((0, 0))
+      }      
+      tileMap += column
+    }
+    return tileMap      
+  }
+  
+  def absoluteTileIndexToTileSetAndIndex(absoluteTileIndex : Int) : (Int, Int) = {
+    return (0, 0)
+  }                                                                
+
 }
 
 
