@@ -45,7 +45,7 @@ class TileSet(name : String, id : Int) {
 }
 
 class Layer(val name : String, val w : Int, val h : Int) {
-  var tileMap = new ArrayBuffer[ArrayBuffer[(Int, Int)]]() 
+  var tileMap = Layer.createInitialTileMap(w, h) 
 }
 
 object Layer {
@@ -89,7 +89,7 @@ object Layer {
   }
   
   def absoluteTileIndexToTileSetAndIndex(absoluteTileIndex : Int) : (Int, Int) = {
-    return (0, 0)
+    return (0, absoluteTileIndex)
   }                                                                
 
 }
