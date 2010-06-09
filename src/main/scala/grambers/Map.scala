@@ -45,24 +45,31 @@ class TileSet(val tiles: ArrayBuffer[Tile], val w:Int, val h:Int, val tileW:Int,
 
 object TileSet {
 
-  def apply(xml : Node) : TileSet = loadFromFile((xml \\ "image" \ "@source").text, 
-                                                 (xml \\ "@tilewidth").text.toInt, 
-                                                 (xml \\ "@tileheight").text.toInt)
+  def apply(xml : Node) : TileSet = 
+     loadFromFile((xml \\ "image" \ "@source").text,
+                  (xml \\ "@tilewidth").text.toInt,
+                  (xml \\ "@tileheight").text.toInt,
+                  (xml \\ "@spacing").text.toInt)
 
-  def loadFromFile(fileName : String, w : Int, h : Int) : TileSet = {
-    val tiles = splitToTiles(javax.imageio.ImageIO.read(new java.io.File(fileName)).asInstanceOf[BufferedImage], w, h)
-    return new TileSet(tiles, w, h, tiles(0).w, tiles(0).h)
+  def loadFromFile(fileName : String, tileW : Int, tileH : Int, spacing : Int) : TileSet = {
+    val image = javax.imageio.ImageIO.read(new java.io.File(fileName)).asInstanceOf[BufferedImage]
+    val w = (image.getWidth-spacing)/(tileW+spacing)
+    val h = (image.getHeight-spacing)/(tileH+spacing)
+println("From w " + w + " and iw " + image.getWidth + "and spacing " + spacing + "got tileW: " + tileW)
+    val tiles = splitToTiles(image, w, h, tileW, tileH, spacing)
+    return new TileSet(tiles, w, h, tileW, tileH)
   }
   
-  def splitToTiles(image:BufferedImage, w:Int, h:Int) : ArrayBuffer[Tile] = {
-    val tileW = image.getWidth / w
-    val tileH = image.getHeight / h
+  def splitToTiles(image:BufferedImage, w:Int, h:Int, tileW:Int, tileH:Int, spacing:Int) : ArrayBuffer[Tile] = {
     val tiles : ArrayBuffer[Tile] = new ArrayBuffer[Tile]()
     for (x <- 0 until w) {
+      val xSpacing = (x+1) * spacing
       for (y <- 0 until h) {
+        val ySpacing = (y+1) * spacing
         val tileImage = new BufferedImage(tileW, tileH, image.getType)
         val g = tileImage.createGraphics
-        g.drawImage(image, 0, 0, tileW, tileH, tileW*x, tileH*y, tileW*x+tileW, tileH*y+tileH, null)
+        g.drawImage(image, 0, 0, tileW, tileH, tileW*x+xSpacing, tileH*y+ySpacing, 
+                                              (tileW*x+xSpacing)+tileW, (tileH*y+ySpacing)+tileH, null)
         g.dispose
         tiles += new Tile(tileImage)
       }

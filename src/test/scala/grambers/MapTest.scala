@@ -45,10 +45,10 @@ class MapTest extends TestCase {
     }
     
     val testMapXml = <map version="1.0" orientation="orthogonal" width="4" height="3" tilewidth="32" tileheight="32">
-                    <tileset firstgid="1" name="tileset0" tilewidth="32" tileheight="32">
+                    <tileset firstgid="1" name="tileset0" tilewidth="32" tileheight="32" spacing="1">
                       <image source="resources/gfx/testtileset_8x6.png"/>
                     </tileset>
-                    <tileset firstgid="37" name="tileset1" tilewidth="32" tileheight="32">
+                    <tileset firstgid="37" name="tileset1" tilewidth="32" tileheight="32" spacing="1">
                       <image source="resources/gfx/testtileset_6x6.png"/>
                     </tileset>
                     <layer name="Layer 1" width="4" height="3">
@@ -83,6 +83,6 @@ class MapTest extends TestCase {
        assertEquals(32, tileSets(0).tileW)
        assertEquals(32, tileSets(0).tileH)
        assertEquals(6, tileSets(0).h)
-       assertEquals(tileSets(0).tileW*tileSets(0).tileH, tileSets(0).tiles.size)
+       assertEquals(tileSets(0).w*tileSets(0).h, tileSets(0).tiles.size)
      }
 }
