@@ -46,10 +46,10 @@ class MapTest extends TestCase {
     
     val testMapXml = <map version="1.0" orientation="orthogonal" width="4" height="3" tilewidth="32" tileheight="32">
                     <tileset firstgid="1" name="tileset0" tilewidth="32" tileheight="32">
-                      <image source="tile/examples/sewer_tileset.png"/>
+                      <image source="resources/gfx/testtileset_8x6.png"/>
                     </tileset>
                     <tileset firstgid="37" name="tileset1" tilewidth="32" tileheight="32">
-                      <image source="tile/examples/tmw_desert_spacing.png"/>
+                      <image source="resources/gfx/testtileset_6x6.png"/>
                     </tileset>
                     <layer name="Layer 1" width="4" height="3">
                       <data encoding="base64" compression="gzip">
@@ -74,5 +74,15 @@ class MapTest extends TestCase {
        assertEquals(3, tileMap(0).size)
        assertEquals(37, tileMap(0)(0)._2)
        assertEquals(55, tileMap(3)(2)._2)
+     }
+     
+     // Warning: causes a file read to the tile sets referenced in the parsed XML! 
+     def testParseTileSetsFromMapXml {
+       val tileSets = MapLoader.parseTileSets(testMapXml)
+       assertEquals(2, tileSets.size)
+       assertEquals(32, tileSets(0).tileW)
+       assertEquals(32, tileSets(0).tileH)
+       assertEquals(6, tileSets(0).h)
+       assertEquals(tileSets(0).tileW*tileSets(0).tileH, tileSets(0).tiles.size)
      }
 }

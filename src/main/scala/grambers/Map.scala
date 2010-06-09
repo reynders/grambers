@@ -40,8 +40,35 @@ class Map {
   
 }
 
-class TileSet(name : String, id : Int) {
-  val tiles = new ArrayBuffer[Tile]()
+class TileSet(val tiles: ArrayBuffer[Tile], val w:Int, val h:Int, val tileW:Int, val tileH:Int) {
+}
+
+object TileSet {
+
+  def apply(xml : Node) : TileSet = loadFromFile((xml \\ "image" \ "@source").text, 
+                                                 (xml \\ "@tilewidth").text.toInt, 
+                                                 (xml \\ "@tileheight").text.toInt)
+
+  def loadFromFile(fileName : String, w : Int, h : Int) : TileSet = {
+    val tiles = splitToTiles(javax.imageio.ImageIO.read(new java.io.File(fileName)).asInstanceOf[BufferedImage], w, h)
+    return new TileSet(tiles, w, h, tiles(0).w, tiles(0).h)
+  }
+  
+  def splitToTiles(image:BufferedImage, w:Int, h:Int) : ArrayBuffer[Tile] = {
+    val tileW = image.getWidth / w
+    val tileH = image.getHeight / h
+    val tiles : ArrayBuffer[Tile] = new ArrayBuffer[Tile]()
+    for (x <- 0 until w) {
+      for (y <- 0 until h) {
+        val tileImage = new BufferedImage(tileW, tileH, image.getType)
+        val g = tileImage.createGraphics
+        g.drawImage(image, 0, 0, tileW, tileH, tileW*x, tileH*y, tileW*x+tileW, tileH*y+tileH, null)
+        g.dispose
+        tiles += new Tile(tileImage)
+      }
+    }
+    return tiles
+  }
 }
 
 class Layer(val name : String, val w : Int, val h : Int) {
@@ -75,7 +102,6 @@ object Layer {
     return tileMap
   }
 
-  // Insanity
   def createInitialTileMap(w : Int, h : Int) : ArrayBuffer[ArrayBuffer[(Int, Int)]] ={
     val tileMap = new ArrayBuffer[ArrayBuffer[(Int, Int)]]()
     for (x <- 0 until w) {
@@ -124,18 +150,21 @@ object MapLoader {
   
   def parseMapFromXml(mapXml : Elem) : Map = {
     val map = new Map
-    map.tileSets = parseTileSets
+    map.tileSets = parseTileSets(mapXml)
     map.layers = parseLayers(mapXml)
     return map
   }
 
   
-  def parseTileSets : ArrayBuffer[TileSet] = {
-    val testTileSet = new TileSet("testTileSet_1", 0)
-    val testTile = Tile("resources/gfx/testtile.gif")
-    testTileSet.tiles += testTile
+  def parseTileSets(mapXml:Elem) : ArrayBuffer[TileSet] = {
+    val tileSets = new ArrayBuffer[TileSet]()
+    val tileSetElem = mapXml \\ "tileset"
     
-    return ArrayBuffer(testTileSet)
+    tileSetElem.foreach { tileSetNode => 
+      val tileSet = TileSet(tileSetNode)
+      tileSets += tileSet
+    }
+    return tileSets
   }
 
   def parseLayers(mapXml : Elem) : ArrayBuffer[Layer] = {
@@ -149,24 +178,5 @@ object MapLoader {
     }
     return layers
   }
-
-  /*
-  def dummyParseLayers(mapXml : Elem) : ArrayBuffer[Layer] = {
-    val layers = new ArrayBuffer[Layer]()
-    
-    val testLayer = new Layer
-    for (i <- 1 to 10) {
-      val tileRow = new ArrayBuffer[(Int, Int)]
-      for (i <- 1 to 10) {
-        val tileRef = (0, 0) 
-        tileRow += tileRef
-      }
-      testLayer.tileMap += tileRow
-    }
-    layers += testLayer
-    
-    return layers
-  }
-  */
 }
 
