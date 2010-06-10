@@ -101,7 +101,7 @@ object Layer {
       if (i%4 == 0) {
         val tileIndex = BigInt(byteArray.slice(i, i+4).reverse).toInt
         val coord : (Int, Int) = (((i/4)%w), ((i/4)/w))
-        println(i + ":" + coord + "=" + tileIndex)
+        // println(i + ":" + coord + "=" + tileIndex)
         tileMap(coord._1)(coord._2) = absoluteTileIndexToTileSetAndIndex(tileIndex)
       }
     }
