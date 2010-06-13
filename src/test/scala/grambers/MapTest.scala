@@ -46,13 +46,22 @@ class MapTest extends TestCase {
        assertEquals(55, tileMap(3)(2)._2)
      }
      
-     // Warning: causes a file read to the tile sets referenced in the parsed XML! 
-     def testParseTileSetsFromMapXml {
-       val tileSets = MapLoader.parseTileSets(testMapXml)
-       assertEquals(2, tileSets.size)
-       assertEquals(32, tileSets(0).tileW)
-       assertEquals(32, tileSets(0).tileH)
-       assertEquals(6, tileSets(0).h)
-       assertEquals(tileSets(0).w*tileSets(0).h, tileSets(0).tiles.size)
-     }
+   // Warning: causes a file read to the tile sets referenced in the parsed XML! 
+   def testParseTileSetsFromMapXml {
+     val tileSets = MapLoader.parseTileSets(testMapXml)
+     assertEquals(2, tileSets.size)
+     assertEquals(32, tileSets(0).tileW)
+     assertEquals(32, tileSets(0).tileH)
+     assertEquals(6, tileSets(0).h)
+     assertEquals(tileSets(0).w*tileSets(0).h, tileSets(0).tiles.size)
+   }
+     
+   def testCreateSingleTileMapFromManyTileSets = {
+     var tileSets = MapLoader.parseTileSets(testMapXml)
+     assertEquals(2, tileSets.size)
+     if (tileSets(0).firstTileIndex != 0) tileSets = tileSets.reverse
+     val tiles = MapLoader.createSingleTileMapFromManyTileSets(tileSets)
+     assertEquals(((8*6)+(6*6)), tiles.size)
+     assertEquals(tiles(0), tileSets(0).tiles(0)) 
+   }
 }

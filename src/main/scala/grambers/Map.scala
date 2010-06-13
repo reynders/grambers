@@ -12,6 +12,7 @@ class Map {
   val tileH = 128
   //var tiles = fakeLoadMap("fakemap")
   var tileSets = new ArrayBuffer[TileSet]()
+  var tiles = new ArrayBuffer[Tile]()
   var layers = new ArrayBuffer[Layer]()
     
   def drawBackground(g2 : Graphics2D, center : Point, w : Int, h : Int) {
@@ -40,24 +41,25 @@ class Map {
   
 }
 
-class TileSet(val tiles: ArrayBuffer[Tile], val w:Int, val h:Int, val tileW:Int, val tileH:Int) {
+class TileSet(val firstTileIndex:Int, val tiles:ArrayBuffer[Tile], val w:Int, val h:Int, val tileW:Int, val tileH:Int) {
 }
 
 object TileSet {
 
   def apply(xml : Node) : TileSet = 
      loadFromFile((xml \\ "image" \ "@source").text,
+                  (xml \\ "@firstgid").text.toInt,
                   (xml \\ "@tilewidth").text.toInt,
                   (xml \\ "@tileheight").text.toInt,
                   (xml \\ "@spacing").text.toInt)
 
-  def loadFromFile(fileName : String, tileW : Int, tileH : Int, spacing : Int) : TileSet = {
+  def loadFromFile(fileName : String, firstTileIndex:Int, tileW : Int, tileH : Int, spacing : Int) : TileSet = {
     val image = javax.imageio.ImageIO.read(new java.io.File(fileName)).asInstanceOf[BufferedImage]
     val w = (image.getWidth-spacing)/(tileW+spacing)
     val h = (image.getHeight-spacing)/(tileH+spacing)
 println("From w " + w + " and iw " + image.getWidth + "and spacing " + spacing + "got tileW: " + tileW)
     val tiles = splitToTiles(image, w, h, tileW, tileH, spacing)
-    return new TileSet(tiles, w, h, tileW, tileH)
+    return new TileSet(firstTileIndex, tiles, w, h, tileW, tileH)
   }
   
   def splitToTiles(image:BufferedImage, w:Int, h:Int, tileW:Int, tileH:Int, spacing:Int) : ArrayBuffer[Tile] = {
@@ -159,6 +161,7 @@ object MapLoader {
     val map = new Map
     map.tileSets = parseTileSets(mapXml)
     map.layers = parseLayers(mapXml)
+    map.tiles = createSingleTileMapFromManyTileSets(map.tileSets)
     return map
   }
 
@@ -184,6 +187,13 @@ object MapLoader {
       layers += layer
     }
     return layers
+  }
+  
+  def createSingleTileMapFromManyTileSets(tileSets:ArrayBuffer[TileSet]) : ArrayBuffer[Tile] = {
+    tileSets.sortWith((l:TileSet, r:TileSet)=>{l.firstTileIndex > r.firstTileIndex})
+    val tiles = new ArrayBuffer[Tile]()
+    tileSets.foreach(tileSet => tiles ++= tileSet.tiles)
+    return tiles
   }
 }
 
