@@ -142,7 +142,7 @@ object Demo {
     }
 
     def debugDemo {
-      val universe = new Universe(800, 200)
+      val universe = new Universe(1000, 300)
       addWalls(universe)
       
       val ball = ImageRoundThing(100, 100, 23, 23, "resources/gfx/ball_50x50.gif", 10, 0)

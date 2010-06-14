@@ -6,10 +6,10 @@ import java.awt._
 import scala.collection.mutable._
 import scala.xml._
 
-class Map {
+class Map(var wInTiles:Int, var hInTiles:Int) {
 
-  val tileW = 32
-  val tileH = 32
+  var tileW = 32
+  var tileH = 32
   var tileSets = new ArrayBuffer[TileSet]()
   var tiles = new ArrayBuffer[Tile]()
   var layers = new ArrayBuffer[Layer]()
@@ -24,10 +24,16 @@ class Map {
    val lup = worldPointToTileIndex(leftUpperPoint)
    val rlp = worldPointToTileIndex(rightLowerPoint)
 
-   for (x <- lup._1 to rlp._1) 
-    for (y <- lup._2 to rlp._2) {
-       val tileIndex = layers(0).tileMap(x)(y)
-       g2.drawImage(getTile(0, (x, y)).image, x*tileW, y*tileH, null)
+   if (rlp._1 >= wInTiles || rlp._2 >= hInTiles) {
+     println("Not drawing! Right lower point " + rlp + " would be outside map(" + 
+             wInTiles + ","+ hInTiles + ")")
+   }
+   else {
+     for (x <- lup._1 to rlp._1) 
+      for (y <- lup._2 to rlp._2) {
+        val tileIndex = layers(0).tileMap(x)(y)
+        g2.drawImage(getTile(0, (x, y)).image, x*tileW, y*tileH, null)
+      }
     }
   }
   
@@ -38,6 +44,7 @@ class Map {
     return tiles(tileIndex._2-1)                                                                  
   }
 }
+
 
 class TileSet(val firstTileIndex:Int, val tiles:ArrayBuffer[Tile], val w:Int, val h:Int, val tileW:Int, val tileH:Int) {
 }
@@ -143,22 +150,22 @@ object Tile {
 object MapLoader {
   
   def loadMap(mapFileName : String) : Map = {
-    var map = new Map
-    
+    var map = new Map(0, 0)
     try {
       map = parseMapFromXml(XML.loadFile(mapFileName))
     } catch {
       case e:java.io.FileNotFoundException => println("Unknown map " + mapFileName)
     }
 
-    println("Loaded map " + mapFileName + " with " + map.layers.size + " layers and " + 
-             map.tiles.size + " tiles")
+    println("Loaded map " + mapFileName + "of size (" + map.wInTiles + "," + map.hInTiles + 
+            "),  with " + map.layers.size + " layers and " + map.tiles.size + " tiles")
     
     return map
   }
   
   def parseMapFromXml(mapXml : Elem) : Map = {
-    val map = new Map
+    val map = new Map((mapXml \ "@width").text.toInt, 
+                      (mapXml \ "@height").text.toInt)
     map.tileSets = parseTileSets(mapXml)
     map.layers = parseLayers(mapXml)
     map.tiles = createSingleTileMapFromManyTileSets(map.tileSets)

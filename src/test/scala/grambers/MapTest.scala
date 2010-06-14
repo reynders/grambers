@@ -7,7 +7,7 @@ import net.iharder.Base64
 class MapTest extends TestCase {
 
   def testWorldPointToTilePoint {
-    val map = new Map
+    val map = new Map(10, 10)
     assertEquals((0, 0), map.worldPointToTileIndex(Point(0, 0)))
     assertEquals((1, 1), map.worldPointToTileIndex(Point(map.tileW, map.tileH)))
     assertEquals((0, 1), map.worldPointToTileIndex(Point(map.tileW/2, map.tileH)))
