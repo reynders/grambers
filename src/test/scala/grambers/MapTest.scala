@@ -59,6 +59,7 @@ class MapTest extends TestCase {
    def testCreateSingleTileMapFromManyTileSets = {
      var tileSets = MapLoader.parseTileSets(testMapXml)
      assertEquals(2, tileSets.size)
+     assertEquals(((8*6)+(6*6)), tileSets(0).tiles.size + tileSets(1).tiles.size)
      if (tileSets(0).firstTileIndex != 0) tileSets = tileSets.reverse
      val tiles = MapLoader.createSingleTileMapFromManyTileSets(tileSets)
      assertEquals(((8*6)+(6*6)), tiles.size)
