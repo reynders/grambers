@@ -8,9 +8,8 @@ import scala.xml._
 
 class Map {
 
-  val tileW = 128
-  val tileH = 128
-  //var tiles = fakeLoadMap("fakemap")
+  val tileW = 32
+  val tileH = 32
   var tileSets = new ArrayBuffer[TileSet]()
   var tiles = new ArrayBuffer[Tile]()
   var layers = new ArrayBuffer[Layer]()
@@ -62,10 +61,10 @@ object TileSet {
   
   def splitToTiles(image:BufferedImage, w:Int, h:Int, tileW:Int, tileH:Int, spacing:Int) : ArrayBuffer[Tile] = {
     val tiles : ArrayBuffer[Tile] = new ArrayBuffer[Tile]()
-    for (x <- 0 until w) {
-      val xSpacing = (x+1) * spacing
-      for (y <- 0 until h) {
-        val ySpacing = (y+1) * spacing
+    for (y <- 0 until h) {
+      val ySpacing = (y+1) * spacing
+      for (x <- 0 until w) {
+        val xSpacing = (x+1) * spacing
         val tileImage = new BufferedImage(tileW, tileH, image.getType)
         val g = tileImage.createGraphics
         g.drawImage(image, 0, 0, tileW, tileH, tileW*x+xSpacing, tileH*y+ySpacing, 
