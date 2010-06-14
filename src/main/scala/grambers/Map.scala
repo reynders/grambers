@@ -35,10 +35,9 @@ class Map {
   def worldPointToTileIndex(worldPoint : Point) : (Int, Int) = ((worldPoint.x.toInt / tileW.toInt), 
                                                                 (worldPoint.y.toInt / tileH.toInt))
   def getTile(layerId : Int, coord : (Int, Int)) : Tile = {
-       val tileIndex = layers(layerId).tileMap(coord._1)(coord._2)
-       return tileSets(tileIndex._1).tiles(tileIndex._2)                                                                  
+    val tileIndex = layers(layerId).tileMap(coord._1)(coord._2)
+    return tiles(tileIndex._2-1)                                                                  
   }
-  
 }
 
 class TileSet(val firstTileIndex:Int, val tiles:ArrayBuffer[Tile], val w:Int, val h:Int, val tileW:Int, val tileH:Int) {
@@ -57,7 +56,6 @@ object TileSet {
     val image = javax.imageio.ImageIO.read(new java.io.File(fileName)).asInstanceOf[BufferedImage]
     val w = (image.getWidth-spacing)/(tileW+spacing)
     val h = (image.getHeight-spacing)/(tileH+spacing)
-println("From w " + w + " and iw " + image.getWidth + "and spacing " + spacing + "got tileW: " + tileW)
     val tiles = splitToTiles(image, w, h, tileW, tileH, spacing)
     return new TileSet(firstTileIndex, tiles, w, h, tileW, tileH)
   }
@@ -122,7 +120,7 @@ object Layer {
     }
     return tileMap      
   }
-  
+
   def absoluteTileIndexToTileSetAndIndex(absoluteTileIndex : Int) : (Int, Int) = {
     return (0, absoluteTileIndex)
   }                                                                
@@ -153,6 +151,9 @@ object MapLoader {
     } catch {
       case e:java.io.FileNotFoundException => println("Unknown map " + mapFileName)
     }
+
+    println("Loaded map " + mapFileName + " with " + map.layers.size + " layers and " + 
+             map.tiles.size + " tiles")
     
     return map
   }

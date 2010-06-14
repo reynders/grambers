@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="40" height="20" tilewidth="32" tileheight="32">
+ <tileset firstgid="1" name="testtileset_8x6" tilewidth="32" tileheight="32" spacing="1">
+  <image source="resources/gfx/testtileset_8x6.png"/>
+ </tileset>
+ <tileset firstgid="49" name="testtileset_6x6" tilewidth="32" tileheight="32" spacing="1">
+  <image source="resources/gfx/testtileset_6x6.png"/>
+ </tileset>
+ <layer name="Layer 1" width="40" height="20">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC+3WIQ7AIBQE0Q9VDQrwPVXvfxaWBItmSUaMf3JSRGTTHvWqX31mTVNZvtOWXfjw4cOHzzN8+PDd73P+06qaaV0NZ9A75oAMAAA=
+  </data>
+ </layer>
+</map>

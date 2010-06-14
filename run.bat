@@ -1,1 +1,1 @@
-java -client -cp %SCALA_HOME%/lib/scala-library.jar;target/classes; %1 %2 %3 %4
+java -client -cp %SCALA_HOME%/lib/scala-library.jar;target/classes;lib/base64-2.3.8.jar %1 %2 %3 %4
