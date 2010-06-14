@@ -20,7 +20,7 @@ class UniverseTest extends TestCase {
     }
        
     def testCollideThings {
-      val universe = new Universe(100, 100)
+      val universe = new Universe("resources/maps/testmap_40x20.tmx")
       val box_1 = new grambers.Box(2, 2)      
       box_1.center = new Point(1, 1)
       val circle_1 = new grambers.RoundThing(2)
@@ -48,7 +48,7 @@ class UniverseTest extends TestCase {
     }
     
     def testCalculateCollisionAngle {
-      val universe = new Universe(100, 100)
+      val universe = new Universe("resources/maps/testmap_40x20.tmx")
       
       val circle_1 = new grambers.RoundThing(1)
       circle_1.center = new Point(0, 0)

@@ -3,13 +3,14 @@ package grambers
 import scala.collection.mutable._
 import java.lang.Math._
 
-class Universe(val WIDTH : Int, val HEIGHT : Int) {
+class Universe(mapName:String) {
   
   val staticThings : ArrayBuffer[StaticThing] = new ArrayBuffer[StaticThing]
   val movingThings : ArrayBuffer[MovingThing] = new ArrayBuffer[MovingThing]
   
-  val map : Map = MapLoader.loadMap("resources/maps/testmap_40x20.tmx")
-  
+  val map : Map = MapLoader.loadMap(mapName)
+  val WIDTH = map.w
+  val HEIGHT = map.h
   var millisecondsSinceBigBang = 0; 
   
   def addThing(thing : Thing) {

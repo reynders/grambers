@@ -13,7 +13,10 @@ class Map(var wInTiles:Int, var hInTiles:Int) {
   var tileSets = new ArrayBuffer[TileSet]()
   var tiles = new ArrayBuffer[Tile]()
   var layers = new ArrayBuffer[Layer]()
-    
+  
+  def w = tileW * wInTiles
+  def h = tileH * hInTiles  
+  
   def drawBackground(g2 : Graphics2D, center : Point, w : Int, h : Int) {
     
     drawTiles(g2, Point(center.x - w/2, center.y - h/2),
@@ -21,15 +24,15 @@ class Map(var wInTiles:Int, var hInTiles:Int) {
   }
   
   def drawTiles(g2 : Graphics2D, leftUpperPoint : Point, rightLowerPoint : Point) {
-   val lup = worldPointToTileIndex(leftUpperPoint)
-   val rlp = worldPointToTileIndex(rightLowerPoint)
+   var lup = worldPointToTileIndex(leftUpperPoint)
+   var rlp = worldPointToTileIndex(rightLowerPoint)
 
-   if (rlp._1 >= wInTiles || rlp._2 >= hInTiles) {
-     println("Not drawing! Right lower point " + rlp + " would be outside map(" + 
-             wInTiles + ","+ hInTiles + ")")
-   }
-   else {
-     for (x <- lup._1 to rlp._1) 
+   if (lup._1 < 0) lup = (0, lup._2) 
+   if (lup._2 < 0) lup = (lup._1, 0)
+   if (rlp._1 >= wInTiles) rlp = (wInTiles-1, rlp._2)
+   if (rlp._2 >= hInTiles) rlp = (rlp._1, hInTiles-1)
+   
+   for (x <- lup._1 to rlp._1) {
       for (y <- lup._2 to rlp._2) {
         val tileIndex = layers(0).tileMap(x)(y)
         g2.drawImage(getTile(0, (x, y)).image, x*tileW, y*tileH, null)

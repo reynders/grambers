@@ -6,10 +6,12 @@ import java.lang.System._
 
 // Playfield class, used to demo the gaming library
 object Demo {
-    
+  
+    val TESTMAP = "resources/maps/testmap_40x20.tmx"  
+  
     def twoWallsAndABallDemo {      
 
-      val universe = new Universe(800, 400)
+      val universe = new Universe(TESTMAP)
       
       var ball = RoundThing(150, 50, 10, 10, Color.yellow, 1, 0)
       addBall(universe, ball, (ball) => {
@@ -26,7 +28,7 @@ object Demo {
     }  
 
     def edgesAndStuffDemo {
-      val universe = new Universe(600, 300);
+      val universe = new Universe(TESTMAP);
 
       var ball = RoundThing(150, 50, 10, 10, Color.yellow, random()*10, random()*360)
       addBall(universe, ball, (ball) => {ball.accelerate(0.001)})
@@ -62,7 +64,7 @@ object Demo {
     }
 
     def ballsAndWallsAndCameraDemo {
-      val universe = new Universe(800, 400)
+      val universe = new Universe(TESTMAP)
       addWalls(universe)
       var ball = RoundThing(200, 100, 10, 10, Color.yellow, random()*50, random()*360)
       addBall(universe, ball, (ball) => {ball.accelerate(0.001)})
@@ -113,7 +115,7 @@ object Demo {
     }
     
     def ballsAndWallsDemo {
-      val universe = new Universe(800, 400)
+      val universe = new Universe(TESTMAP)
       addWalls(universe)
       var ball = RoundThing(200, 100, 10, 10, Color.yellow, random()*50, random()*360)
       addBall(universe, ball, (ball) => {ball.accelerate(0.001)})
@@ -132,7 +134,7 @@ object Demo {
     }
     
     def imageDemo {
-      val universe = new Universe(500, 200)
+      val universe = new Universe(TESTMAP)
       addWalls(universe)
       
       val ball = ImageRoundThing(100, 100, 23, 23, "resources/gfx/ball_50x50.gif", random() * 100, random()*360)
@@ -142,7 +144,7 @@ object Demo {
     }
 
     def debugDemo {
-      val universe = new Universe(1000, 300)
+      val universe = new Universe(TESTMAP)
       addWalls(universe)
       
       val ball = ImageRoundThing(100, 100, 23, 23, "resources/gfx/ball_50x50.gif", 10, 0)
