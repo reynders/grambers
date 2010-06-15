@@ -10,9 +10,9 @@ class Map(var wInTiles:Int, var hInTiles:Int) {
 
   var tileW = 32
   var tileH = 32
-  var tileSets = new ArrayBuffer[TileSet]()
-  var tiles = new ArrayBuffer[Tile]()
-  var layers = new ArrayBuffer[Layer]()
+  var tileSets = new Array[TileSet](0)
+  var tiles = new Array[Tile](0)
+  var layers = new Array[Layer](0)
   
   def w = tileW * wInTiles
   def h = tileH * hInTiles  
@@ -35,21 +35,21 @@ class Map(var wInTiles:Int, var hInTiles:Int) {
    for (x <- lup._1 to rlp._1) {
       for (y <- lup._2 to rlp._2) {
         val tileIndex = layers(0).tileMap(x)(y)
-        g2.drawImage(getTile(0, (x, y)).image, x*tileW, y*tileH, null)
+        g2.drawImage(getTile(0, x, y).image, x*tileW, y*tileH, null)
       }
     }
   }
   
   def worldPointToTileIndex(worldPoint : Point) : (Int, Int) = ((worldPoint.x.toInt / tileW.toInt), 
                                                                 (worldPoint.y.toInt / tileH.toInt))
-  def getTile(layerId : Int, coord : (Int, Int)) : Tile = {
-    val tileIndex = layers(layerId).tileMap(coord._1)(coord._2)
+  def getTile(layerId : Int, x:Int, y:Int) : Tile = {
+    val tileIndex = layers(layerId).tileMap(x)(y)
     return tiles(tileIndex._2-1)                                                                  
   }
 }
 
 
-class TileSet(val firstTileIndex:Int, val tiles:ArrayBuffer[Tile], val w:Int, val h:Int, val tileW:Int, val tileH:Int) {
+class TileSet(val firstTileIndex:Int, val tiles:Array[Tile], val w:Int, val h:Int, val tileW:Int, val tileH:Int) {
 }
 
 object TileSet {
@@ -69,7 +69,7 @@ object TileSet {
     return new TileSet(firstTileIndex, tiles, w, h, tileW, tileH)
   }
   
-  def splitToTiles(image:BufferedImage, w:Int, h:Int, tileW:Int, tileH:Int, spacing:Int) : ArrayBuffer[Tile] = {
+  def splitToTiles(image:BufferedImage, w:Int, h:Int, tileW:Int, tileH:Int, spacing:Int) : Array[Tile] = {
     val tiles : ArrayBuffer[Tile] = new ArrayBuffer[Tile]()
     for (y <- 0 until h) {
       val ySpacing = (y+1) * spacing
@@ -83,7 +83,7 @@ object TileSet {
         tiles += new Tile(tileImage)
       }
     }
-    return tiles
+    return tiles.toArray[Tile]
   }
 }
 
@@ -102,7 +102,7 @@ object Layer {
   }
   
   // Awful shit!
-  def parseLayerData(base64GzipTileMapString : String, w : Int, h : Int) : ArrayBuffer[ArrayBuffer[(Int, Int)]] = {
+  def parseLayerData(base64GzipTileMapString : String, w : Int, h : Int) : Array[Array[(Int, Int)]] = {
     val tileMap = createInitialTileMap(w, h)
     import net.iharder.Base64
     val byteArray : Array[Byte] = Base64.decode(base64GzipTileMapString)
@@ -118,16 +118,16 @@ object Layer {
     return tileMap
   }
 
-  def createInitialTileMap(w : Int, h : Int) : ArrayBuffer[ArrayBuffer[(Int, Int)]] ={
-    val tileMap = new ArrayBuffer[ArrayBuffer[(Int, Int)]]()
+  def createInitialTileMap(w : Int, h : Int) : Array[Array[(Int, Int)]] ={
+    val tileMap = new ArrayBuffer[Array[(Int, Int)]]()
     for (x <- 0 until w) {
       val column = new ArrayBuffer[(Int, Int)](h)
       for (y <- 0 until h) {
         column += ((0, 0))
       }      
-      tileMap += column
+      tileMap += column.toArray[(Int, Int)]
     }
-    return tileMap      
+    return tileMap.toArray     
   }
 
   def absoluteTileIndexToTileSetAndIndex(absoluteTileIndex : Int) : (Int, Int) = {
@@ -176,7 +176,7 @@ object MapLoader {
   }
 
   
-  def parseTileSets(mapXml:Elem) : ArrayBuffer[TileSet] = {
+  def parseTileSets(mapXml:Elem) : Array[TileSet] = {
     val tileSets = new ArrayBuffer[TileSet]()
     val tileSetElem = mapXml \\ "tileset"
     
@@ -184,10 +184,10 @@ object MapLoader {
       val tileSet = TileSet(tileSetNode)
       tileSets += tileSet
     }
-    return tileSets
+    return tileSets.toArray[TileSet]
   }
 
-  def parseLayers(mapXml : Elem) : ArrayBuffer[Layer] = {
+  def parseLayers(mapXml : Elem) : Array[Layer] = {
     val layers = new ArrayBuffer[Layer]()
     
     val layerElem = mapXml \\ "layer"
@@ -196,14 +196,14 @@ object MapLoader {
       val layer = Layer(layerNode)
       layers += layer
     }
-    return layers
+    return layers.toArray[Layer]
   }
   
-  def createSingleTileMapFromManyTileSets(tileSets:ArrayBuffer[TileSet]) : ArrayBuffer[Tile] = {
+  def createSingleTileMapFromManyTileSets(tileSets:Array[TileSet]) : Array[Tile] = {
     tileSets.sortWith((l:TileSet, r:TileSet)=>{l.firstTileIndex > r.firstTileIndex})
-    val tiles = new ArrayBuffer[Tile]()
+    val tiles = new ArrayBuffer[Tile](0)
     tileSets.foreach(tileSet => tiles ++= tileSet.tiles)
-    return tiles
+    return tiles.toArray[Tile]
   }
 }
 
