@@ -1,18 +1,59 @@
 import scala.collection.mutable._
 
 class Test {
-  def test {
-    val myArray = new Array[Int](5)
-    println("Test 1 result: " + myArray(0))
+  def currentTimeMillis : Long = // System.currentTimeMillis 
+                                 System.nanoTime / 1000000
+
+  def test1 {
+    val myArray = new ArraySeq[Int](1000)
+    for(i<-0 until 1000) myArray(i) = 0
+    
+    val t1 = currentTimeMillis
+    for(x <-0 until 1000)
+      for (y<-0 until 1000)
+        myArray(y) = 1
+    val t2 = currentTimeMillis
+    
+    println("Test 1 result: " + (t2-t1) + "ms")
   }
   
   def test2 {
-    val myArray = new ArrayBuffer[Int](5)
-    println("Test 2 result: " + myArray(0))
+    val myArray = new Array[Int](1000)
+    for(i<-0 until 1000) myArray(i) = 0
+    
+    val t1 = currentTimeMillis
+    for(x <-0 until 1000)
+      for (y<-0 until 1000)
+        myArray(y) = 1
+    val t2 = currentTimeMillis
+    
+    println("Test 2 result: " + (t2-t1) + "ms")
+  }
+  
+  def test3 {
+    val myArray = new ArrayBuffer[Int](1000)
+    for(i<-0 until 1000) myArray += 0
+    
+    val t1 = currentTimeMillis
+    for(x <-0 until 1000)
+      for (y<-0 until 1000)
+        myArray(y) = 1
+    val t2 = currentTimeMillis
+    
+    println("Test 3 result: " + (t2-t1) + "ms")
   }
 
+ 
 }
 
 val test = new Test
-test.test
+test.test1
+test.test1
+test.test1
 test.test2
+test.test2
+test.test2
+test.test3
+test.test3
+test.test3
+

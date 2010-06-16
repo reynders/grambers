@@ -32,8 +32,8 @@ class Map(var wInTiles:Int, var hInTiles:Int) {
    if (rlp._1 >= wInTiles) rlp = (wInTiles-1, rlp._2)
    if (rlp._2 >= hInTiles) rlp = (rlp._1, hInTiles-1)
    
-   for (x <- lup._1 to rlp._1) {
-      for (y <- lup._2 to rlp._2) {
+   for (y <- lup._2 to rlp._2) {
+     for (x <- lup._1 to rlp._1) {
         val tileIndex = layers(0).tileMap(x)(y)
         g2.drawImage(getTile(0, x, y).image, x*tileW, y*tileH, null)
       }
