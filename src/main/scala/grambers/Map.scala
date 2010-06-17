@@ -25,14 +25,15 @@ class Map(var wInTiles:Int, var hInTiles:Int) {
     drawTiles(g2, Point(center.x - w/2, center.y - h/2),
                   Point(center.x + w/2, center.y + w/2))
   }
-  
+ 
   def drawTiles(g2 : Graphics2D, leftUpperPoint : Point, rightLowerPoint : Point) {
    var lup = worldPointToTileIndex(leftUpperPoint)
    var rlp = worldPointToTileIndex(rightLowerPoint)
-   if (!currentBgImageAsRectangle.contains(Rectangle(lup, rlp))) {
+   if (currentBgImageAsRectangle.contains(Rectangle(lup, rlp))) {
    }
    else {
      println("If optimization would exist would only have to recreate bg now")
+     currentBgImageAsRectangle = Rectangle(lup, rlp)
    }
 
    if (lup._1 < 0) lup = (0, lup._2) 
@@ -44,9 +45,7 @@ class Map(var wInTiles:Int, var hInTiles:Int) {
      for (x <- lup._1 to rlp._1) {
         g2.drawImage(getTile(0, x, y).image, x*tileW, y*tileH, null)
       }
-    }
-    
-    currentBgImageAsRectangle = Rectangle(lup, rlp)
+    }    
   }
   
   def worldPointToTileIndex(worldPoint : Point) : (Int, Int) = ((worldPoint.x.toInt / tileW.toInt), 
