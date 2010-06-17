@@ -34,7 +34,6 @@ class Map(var wInTiles:Int, var hInTiles:Int) {
    
    for (y <- lup._2 to rlp._2) {
      for (x <- lup._1 to rlp._1) {
-        val tileIndex = layers(0).tileMap(x)(y)
         g2.drawImage(getTile(0, x, y).image, x*tileW, y*tileH, null)
       }
     }
@@ -110,7 +109,6 @@ object Layer {
       if (i%4 == 0) {
         val tileIndex = BigInt(byteArray.slice(i, i+4).reverse).toInt
         val coord : (Int, Int) = (((i/4)%w), ((i/4)/w))
-        // println(i + ":" + coord + "=" + tileIndex)
         tileMap(coord._1)(coord._2) = absoluteTileIndexToTileSetAndIndex(tileIndex)
       }
     }

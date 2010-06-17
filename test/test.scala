@@ -5,13 +5,11 @@ class Test {
                                  System.nanoTime / 1000000
 
   def test1 {
-    val myArray = new ArraySeq[Int](1000)
-    for(i<-0 until 1000) myArray(i) = 0
-    
+    val myArray = for(i<-0 until 1000) yield(0)
     val t1 = currentTimeMillis
     for(x <-0 until 1000)
       for (y<-0 until 1000)
-        myArray(y) = 1
+        doSomethingWith(myArray(y))
     val t2 = currentTimeMillis
     
     println("Test 1 result: " + (t2-t1) + "ms")
@@ -24,7 +22,7 @@ class Test {
     val t1 = currentTimeMillis
     for(x <-0 until 1000)
       for (y<-0 until 1000)
-        myArray(y) = 1
+        doSomethingWith(myArray(y))
     val t2 = currentTimeMillis
     
     println("Test 2 result: " + (t2-t1) + "ms")
@@ -37,13 +35,16 @@ class Test {
     val t1 = currentTimeMillis
     for(x <-0 until 1000)
       for (y<-0 until 1000)
-        myArray(y) = 1
+        doSomethingWith(myArray(y))
     val t2 = currentTimeMillis
     
     println("Test 3 result: " + (t2-t1) + "ms")
   }
 
- 
+  def doSomethingWith(v:Int) {
+    if (v == 1000)
+      println(v)
+  }
 }
 
 val test = new Test
