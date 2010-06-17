@@ -35,10 +35,20 @@ class ShapeTest extends TestCase {
     assertTrue(r_1.overlaps(r_2))
   }
     
-  def testOverlappingWhenAdjacent() {
+  def testRectangleOverlappingWhenAdjacent() {
     val r_1 = new grambers.Rectangle(new Point(2, 2), 2, 2)      
     val r_2 = new grambers.Rectangle(new Point(4, 2), 2, 2)
     assertTrue(r_1.overlaps(r_2))
+  }
+  
+  def testRectangleContains {
+    val outerRectangle = Rectangle((0, 0), (3, 3))
+    val completelyInnerRectangle = Rectangle((1, 1), (2, 2))
+    assertEquals(true, outerRectangle.contains(completelyInnerRectangle))
+    val partlyInnerRectangle = Rectangle((2, 2),(4, 4))
+    assertEquals(false, outerRectangle.contains(partlyInnerRectangle))
+    val sameSizeRectangle = Rectangle((0,0), (3,3))
+    assertEquals(true, outerRectangle.contains(sameSizeRectangle))
   }
   
   def testDistanceFrom {

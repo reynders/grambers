@@ -17,6 +17,9 @@ class Map(var wInTiles:Int, var hInTiles:Int) {
   def w = tileW * wInTiles
   def h = tileH * hInTiles  
   
+  var currentBgImage : BufferedImage = _
+  var currentBgImageAsRectangle : Rectangle = _
+  
   def drawBackground(g2 : Graphics2D, center : Point, w : Int, h : Int) {
     
     drawTiles(g2, Point(center.x - w/2, center.y - h/2),
@@ -75,13 +78,6 @@ object TileSet {
       for (x <- 0 until w) {
         val xSpacing = (x+1) * spacing
         val tileImage = image.getSubimage(tileW*x+xSpacing, tileH*y+ySpacing, tileW, tileH)
-        /*
-        val tileImage = new BufferedImage(tileW, tileH, image.getType)
-        val g = tileImage.createGraphics
-        g.drawImage(image, 0, 0, tileW, tileH, tileW*x+xSpacing, tileH*y+ySpacing, 
-                                              (tileW*x+xSpacing)+tileW, (tileH*y+ySpacing)+tileH, null)
-        g.dispose
-        */
         tiles += new Tile(tileImage)
       }
     }
