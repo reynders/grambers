@@ -90,7 +90,7 @@ class Observer (val universe : Universe, var thingInFocus : Thing) {
   def observe() {    
     WindowToWorld.repaint() 
     camera.move(this)
-    Thread.`yield`
+    //Thread.`yield`
   } 
 }
 

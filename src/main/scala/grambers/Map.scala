@@ -74,11 +74,14 @@ object TileSet {
       val ySpacing = (y+1) * spacing
       for (x <- 0 until w) {
         val xSpacing = (x+1) * spacing
+        val tileImage = image.getSubimage(tileW*x+xSpacing, tileH*y+ySpacing, tileW, tileH)
+        /*
         val tileImage = new BufferedImage(tileW, tileH, image.getType)
         val g = tileImage.createGraphics
         g.drawImage(image, 0, 0, tileW, tileH, tileW*x+xSpacing, tileH*y+ySpacing, 
                                               (tileW*x+xSpacing)+tileW, (tileH*y+ySpacing)+tileH, null)
         g.dispose
+        */
         tiles += new Tile(tileImage)
       }
     }
