@@ -160,7 +160,7 @@ class ImageRoundThing(var cntr : Point, val rad:Double, fileName : String) exten
 
     for(i <- 0 until ROTATED_IMAGE_COUNT) {
       //val rotatedImage = image.getGraphics().asInstanceOf[Graphics2D].getDeviceConfiguration().createCompatibleImage(image.getWidth, image.getHeight, Transparency.TRANSLUCENT)
-      val rotatedImage = new BufferedImage(image.getWidth, image.getHeight, BufferedImage.TYPE_4BYTE_ABGR)
+      val rotatedImage = new BufferedImage(image.getWidth, image.getHeight, Config.imageType)
       val g2d = rotatedImage.createGraphics.asInstanceOf[Graphics2D]
       
       val at = AffineTransform.getRotateInstance(toRadians(i*(360/ROTATED_IMAGE_COUNT)), image.getWidth/2, image.getHeight/2)

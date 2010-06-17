@@ -1,6 +1,7 @@
 package grambers
 
 object Config {
+  val imageType = java.awt.image.BufferedImage.TYPE_4BYTE_ABGR
   val worldUpdatesPerSecond = 50
   var fps = 0
   var worldUpdates = 0

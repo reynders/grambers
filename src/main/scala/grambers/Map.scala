@@ -17,8 +17,10 @@ class Map(var wInTiles:Int, var hInTiles:Int) {
   def w = tileW * wInTiles
   def h = tileH * hInTiles  
   
-  var currentBgImage : BufferedImage = _
-  var currentBgImageAsRectangle = Rectangle((0,0),(0,0))
+  var bgImage : BufferedImage = _
+  var bgImageAsRectangle = Rectangle((0,0),(0,0))
+  var bgGraphics : Graphics2D =_
+  var bgLup : (Int, Int) = _
   
   def drawBackground(g2 : Graphics2D, center : Point, w : Int, h : Int) {
     
@@ -29,23 +31,27 @@ class Map(var wInTiles:Int, var hInTiles:Int) {
   def drawTiles(g2 : Graphics2D, leftUpperPoint : Point, rightLowerPoint : Point) {
    var lup = worldPointToTileIndex(leftUpperPoint)
    var rlp = worldPointToTileIndex(rightLowerPoint)
-   if (currentBgImageAsRectangle.contains(Rectangle(lup, rlp))) {
+   if (!bgImageAsRectangle.contains(Rectangle(lup, rlp))) {
+     println("Creating new BG image")
+     if (lup._1 < 0) lup = (0, lup._2) 
+     if (lup._2 < 0) lup = (lup._1, 0)
+     if (rlp._1 >= wInTiles) rlp = (wInTiles-1, rlp._2)
+     if (rlp._2 >= hInTiles) rlp = (rlp._1, hInTiles-1)
+     
+     bgImageAsRectangle = Rectangle(lup, rlp)     
+     bgImage = new BufferedImage(bgImageAsRectangle.w.toInt*tileW, bgImageAsRectangle.h.toInt*tileH, 
+                                 Config.imageType)
+     bgGraphics = bgImage.createGraphics
+     bgLup = lup
+     
+     for (y <- lup._2 to rlp._2) {
+       for (x <- lup._1 to rlp._1) {
+         bgGraphics.drawImage(getTile(0, x, y).image, x*tileW, y*tileH, null)
+       }
+     }
    }
-   else {
-     println("If optimization would exist would only have to recreate bg now")
-     currentBgImageAsRectangle = Rectangle(lup, rlp)
-   }
-
-   if (lup._1 < 0) lup = (0, lup._2) 
-   if (lup._2 < 0) lup = (lup._1, 0)
-   if (rlp._1 >= wInTiles) rlp = (wInTiles-1, rlp._2)
-   if (rlp._2 >= hInTiles) rlp = (rlp._1, hInTiles-1)
    
-   for (y <- lup._2 to rlp._2) {
-     for (x <- lup._1 to rlp._1) {
-        g2.drawImage(getTile(0, x, y).image, x*tileW, y*tileH, null)
-      }
-    }    
+   g2.drawImage(bgImage, bgLup._1, bgLup._2, null)
   }
   
   def worldPointToTileIndex(worldPoint : Point) : (Int, Int) = ((worldPoint.x.toInt / tileW.toInt), 
