@@ -174,10 +174,11 @@ class Rectangle(center : Point, val w : Double, val h : Double) extends Shape(ce
 }
 
 object Rectangle {
-  def apply(lup:(Double, Double), rlp:(Double, Double)) : Rectangle = {
+
+  def apply(lup:(Int, Int), rlp:(Int, Int)) : Rectangle = {
     val w = rlp._1 - lup._1
     val h = rlp._2 - lup._2
-    return new Rectangle(Point((lup._1 + (w/2)), (lup._2 + (h/2))), w, h)
+    return new Rectangle(Point((lup._1 + (w/2).toDouble), (lup._2 + (h/2)).toDouble), w.toDouble, h.toDouble)
   }
 }
 

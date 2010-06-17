@@ -7,6 +7,8 @@ import java.lang.System._
 // Playfield class, used to demo the gaming library
 object Demo {
   
+    val WINDOW_W = 600
+    val WINDOW_H = 300
     val TESTMAP = "resources/maps/testmap_40x20.tmx"  
   
     def twoWallsAndABallDemo {      
@@ -23,7 +25,7 @@ object Demo {
       universe.addThing(Box(100, 50, 20, 80, Color.red))
       universe.addThing(Box(200, 50, 20, 100, Color.blue))
             
-      val observer = new Observer(universe, ball)
+      val observer = new Observer(WINDOW_W, WINDOW_H, universe, ball)
       universe.run(observer)
     }  
 
@@ -36,7 +38,7 @@ object Demo {
       universe.addThing(Box(200, 50, 20, 50, Color.blue))
 
       addWalls(universe)      
-      val observer = new Observer(universe, ball)
+      val observer = new Observer(WINDOW_W, WINDOW_H, universe, ball)
       universe.run(observer)
     }  
     
@@ -77,7 +79,7 @@ object Demo {
       
       universe.addThing(Box(200, 50, 20, 50, Color.blue))
       
-      val observer = new Observer(universe, ball)
+      val observer = new Observer(WINDOW_W, WINDOW_H, universe, ball)
       observer.camera = createBallFollowingDemoCamera(ball)
       observer.w = 400
       observer.h = 200
@@ -128,7 +130,7 @@ object Demo {
       
       universe.addThing(Box(200, 50, 20, 50, Color.blue))
       
-      val observer = new Observer(universe, ball)
+      val observer = new Observer(WINDOW_W, WINDOW_H, universe, ball)
 
       universe.run(observer)
     }
@@ -140,7 +142,7 @@ object Demo {
       val ball = ImageRoundThing(100, 100, 23, 23, "resources/gfx/ball_50x50.gif", random() * 100, random()*360)
       addBall(universe, ball, (ball) => {ball.accelerate(0.005)})
       
-      universe.run(new Observer(universe, ball))
+      universe.run(new Observer(WINDOW_W, WINDOW_H, universe, ball))
     }
 
     def debugDemo {
@@ -149,10 +151,10 @@ object Demo {
       
       val ball = ImageRoundThing(100, 100, 23, 23, "resources/gfx/ball_50x50.gif", 10, 0)
       addBall(universe, ball, (ball) => {})
-      val observer = new Observer(universe, ball)
-      observer.camera = new Camera {      
-        override def move(observer : Observer) {}
-      }
+      val observer = new Observer(WINDOW_W, WINDOW_H, universe, ball)
+      //observer.camera = new Camera {      
+      //  override def move(observer : Observer) {}
+      //}
       
       universe.run(observer)
     }

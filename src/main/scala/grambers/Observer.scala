@@ -9,13 +9,10 @@ class Camera {
   def move(observer : Observer) = {}
 }
 
-class Observer (val universe : Universe, var thingInFocus : Thing) {
+class Observer (var w: Int, var h: Int, val universe : Universe, var thingInFocus : Thing) {
     
   var position : Point = Point(universe.WIDTH/2, universe.HEIGHT/2)
   var thingInControl = thingInFocus
-  
-  var w : Int = universe.WIDTH
-  var h : Int = universe.HEIGHT
   val random = new java.util.Random()
     
   var camera : Camera = new Camera {
@@ -69,11 +66,6 @@ class Observer (val universe : Universe, var thingInFocus : Thing) {
         g2.dispose
         Config.fps += 1
       }
-
-      def clearScreenBuffer(g2 : Graphics2D) {
-        g2.setColor(Color.lightGray)
-        g2.fillRect(0, 0, universe.WIDTH, universe.HEIGHT);
-      }        
     }
       
     def initGraphics {      
@@ -82,7 +74,7 @@ class Observer (val universe : Universe, var thingInFocus : Thing) {
       //getRootPane.setDoubleBuffered(true)                
       add(ViewPanel)
       pack()
-      setSize(new Dimension(w+20, h+40));
+      setSize(new Dimension(w, h));
       setVisible(true)
     }
   }

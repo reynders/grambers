@@ -18,7 +18,7 @@ class Map(var wInTiles:Int, var hInTiles:Int) {
   def h = tileH * hInTiles  
   
   var currentBgImage : BufferedImage = _
-  var currentBgImageAsRectangle : Rectangle = _
+  var currentBgImageAsRectangle = Rectangle((0,0),(0,0))
   
   def drawBackground(g2 : Graphics2D, center : Point, w : Int, h : Int) {
     
@@ -29,6 +29,11 @@ class Map(var wInTiles:Int, var hInTiles:Int) {
   def drawTiles(g2 : Graphics2D, leftUpperPoint : Point, rightLowerPoint : Point) {
    var lup = worldPointToTileIndex(leftUpperPoint)
    var rlp = worldPointToTileIndex(rightLowerPoint)
+   if (!currentBgImageAsRectangle.contains(Rectangle(lup, rlp))) {
+   }
+   else {
+     println("If optimization would exist would only have to recreate bg now")
+   }
 
    if (lup._1 < 0) lup = (0, lup._2) 
    if (lup._2 < 0) lup = (lup._1, 0)
@@ -40,6 +45,8 @@ class Map(var wInTiles:Int, var hInTiles:Int) {
         g2.drawImage(getTile(0, x, y).image, x*tileW, y*tileH, null)
       }
     }
+    
+    currentBgImageAsRectangle = Rectangle(lup, rlp)
   }
   
   def worldPointToTileIndex(worldPoint : Point) : (Int, Int) = ((worldPoint.x.toInt / tileW.toInt), 
