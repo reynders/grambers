@@ -17,6 +17,7 @@ class Map(var wInTiles:Int, var hInTiles:Int) {
   def w = tileW * wInTiles
   def h = tileH * hInTiles  
   
+  // Tile buffering optimization stuff
   var bgImage : BufferedImage = _
   var bgImageAsRectangle = Rectangle((0,0),(0,0))
   var bgGraphics : Graphics2D =_
@@ -31,31 +32,39 @@ class Map(var wInTiles:Int, var hInTiles:Int) {
   def drawTiles(g2 : Graphics2D, leftUpperPoint : Point, rightLowerPoint : Point) {
    var lup = worldPointToTileIndex(leftUpperPoint)
    var rlp = worldPointToTileIndex(rightLowerPoint)
+
    if (!bgImageAsRectangle.contains(Rectangle(lup, rlp))) {
-     println("Creating new BG image")
-     if (lup._1 < 0) lup = (0, lup._2) 
-     if (lup._2 < 0) lup = (lup._1, 0)
-     if (rlp._1 >= wInTiles) rlp = (wInTiles-1, rlp._2)
-     if (rlp._2 >= hInTiles) rlp = (rlp._1, hInTiles-1)
-     
-     bgImageAsRectangle = Rectangle(lup, rlp)     
-     bgImage = new BufferedImage(bgImageAsRectangle.w.toInt*tileW, bgImageAsRectangle.h.toInt*tileH, 
-                                 Config.imageType)
-     bgGraphics = bgImage.createGraphics
-     bgLup = lup
-     
-     for (y <- lup._2 to rlp._2) {
-       for (x <- lup._1 to rlp._1) {
-         bgGraphics.drawImage(getTile(0, x, y).image, x*tileW, y*tileH, null)
-       }
-     }
+     println(bgImageAsRectangle + " does not contain " + Rectangle(lup, rlp))
+     println("Creating new BG image: (" + leftUpperPoint + "," +rightLowerPoint + ") - (" + 
+             lup + "," + rlp + ")")
+     createBackgroundImageFromTiles(lup, rlp)       
    }
    
    g2.drawImage(bgImage, bgLup._1, bgLup._2, null)
   }
   
-  def worldPointToTileIndex(worldPoint : Point) : (Int, Int) = ((worldPoint.x.toInt / tileW.toInt), 
-                                                                (worldPoint.y.toInt / tileH.toInt))
+  def createBackgroundImageFromTiles(lup:(Int,Int), rlp:(Int,Int)) {
+    bgImageAsRectangle = Rectangle(lup, rlp)     
+    bgImage = new BufferedImage(bgImageAsRectangle.w.toInt*tileW, bgImageAsRectangle.h.toInt*tileH, 
+                                Config.imageType)
+    bgGraphics = bgImage.createGraphics
+    bgLup = lup
+     
+    for (y <- lup._2 to rlp._2) {
+      for (x <- lup._1 to rlp._1) {
+        bgGraphics.drawImage(getTile(0, x, y).image, x*tileW, y*tileH, null)
+      }
+    }
+  }
+  
+  def worldPointToTileIndex(worldPoint : Point) : (Int, Int) = {
+    var x = worldPoint.x.toInt
+    var y = worldPoint.y.toInt
+    if (x < 0) x = 0 else if (x > w) x = w
+    if (y < 0) y = 0 else if (y > h) y = h
+    return ((x / tileW.toInt), (y / tileH.toInt))
+  }
+  
   def getTile(layerId : Int, x:Int, y:Int) : Tile = {
     val tileIndex = layers(layerId).tileMap(x)(y)
     return tiles(tileIndex._2-1)                                                                  
