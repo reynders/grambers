@@ -7,12 +7,14 @@ import net.iharder.Base64
 class MapTest extends TestCase {
 
   def testWorldPointToTilePoint {
-    val map = new Map(10, 10)
+    val map = new Map(10, 10, 10, 10)
     assertEquals((0, 0), map.worldPointToTileIndex(Point(0, 0)))
     assertEquals((0, 0), map.worldPointToTileIndex(Point(-1, -1)))
-    assertEquals((1, 1), map.worldPointToTileIndex(Point(map.tileW, map.tileH)))
-    assertEquals((0, 1), map.worldPointToTileIndex(Point(map.tileW/2, map.tileH)))
-    assertEquals((1, 0), map.worldPointToTileIndex(Point(map.tileW, map.tileH/2)))
+    assertEquals((9, 9), map.worldPointToTileIndex(Point(15*10, 15*10)))
+    assertEquals((1, 1), map.worldPointToTileIndex(Point(10, 10)))
+    assertEquals((0, 1), map.worldPointToTileIndex(Point(5, 10)))
+    assertEquals((1, 0), map.worldPointToTileIndex(Point(10, 5)))
+    assertEquals((9, 9), map.worldPointToTileIndex(Point(95, 95)))
   }
       
   val testMapXml = <map version="1.0" orientation="orthogonal" width="4" height="3" tilewidth="32" tileheight="32">

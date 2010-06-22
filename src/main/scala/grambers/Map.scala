@@ -6,10 +6,8 @@ import java.awt._
 import scala.collection.mutable._
 import scala.xml._
 
-class Map(var wInTiles:Int, var hInTiles:Int) {
+class Map(var wInTiles:Int, var hInTiles:Int, var tileW:Int, var tileH:Int) {
 
-  var tileW = 32
-  var tileH = 32
   var tileSets = new Array[TileSet](0)
   var tiles = new Array[Tile](0)
   var layers = new Array[Layer](0)
@@ -18,10 +16,11 @@ class Map(var wInTiles:Int, var hInTiles:Int) {
   def h = tileH * hInTiles  
   
   // Tile buffering optimization stuff
+  var TILE_BUFFER_SIZE = 2
   var bgImage : BufferedImage = _
   var bgImageAsRectangle = Rectangle((0,0),(0,0))
   var bgGraphics : Graphics2D =_
-  var bgLup : (Int, Int) = _
+  var bgTileLup : (Int, Int) = _
   
   def drawBackground(g2 : Graphics2D, center : Point, w : Int, h : Int) {
     
@@ -38,9 +37,15 @@ class Map(var wInTiles:Int, var hInTiles:Int) {
      println("Creating new BG image: (" + leftUpperPoint + "," +rightLowerPoint + ") - (" + 
              lup + "," + rlp + ")")
      createBackgroundImageFromTiles(lup, rlp)       
+     println("New bg image left upper corner: " + bgTileLup)
    }
-   
-   g2.drawImage(bgImage, bgLup._1, bgLup._2, null)
+      
+   g2.drawImage(bgImage, bgTileLup._1*tileW, bgTileLup._2*tileH, null)
+      val debugRec = new java.awt.Rectangle(10, 10,
+                                          100, 100)
+    g2.setColor(java.awt.Color.BLACK)
+    g2.draw(debugRec)   
+
   }
   
   def createBackgroundImageFromTiles(lup:(Int,Int), rlp:(Int,Int)) {
@@ -48,20 +53,25 @@ class Map(var wInTiles:Int, var hInTiles:Int) {
     bgImage = new BufferedImage(bgImageAsRectangle.w.toInt*tileW, bgImageAsRectangle.h.toInt*tileH, 
                                 Config.imageType)
     bgGraphics = bgImage.createGraphics
-    bgLup = lup
+    bgTileLup = lup
      
     for (y <- lup._2 to rlp._2) {
       for (x <- lup._1 to rlp._1) {
         bgGraphics.drawImage(getTile(0, x, y).image, x*tileW, y*tileH, null)
       }
     }
+
+    println("Created bg image of size (" + bgImage.getWidth + "," + bgImage.getHeight + ")")
+    val debugRec = new java.awt.Rectangle(0, 0, bgImage.getWidth, bgImage.getHeight)
+    bgGraphics.setColor(java.awt.Color.RED)
+    bgGraphics.draw(debugRec)
   }
   
   def worldPointToTileIndex(worldPoint : Point) : (Int, Int) = {
     var x = worldPoint.x.toInt
     var y = worldPoint.y.toInt
-    if (x < 0) x = 0 else if (x > w) x = w
-    if (y < 0) y = 0 else if (y > h) y = h
+    if (x < 0) x = 0 else if (x > w) x = w-1
+    if (y < 0) y = 0 else if (y > h) y = h-1 
     return ((x / tileW.toInt), (y / tileH.toInt))
   }
   
@@ -171,7 +181,7 @@ object Tile {
 object MapLoader {
   
   def loadMap(mapFileName : String) : Map = {
-    var map = new Map(0, 0)
+    var map = new Map(0, 0, 0, 0)
     try {
       map = parseMapFromXml(XML.loadFile(mapFileName))
     } catch {
@@ -186,7 +196,9 @@ object MapLoader {
   
   def parseMapFromXml(mapXml : Elem) : Map = {
     val map = new Map((mapXml \ "@width").text.toInt, 
-                      (mapXml \ "@height").text.toInt)
+                      (mapXml \ "@height").text.toInt, 
+                      (mapXml \ "@tilewidth").text.toInt, 
+                      (mapXml \ "@tileheight").text.toInt)
     map.tileSets = parseTileSets(mapXml)
     map.layers = parseLayers(mapXml)
     map.tiles = createSingleTileMapFromManyTileSets(map.tileSets)

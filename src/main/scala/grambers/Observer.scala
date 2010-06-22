@@ -45,6 +45,14 @@ class Observer (var w: Int, var h: Int, val universe : Universe, var thingInFocu
       }
     }
     
+    object WindowResizeListener extends ComponentAdapter {
+      override def componentResized(e:ComponentEvent) {
+        w = getWidth
+        h = getHeight
+        println("Window resized to (" + w + "," + h + ")")
+      }
+    }
+    
     object ViewPanel extends JPanel {
   
       override def paintComponent (g : Graphics) {
@@ -70,11 +78,14 @@ class Observer (var w: Int, var h: Int, val universe : Universe, var thingInFocu
       
     def initGraphics {      
       addKeyListener(ObserverKeyListener)
+      addComponentListener(WindowResizeListener)
       setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       //getRootPane.setDoubleBuffered(true)                
       add(ViewPanel)
       pack()
+println("Setting size to (" + w + "," + h + ")")
       setSize(new Dimension(w, h));
+println("Actual size is " + "(" + getWidth + "," + getHeight + ")")
       setVisible(true)
     }
   }
