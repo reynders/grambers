@@ -41,11 +41,10 @@ class Map(var wInTiles:Int, var hInTiles:Int, var tileW:Int, var tileH:Int) {
    }
       
    g2.drawImage(bgImage, bgTileLup._1*tileW, bgTileLup._2*tileH, null)
-      val debugRec = new java.awt.Rectangle(10, 10,
-                                          100, 100)
-    g2.setColor(java.awt.Color.BLACK)
-    g2.draw(debugRec)   
-
+   
+   val debugRec = new java.awt.Rectangle(10, 10, 100, 100)
+   g2.setColor(java.awt.Color.BLACK)
+   g2.draw(debugRec)   
   }
   
   def createBackgroundImageFromTiles(lup:(Int,Int), rlp:(Int,Int)) {
@@ -57,7 +56,7 @@ class Map(var wInTiles:Int, var hInTiles:Int, var tileW:Int, var tileH:Int) {
      
     for (y <- lup._2 to rlp._2) {
       for (x <- lup._1 to rlp._1) {
-        bgGraphics.drawImage(getTile(0, x, y).image, x*tileW, y*tileH, null)
+        bgGraphics.drawImage(getTile(0, x, y).image, (x-lup._1)*tileW, (y-lup._2)*tileH, null)
       }
     }
 
