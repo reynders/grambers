@@ -18,60 +18,63 @@ class Map(var wInTiles:Int, var hInTiles:Int, var tileW:Int, var tileH:Int) {
   // Tile buffering optimization stuff
   var TILE_BUFFER_SIZE = 2
   var bgImage : BufferedImage = _
-  var bgImageAsRectangle = Rectangle((0,0),(0,0))
+  var bgImageAsTileRectangle = Rectangle((0,0),(0,0))
   var bgGraphics : Graphics2D =_
   var bgTileLup : (Int, Int) = _
   
   def drawBackground(g2 : Graphics2D, center : Point, w : Int, h : Int) {
     
-    drawTiles(g2, Point(center.x - w/2, center.y - h/2),
-                  Point(center.x + w/2, center.y + w/2))
+    drawTiles(g2, worldPointToTileIndex(Point(center.x - w/2, center.y - h/2)),
+                  worldPointToTileIndex(Point(center.x + w/2, center.y + w/2)))
   }
  
-  def drawTiles(g2 : Graphics2D, leftUpperPoint : Point, rightLowerPoint : Point) {
-   var lup = worldPointToTileIndex(leftUpperPoint)
-   var rlp = worldPointToTileIndex(rightLowerPoint)
+  def drawTiles(g2 : Graphics2D, tileLup : (Int,Int), tileRlp : (Int,Int)) {
 
-   if (!bgImageAsRectangle.contains(Rectangle(lup, rlp))) {
-     println(bgImageAsRectangle + " does not contain " + Rectangle(lup, rlp))
-     println("Creating new BG image: (" + leftUpperPoint + "," +rightLowerPoint + ") - (" + 
-             lup + "," + rlp + ")")
-     createBackgroundImageFromTiles(lup, rlp)       
+   if (!bgImageAsTileRectangle.contains(Rectangle(tileLup, tileRlp))) {
+     println(bgImageAsTileRectangle + " does not contain " + Rectangle(tileLup, tileRlp))
+     createBackgroundImageFromTiles(tileLup, tileRlp)       
      println("New bg image left upper corner: " + bgTileLup)
    }
       
    g2.drawImage(bgImage, bgTileLup._1*tileW, bgTileLup._2*tileH, null)
    
-   val debugRec = new java.awt.Rectangle(10, 10, 100, 100)
-   g2.setColor(java.awt.Color.BLACK)
-   g2.draw(debugRec)   
   }
   
   def createBackgroundImageFromTiles(lup:(Int,Int), rlp:(Int,Int)) {
-    bgImageAsRectangle = Rectangle(lup, rlp)     
-    bgImage = new BufferedImage(bgImageAsRectangle.w.toInt*tileW, bgImageAsRectangle.h.toInt*tileH, 
-                                Config.imageType)
+    bgImageAsTileRectangle = Rectangle(lup, rlp) 
+println("bgImage: lup " + lup + ", rlp " + rlp + " size (" + (bgImageAsTileRectangle.w.toInt*tileW), 
+                                (bgImageAsTileRectangle.h.toInt*tileH) + ")");    
+                                
+    bgImage = new BufferedImage(bgImageAsTileRectangle.w.toInt*tileW, 
+                                bgImageAsTileRectangle.h.toInt*tileH, Config.imageType)
     bgGraphics = bgImage.createGraphics
     bgTileLup = lup
-     
+    
+// TODO, unit test this
     for (y <- lup._2 to rlp._2) {
       for (x <- lup._1 to rlp._1) {
-        bgGraphics.drawImage(getTile(0, x, y).image, (x-lup._1)*tileW, (y-lup._2)*tileH, null)
+        bgGraphics.drawImage(getTile(0, x, y).image, (x-lup._1+1)*tileW, (y-lup._2+1)*tileH, null)
       }
     }
 
-    println("Created bg image of size (" + bgImage.getWidth + "," + bgImage.getHeight + ")")
-    val debugRec = new java.awt.Rectangle(0, 0, bgImage.getWidth, bgImage.getHeight)
-    bgGraphics.setColor(java.awt.Color.RED)
-    bgGraphics.draw(debugRec)
+println("Created bg image of size (" + bgImage.getWidth + "," + bgImage.getHeight + ")")
+val debugRec = new java.awt.Rectangle(0, 0, bgImage.getWidth, bgImage.getHeight)
+bgGraphics.setColor(java.awt.Color.RED)
+bgGraphics.draw(debugRec)
   }
   
   def worldPointToTileIndex(worldPoint : Point) : (Int, Int) = {
     var x = worldPoint.x.toInt
     var y = worldPoint.y.toInt
-    if (x < 0) x = 0 else if (x > w) x = w-1
-    if (y < 0) y = 0 else if (y > h) y = h-1 
-    return ((x / tileW.toInt), (y / tileH.toInt))
+    if (x < 0) x = 0 else if (x >= w) x = w-1
+    if (y < 0) y = 0 else if (y >= h) y = h-1 
+    val tx = (x / tileW.toInt)
+    val ty = (y / tileH.toInt)
+    assert ((tx >= 0 && tx < wInTiles && ty >= 0 && ty < hInTiles),
+            "tx: " + tx + "(max value " + (wInTiles-1) + "), ty: " + ty + 
+            "(max value " + (hInTiles-1) + ")")
+            
+    return (tx, ty)
   }
   
   def getTile(layerId : Int, x:Int, y:Int) : Tile = {

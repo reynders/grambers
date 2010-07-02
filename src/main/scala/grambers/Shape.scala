@@ -166,8 +166,7 @@ class Rectangle(center : Point, val w : Double, val h : Double) extends Shape(ce
   def contains(other:Rectangle) : Boolean = 
         ((other.minX >= minX && other.maxX <= maxX) &&
         (other.minY >= minY && other.maxY <= maxY))
-
-    
+   
   override def toString : String = {
     return "Rectangle(" + center.x + "," + center.y + ") : " + w + "w, " + h + "h)"
   }  
@@ -175,9 +174,11 @@ class Rectangle(center : Point, val w : Double, val h : Double) extends Shape(ce
 
 object Rectangle {
 
+  def apply(lx:Int, ly:Int, rx:Int, ry:Int) : Rectangle = Rectangle((lx, ly), (rx, ry))
+  
   def apply(lup:(Int, Int), rlp:(Int, Int)) : Rectangle = {
-    val w = rlp._1 - lup._1
-    val h = rlp._2 - lup._2
+    val w = (rlp._1 - lup._1) + 1
+    val h = (rlp._2 - lup._2) + 1
     return new Rectangle(Point((lup._1 + (w/2).toDouble), (lup._2 + (h/2)).toDouble), w.toDouble, h.toDouble)
   }
 }

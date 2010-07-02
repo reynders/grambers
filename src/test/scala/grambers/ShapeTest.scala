@@ -22,6 +22,12 @@ class ShapeTest extends TestCase {
     assertEquals(new Line(15.0, 5.0, 5.0, 5.0), lines(0))  
     assertFalse(new Line(0, 0, 0, 0) == lines(0))
   }
+  
+  def testRectangleWandH {
+    val rectangle = Rectangle(0, 0, 9, 4)
+    assertEquals(10.0, rectangle.w)
+    assertEquals(5.0, rectangle.h)
+  }
 
   def testRectangleOverlappingWhenNotColliding() {
     val r_1 = new grambers.Rectangle(new Point(2, 2), 2, 2)
