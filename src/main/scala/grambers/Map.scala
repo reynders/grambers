@@ -53,7 +53,7 @@ println("bgImage: lup " + lup + ", rlp " + rlp + " size (" + (bgImageAsTileRecta
 // TODO, unit test this
     for (y <- lup._2 to rlp._2) {
       for (x <- lup._1 to rlp._1) {
-        bgGraphics.drawImage(getTile(0, x, y).image, (x-lup._1+1)*tileW, (y-lup._2+1)*tileH, null)
+        bgGraphics.drawImage(getTile(0, x, y).image, (x-lup._1)*tileW, (y-lup._2)*tileH, null)
       }
     }
 
