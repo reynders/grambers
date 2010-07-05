@@ -119,7 +119,7 @@ class Rectangle(center : Point, val w : Double, val h : Double) extends Shape(ce
   lazy val side_up = asLines(2)
   lazy val side_left = asLines(3)
   
-  def convertToLines : Buffer[Line] = {
+  def convertToLines : Array[Line] = {
     val lines = new ArrayBuffer[Line]()
     
     lines += new Line(minX, minY, maxX, minY)
@@ -127,7 +127,7 @@ class Rectangle(center : Point, val w : Double, val h : Double) extends Shape(ce
     lines += new Line(maxX, maxY, minX, maxY)
     lines += new Line(minX, maxY, minX, minY)    
     
-    return lines
+    return lines.toArray
   }
   
   /* Returns the side of the rectangle facing the given point.
