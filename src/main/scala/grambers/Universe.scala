@@ -5,8 +5,8 @@ import java.lang.Math._
 
 class Universe(mapName:String) {
   
-  val staticThings : ArrayBuffer[StaticThing] = new ArrayBuffer[StaticThing]
-  val movingThings : ArrayBuffer[MovingThing] = new ArrayBuffer[MovingThing]
+  var staticThings : Array[StaticThing] = new Array[StaticThing](0)
+  var movingThings : Array[MovingThing] = new Array[MovingThing](0)
   
   val map : Map = MapLoader.loadMap(mapName)
   val WIDTH = map.w
@@ -15,8 +15,8 @@ class Universe(mapName:String) {
   
   def addThing(thing : Thing) {
     thing match {
-      case movingThing : MovingThing => movingThings += movingThing
-      case staticThing : StaticThing => staticThings += staticThing
+      case movingThing : MovingThing => movingThings :+= movingThing
+      case staticThing : StaticThing => staticThings :+= staticThing
       case _ => println("addThing does not know what to do with " + thing)
     }
   }
