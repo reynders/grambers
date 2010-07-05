@@ -84,7 +84,7 @@ class Observer (var w: Int, var h: Int, val universe : Universe, var thingInFocu
       add(ViewPanel)
 println("Setting size to (" + w + "," + h + ")")
       setSize(new Dimension(w, h));
-      pack()
+      //pack()
 println("Actual size is " + "(" + getWidth + "," + getHeight + ")")
       setVisible(true)
     }
