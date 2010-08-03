@@ -36,6 +36,25 @@ object Shape {
 }
 
 class Point(val x : Double, val y : Double) {
+
+  def +(i : Int) : Point = {
+    return(Point(x + i, y + i))
+  }
+
+  def -(i : Int) : Point = {
+    return(Point(x - i, y - i))
+  }
+  
+  def +(other : Point) : Point = {
+    return(Point(x + other.x, y + other.y))
+  }
+
+  def -(other : Point) : Point = {
+    return(Point(x - other.x, y - other.y))
+  }
+  
+  implicit def IntToPoint(i:Int) : Point = new Point(i, i)
+  
   override def equals(that : Any) = that match {    
     case point : Point => (this.x == point.x && this.y == point.y)
     case _ => false      

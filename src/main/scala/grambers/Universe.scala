@@ -74,11 +74,8 @@ println("Resolving " + leftThing + " collision with " + rightThing)
   def moveMovingThings(movingThings : Seq[MovingThing], msElapsed : Long) {
     movingThings.foreach(movingThing => {
       movingThing.doYourThing(movingThing)
-      var newX = (movingThing.center.x + msElapsed*movingThing.xSpeed/1000)%WIDTH
-      if (newX < 0 ) newX += WIDTH 
-      var newY = (movingThing.center.y + msElapsed*movingThing.ySpeed/1000)%HEIGHT
-      if (newY < 0 ) newY += HEIGHT
-    
+      var newX = (movingThing.center.x + msElapsed*movingThing.xSpeed/1000)
+      var newY = (movingThing.center.y + msElapsed*movingThing.ySpeed/1000)   
       movingThing.center = Point(newX, newY)
     })
   }
@@ -100,7 +97,7 @@ println("Resolving " + leftThing + " collision with " + rightThing)
         //println("World updated")
       }
       
-      moveMovingThings(movingThings, Config.currentTimeMillis - lastWorldUpdateTime)
+      //moveMovingThings(movingThings, Config.currentTimeMillis - lastWorldUpdateTime)
       lastWorldUpdateTime = Config.currentTimeMillis
       
       observer.observe()

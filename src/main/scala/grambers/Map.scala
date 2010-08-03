@@ -16,7 +16,7 @@ class Map(var wInTiles:Int, var hInTiles:Int, var tileW:Int, var tileH:Int) {
   def h = tileH * hInTiles  
   
   // Tile buffering optimization stuff
-  var TILE_BUFFER_SIZE = 2
+  var TILE_BUFFER_PADDING_TILES = 2
   var bgImage : BufferedImage = _
   var bgImageAsTileRectangle = Rectangle((0,0),(0,0))
   var bgGraphics : Graphics2D =_
@@ -31,6 +31,9 @@ class Map(var wInTiles:Int, var hInTiles:Int, var tileW:Int, var tileH:Int) {
   def drawTiles(g2 : Graphics2D, tileLup : (Int,Int), tileRlp : (Int,Int)) {
 
    if (!bgImageAsTileRectangle.contains(Rectangle(tileLup, tileRlp))) {
+     
+// Add buffering so that we do not recreate the background too late
+// Do all this in a separate thread!!!
      println(bgImageAsTileRectangle + " does not contain " + Rectangle(tileLup, tileRlp))
      createBackgroundImageFromTiles(tileLup, tileRlp)       
      println("New bg image left upper corner: " + bgTileLup)

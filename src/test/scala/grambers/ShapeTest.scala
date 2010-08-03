@@ -9,6 +9,13 @@ class ShapeTest extends TestCase {
     assertEquals(Point(0,0), Point(0,0))
   }
   
+  def testPointAdditionAndSubstraction {
+    assertEquals(Point(2,2), Point(1,1) + Point(1, 1))
+    assertEquals(Point(0,0), Point(1,1) - Point(1, 1))
+    assertEquals(Point(2,2), Point(1,1) + 1)
+    assertEquals(Point(0,0), Point(1,1) - 1)
+  }
+  
   def testRectangleAsLines {
     val rectangle = new Rectangle(new Point(10, 10), 10, 10)
     val lines = rectangle.asLines
