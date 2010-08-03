@@ -16,6 +16,23 @@ class ShapeTest extends TestCase {
     assertEquals(Point(0,0), Point(1,1) - 1)
   }
   
+  def testRectangleCreation {
+    assertEquals(Rectangle((-2, -2), (3, 3)), Rectangle(Rectangle((0, 0), (1, 1)), 2))
+  }
+  
+  def testRectangleDimensions {
+    val r = Rectangle((-2, -2),(2, 2))
+    assertEquals(-2.0, r.minX)
+    assertEquals(2.0, r.maxY)
+  }
+  
+  def testRectangleLimitBy {
+    val original = Rectangle((-1, -2), (4, 4))
+    val limitBy = Rectangle((0,0), (5,5))
+    //assertEquals(0, limitBy.minX)
+    assertEquals(Rectangle((0, 0), (4, 4)), original.limitBy(limitBy))
+  }
+  
   def testRectangleAsLines {
     val rectangle = new Rectangle(new Point(10, 10), 10, 10)
     val lines = rectangle.asLines
@@ -32,8 +49,8 @@ class ShapeTest extends TestCase {
   
   def testRectangleWandH {
     val rectangle = Rectangle(0, 0, 9, 4)
-    assertEquals(10.0, rectangle.w)
-    assertEquals(5.0, rectangle.h)
+    assertEquals(9.0, rectangle.w)
+    assertEquals(4.0, rectangle.h)
   }
 
   def testRectangleOverlappingWhenNotColliding() {

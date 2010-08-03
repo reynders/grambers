@@ -29,7 +29,7 @@ class Map(var wInTiles:Int, var hInTiles:Int, var tileW:Int, var tileH:Int) {
   }
  
   def drawTiles(g2 : Graphics2D, tileLup : (Int,Int), tileRlp : (Int,Int)) {
-
+    
    if (!bgImageAsTileRectangle.contains(Rectangle(tileLup, tileRlp))) {
      
 // Add buffering so that we do not recreate the background too late
@@ -43,8 +43,10 @@ class Map(var wInTiles:Int, var hInTiles:Int, var tileW:Int, var tileH:Int) {
    
   }
   
-  def createBackgroundImageFromTiles(lup:(Int,Int), rlp:(Int,Int)) {
-    bgImageAsTileRectangle = Rectangle(lup, rlp) 
+  def createBackgroundImageFromTiles(oLup:(Int,Int), oRlp:(Int,Int)) {
+    bgImageAsTileRectangle = Rectangle(Rectangle(oLup, oRlp), TILE_BUFFER_PADDING_TILES).limitBy(Rectangle((0,0), (wInTiles-1, hInTiles-1)))
+    val lup = (bgImageAsTileRectangle.minX.toInt, bgImageAsTileRectangle.minY.toInt)
+    val rlp = (bgImageAsTileRectangle.maxX.toInt, bgImageAsTileRectangle.maxY.toInt)
 println("bgImage: lup " + lup + ", rlp " + rlp + " size (" + (bgImageAsTileRectangle.w.toInt*tileW), 
                                 (bgImageAsTileRectangle.h.toInt*tileH) + ")");    
                                 

@@ -136,17 +136,22 @@ class Circle(center : Point, val r : Double) extends Shape(center) {
   Rectangle is specified as w, h and center point (x, y) instead of left upper 
   and right lower corner so that rectangle can be at an angle if needed
   */
-class Rectangle(center : Point, val w : Double, val h : Double) extends Shape(center) {
-  
+  class Rectangle(lup:(Double, Double), rlp:(Double, Double)) extends 
+                Shape(Point(((lup._1 + rlp._1) / 2), ((lup._2 + rlp._2) / 2))) {
+  val minX = lup._1
+  val minY = lup._2
+  val maxX = rlp._1
+  val maxY = rlp._2
+  lazy val w = maxX - minX
+  lazy val h = maxY - minY
   lazy val asLines = convertToLines
-  lazy val minX = center.x - (w/2)
-  lazy val minY = center.y - (h/2)
-  lazy val maxX = center.x + (w/2)
-  lazy val maxY = center.y + (h/2)
   lazy val side_down = asLines(0)
   lazy val side_right = asLines(1)
   lazy val side_up = asLines(2)
   lazy val side_left = asLines(3)
+  
+  def this(center:Point, w:Double, h:Double) = this((center.x-(w/2), center.y-(h/2)), 
+                                                    (center.x+(w/2), center.y+(h/2)))
   
   def convertToLines : Array[Line] = {
     val lines = new ArrayBuffer[Line]()
@@ -196,19 +201,35 @@ class Rectangle(center : Point, val w : Double, val h : Double) extends Shape(ce
         ((other.minX >= minX && other.maxX <= maxX) &&
         (other.minY >= minY && other.maxY <= maxY))
    
+  def limitBy(other:Rectangle) : Rectangle = {
+    val mnX = if (minX > other.minX) minX else other.minX
+println("mnX " + mnX + " minX " + minX + " other.minX " + other.minX)   
+println("minX " + mnX + " center.x " + center.x + " w/2 " + (w/2))
+    val mnY = if (minY > other.minY) minY else other.minY
+    val mxX = if (maxX < other.maxX) maxX else other.maxX
+    val mxY = if (maxY < other.maxY) maxY else other.maxY
+
+    return Rectangle((mnX.toInt, mnY.toInt), (mxX.toInt, mxY.toInt))    
+  }
+  
+  override def equals(other : Any) = other match {    
+    case that : Rectangle => ((this.center == that.center) && 
+                              (this.w == that.w) && (this.h == that.h))
+    case _ => false      
+  }        
+        
   override def toString : String = {
     return "Rectangle(" + center.x + "," + center.y + ") : " + w + "w, " + h + "h)"
   }  
 }
 
 object Rectangle {
-
+  def apply(lup:(Int, Int), rlp:(Int, Int)) : Rectangle = new Rectangle((lup._1.toDouble, lup._2.toDouble), 
+                                                                        (rlp._1.toDouble, rlp._2.toDouble))
   def apply(lx:Int, ly:Int, rx:Int, ry:Int) : Rectangle = Rectangle((lx, ly), (rx, ry))
-  
-  def apply(lup:(Int, Int), rlp:(Int, Int)) : Rectangle = {
-    val w = (rlp._1 - lup._1) + 1
-    val h = (rlp._2 - lup._2) + 1
-    return new Rectangle(Point((lup._1 + (w/2).toDouble), (lup._2 + (h/2)).toDouble), w.toDouble, h.toDouble)
-  }
+  def apply(rectangle:Rectangle, padding : Double) : Rectangle 
+     = new Rectangle((rectangle.minX - padding, rectangle.minY - padding), 
+                     (rectangle.maxX + padding, rectangle.maxY + padding))
+     
 }
 

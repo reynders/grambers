@@ -115,7 +115,7 @@ class Box(c : Point, w : Double, h : Double) extends Thing(c, w, h) with StaticT
   var color = java.awt.Color.black
 
   def shape : Shape = {
-    new Rectangle(new Point(center.x, center.y), w, h)
+    new Rectangle((center.x-(w/2), center.y-(h/2)), (center.x+(w/2), center.y+(h/2)))
   }
   
   val image = new Rectangle2D.Double(center.x - w/2, center.y-h/2, w, h)
