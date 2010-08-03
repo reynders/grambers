@@ -119,4 +119,14 @@ class ShapeTest extends TestCase {
     assertEquals(expectedVector, Shape.collisionUnitVector(circle, box))
     assertEquals(expectedVector, Shape.collisionUnitVector(box, circle))
   }
+  
+  def testLineToPoints {
+    var line = new Line(0.0, 0.0, 10.0, 10.0)
+    val points = line.toPoints(10)
+    assertEquals(10, points.size)
+println("DEBUG:" + (new scala.collection.mutable.ArrayBuffer[Point]() ++= points))    
+    assertEquals(Point(0.0, 0.0), points(0))
+    assertEquals(Point(10.0, 10.0), points(9))
+    assertEquals(Point(5.0, 5.0), points(5))
+  }
 }

@@ -108,6 +108,16 @@ class Line(val startX : Double, val startY : Double, val endX : Double, val endY
     shortestVectorTo(point).length
   }
   
+  def toPoints(nOfPoints : Int) : Array[Point] = {
+    assert(nOfPoints >= 2)
+    val dX : Double = (endX - startX) / nOfPoints
+    val dY : Double = (endY - startY) / nOfPoints
+    val points = ArrayBuffer[Point]()
+    for(i <- 0 until (nOfPoints-1)) points += Point((startX + (i*dX)), (startY + (i*dY)))
+    points += Point(endX, endY)
+    return points.toArray
+  }
+  
   override def toString : String = {
     return "Line(" + startX + "," + startY + "-" + endX + "," + endY + ")"
   }
