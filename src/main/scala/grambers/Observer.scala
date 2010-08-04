@@ -63,35 +63,22 @@ class Observer (var w: Int, var h: Int, val universe : Universe, var thingInFocu
         }
       }
     
-      var lastX = 0
       var lastUpdateTime = Config.currentTimeMillis
-      var lastNewPixelTime = Config.currentTimeMillis
       
       def drawUniverse(g2 : Graphics2D) {
         val at = g2.getTransform();
         g2.translate(xViewTranslation, yViewTranslation)
+        
         universe.map.drawBackground(g2, position, w, h)
+        
         universe.staticThings.foreach(thing => thing.draw(g2, thing.center))
-val msElapsed = (Config.currentTimeMillis - lastUpdateTime)
-universe.moveMovingThings(universe.movingThings, msElapsed)
-lastUpdateTime = Config.currentTimeMillis
-        universe.movingThings.foreach(thing => {
-          if (thing.center.x.toInt != lastX) {
-            val diffX = (thing.center.x.toInt - lastX)
-            val diffT = (Config.currentTimeMillis - lastNewPixelTime)            
-
-            println("New X: " + thing.center.x.toInt + " diff " + diffX +
-                    " first since " +  diffT + "ms" + 
-                    " thing xSpeed is " + thing.xSpeed + "(expected " + 
-                    ((thing.xSpeed/1000.toDouble)*diffT.toDouble) + ")");
-            
-            lastNewPixelTime = Config.currentTimeMillis
-            lastX = thing.center.x.toInt
-          }
-
-          thing.draw(g2, thing.center)
-        })
-
+        
+        val msElapsed = (Config.currentTimeMillis - lastUpdateTime)
+        universe.moveMovingThings(universe.movingThings, msElapsed)
+        lastUpdateTime = Config.currentTimeMillis
+        
+        universe.movingThings.foreach(thing => thing.draw(g2, thing.center))
+        
         g2.setTransform(at);
         g2.dispose
         Config.fps += 1
