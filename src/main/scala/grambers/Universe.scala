@@ -94,9 +94,9 @@ println("Resolving " + leftThing + " collision with " + rightThing)
         collide(movingThings, staticThings)
         nextWorldUpdateTime = now + (1000 / Config.worldUpdatesPerSecond)        
         Config.worldUpdates += 1
-        //println("World updated")
       }
       
+      // Moved to graphics thread to reduce flickering
       //moveMovingThings(movingThings, Config.currentTimeMillis - lastWorldUpdateTime)
       lastWorldUpdateTime = Config.currentTimeMillis
       

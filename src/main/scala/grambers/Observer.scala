@@ -73,6 +73,9 @@ class Observer (var w: Int, var h: Int, val universe : Universe, var thingInFocu
         
         universe.staticThings.foreach(thing => thing.draw(g2, thing.center))
         
+        // Moving the objects in the graphics thread should fix at least some of 
+        // the graphics studdering once most of the computation is done outside 
+        // the graphics thread
         val msElapsed = (Config.currentTimeMillis - lastUpdateTime)
         universe.moveMovingThings(universe.movingThings, msElapsed)
         lastUpdateTime = Config.currentTimeMillis
