@@ -136,12 +136,10 @@ class Circle(center : Point, val r : Double) extends Shape(center) {
   Rectangle is specified as w, h and center point (x, y) instead of left upper 
   and right lower corner so that rectangle can be at an angle if needed
   */
-  class Rectangle(lup:(Double, Double), rlp:(Double, Double)) extends 
-                Shape(Point(((lup._1 + rlp._1) / 2), ((lup._2 + rlp._2) / 2))) {
-  val minX = lup._1
-  val minY = lup._2
-  val maxX = rlp._1
-  val maxY = rlp._2
+class Rectangle(val minX:Double, val minY:Double, val maxX:Double, val maxY:Double) extends 
+                Shape(Point(((minX+maxX) / 2), ((minY+maxY) / 2))) {
+  val lup = (minX, minY)
+  val rlp = (maxX, maxY)
   lazy val w = maxX - minX
   lazy val h = maxY - minY
   lazy val asLines = convertToLines
@@ -149,9 +147,11 @@ class Circle(center : Point, val r : Double) extends Shape(center) {
   lazy val side_right = asLines(1)
   lazy val side_up = asLines(2)
   lazy val side_left = asLines(3)
-  
-  def this(center:Point, w:Double, h:Double) = this((center.x-(w/2), center.y-(h/2)), 
-                                                    (center.x+(w/2), center.y+(h/2)))
+
+  def this(lup:(Double, Double), rlp:(Double, Double)) = this(lup._1, lup._2, rlp._1, rlp._2)  
+
+  def this(center:Point, w:Double, h:Double) = this(center.x-(w/2), center.y-(h/2), 
+                                                    center.x+(w/2), center.y+(h/2))
   
   def convertToLines : Array[Line] = {
     val lines = new ArrayBuffer[Line]()
@@ -196,15 +196,21 @@ class Circle(center : Point, val r : Double) extends Shape(center) {
     return !((minY > other.maxY) || (maxY < other.minY) ||
              (maxX < other.minX) ||(minX > other.maxX))
   }
-  
+
+  import scala.Math._ 
+  def intersect(other:Rectangle) : Rectangle = 
+       if (overlaps(other))
+          new Rectangle((max(minX, other.minX), max(minY, other.minY)),
+                    (min(maxX, other.maxX), min(maxY, other.maxY))) 
+       else
+          new Rectangle((0.0, 0.0), (0.0, 0.0))
+          
   def contains(other:Rectangle) : Boolean = 
         ((other.minX >= minX && other.maxX <= maxX) &&
         (other.minY >= minY && other.maxY <= maxY))
    
   def limitBy(other:Rectangle) : Rectangle = {
     val mnX = if (minX > other.minX) minX else other.minX
-println("mnX " + mnX + " minX " + minX + " other.minX " + other.minX)   
-println("minX " + mnX + " center.x " + center.x + " w/2 " + (w/2))
     val mnY = if (minY > other.minY) minY else other.minY
     val mxX = if (maxX < other.maxX) maxX else other.maxX
     val mxY = if (maxY < other.maxY) maxY else other.maxY
@@ -224,12 +230,13 @@ println("minX " + mnX + " center.x " + center.x + " w/2 " + (w/2))
 }
 
 object Rectangle {
-  def apply(lup:(Int, Int), rlp:(Int, Int)) : Rectangle = new Rectangle((lup._1.toDouble, lup._2.toDouble), 
-                                                                        (rlp._1.toDouble, rlp._2.toDouble))
+  //def apply(lup:(Double, Double), rlp:(Double, Double)) : Rectangle = new Rectangle(lup._1, lup._2, rlp._1, rlp._2)
+  def apply(lup:(Int, Int), rlp:(Int, Int)) : Rectangle = new Rectangle(lup._1.toDouble, lup._2.toDouble, 
+                                                                       rlp._1.toDouble, rlp._2.toDouble)
   def apply(lx:Int, ly:Int, rx:Int, ry:Int) : Rectangle = Rectangle((lx, ly), (rx, ry))
   def apply(rectangle:Rectangle, padding : Double) : Rectangle 
-     = new Rectangle((rectangle.minX - padding, rectangle.minY - padding), 
-                     (rectangle.maxX + padding, rectangle.maxY + padding))
+     = new Rectangle(rectangle.minX - padding, rectangle.minY - padding, 
+                     rectangle.maxX + padding, rectangle.maxY + padding)
      
 }
 

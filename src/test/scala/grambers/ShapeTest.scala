@@ -26,6 +26,12 @@ class ShapeTest extends TestCase {
     assertEquals(2.0, r.maxY)
   }
   
+  def testRectangleIntersects {
+    val expected = new Rectangle((0.0, 3.0), (2.0, 5.0))
+    assertEquals(expected, new Rectangle((0.0, 0.0), (10.0, 10.0)).intersect(
+                           new Rectangle((-1.0, 3.0), (2.0, 5.0))))
+  }
+  
   def testRectangleLimitBy {
     val original = Rectangle((-1, -2), (4, 4))
     val limitBy = Rectangle((0,0), (5,5))

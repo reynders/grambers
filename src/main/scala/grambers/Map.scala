@@ -22,6 +22,38 @@ class Map(var wInTiles:Int, var hInTiles:Int, var tileW:Int, var tileH:Int) {
   var bgGraphics : Graphics2D =_
   var bgTileLup : (Int, Int) = _
   
+  def getMapImage(center : Point, w : Int, h : Int) : BufferedImage = {
+    val windowLup = Point(center.x - w/2, center.y - h/2)
+    val windowRlp = Point(center.x + w/2, center.y + w/2)
+    val tileLup = worldPointToTileIndex(windowLup)
+    val tileRlp = worldPointToTileIndex(windowRlp)
+
+// TODO: Add buffering so that we do not recreate the background too late    
+    if (!bgImageAsTileRectangle.contains(Rectangle(tileLup, tileRlp))) {
+     
+// TODO: Do all this in a separate thread!!!
+     createBackgroundImageFromTiles(tileLup, tileRlp)       
+   }
+      
+   //g2.drawImage(bgImage, bgTileLup._1*tileW, bgTileLup._2*tileH, null)
+   val bgX = bgTileLup._1*tileW
+   val bgY = bgTileLup._2*tileH
+   val bgW = if (bgX + w <= bgImage.getWidth) w else (w-((bgX + w) - bgImage.getWidth))
+   val bgH = if (bgY + h <= bgImage.getHeight) h else (h-((bgY + h) - bgImage.getHeight))
+
+   try {
+     val image = bgImage.getSubimage(bgX, bgY, bgW, bgH)
+   }
+   catch {
+     case e: Exception => {
+       println("ABOUT TO EXPLODE: bgXbgY(" + bgX + "," + bgY + "), bWbH" + bgW + "," + bgH +
+               " from " + bgTileLup + " image " + bgImage.getWidth + "," + bgImage.getHeight +
+               " w " + w + ", h " + h + " windowLup " + windowLup)
+     }
+   }
+   return bgImage.getSubimage(bgX, bgY, bgW, bgH)
+  }
+  
   def drawBackground(g2 : Graphics2D, center : Point, w : Int, h : Int) {
     
     drawTiles(g2, worldPointToTileIndex(Point(center.x - w/2, center.y - h/2)),

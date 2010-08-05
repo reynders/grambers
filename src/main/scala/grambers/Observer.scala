@@ -69,7 +69,10 @@ class Observer (var w: Int, var h: Int, val universe : Universe, var thingInFocu
         val at = g2.getTransform();
         g2.translate(xViewTranslation, yViewTranslation)
         
-        universe.map.drawBackground(g2, position, w, h)
+        //universe.map.drawBackground(g2, position, w, h)
+        val mapImage = universe.map.getMapImage(position, w, h)
+        g2.drawImage(mapImage, universe.map.bgTileLup._1*universe.map.tileW, 
+                     universe.map.bgTileLup._2*universe.map.tileH, null)
         
         universe.staticThings.foreach(thing => thing.draw(g2, thing.center))
         
