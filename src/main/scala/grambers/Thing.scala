@@ -125,6 +125,8 @@ class Box(c : Point, w : Double, h : Double) extends Thing(c, w, h) with StaticT
     val originalPaintColor = g2.getPaint()
     g2.setPaint(color)
     g2.fill(image)
+    g2.setPaint(java.awt.Color.green)
+    g2.drawRect(position.x.toInt, position.y.toInt, 2, 2)
     g2.setPaint(originalPaintColor)
   }
   

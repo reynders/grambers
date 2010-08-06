@@ -43,6 +43,7 @@ object Demo {
     }  
     
     def addWalls(universe : Universe) {
+      println("addWalls: (" + universe.WIDTH + "," + universe.HEIGHT + ")")
       universe.addThing(Box(universe.WIDTH/2, 5, universe.WIDTH, 1, Color.blue))
       universe.addThing(Box(universe.WIDTH/2, universe.HEIGHT-5, universe.WIDTH, 1, Color.blue))    
       universe.addThing(Box(5, universe.HEIGHT/2, 1, universe.HEIGHT, Color.blue))

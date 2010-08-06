@@ -21,7 +21,8 @@ class Map(var wInTiles:Int, var hInTiles:Int, var tileW:Int, var tileH:Int) {
   var bgImageAsTileRectangle = Rectangle((0,0),(0,0))
   var bgGraphics : Graphics2D =_
   var bgTileLup : (Int, Int) = _
-  
+  var bgImageVisiblePartLup : (Double, Double) = _
+
   def getMapImage(center : Point, w : Int, h : Int) : BufferedImage = {
     val windowLup = Point(center.x - w/2, center.y - h/2)
     val windowRlp = Point(center.x + w/2, center.y + w/2)
@@ -29,61 +30,28 @@ class Map(var wInTiles:Int, var hInTiles:Int, var tileW:Int, var tileH:Int) {
     val tileRlp = worldPointToTileIndex(windowRlp)
 
 // TODO: Add buffering so that we do not recreate the background too late    
-    if (!bgImageAsTileRectangle.contains(Rectangle(tileLup, tileRlp))) {
-     
+    if (!bgImageAsTileRectangle.contains(Rectangle(tileLup, tileRlp))) {     
 // TODO: Do all this in a separate thread!!!
      createBackgroundImageFromTiles(tileLup, tileRlp)       
    }
-      
-   //g2.drawImage(bgImage, bgTileLup._1*tileW, bgTileLup._2*tileH, null)
    val bgX = bgTileLup._1*tileW
-   val bgY = bgTileLup._2*tileH
-   val bgW = if (bgX + w <= bgImage.getWidth) w else (w-((bgX + w) - bgImage.getWidth))
-   val bgH = if (bgY + h <= bgImage.getHeight) h else (h-((bgY + h) - bgImage.getHeight))
-
-   try {
-     val image = bgImage.getSubimage(bgX, bgY, bgW, bgH)
-   }
-   catch {
-     case e: Exception => {
-       println("ABOUT TO EXPLODE: bgXbgY(" + bgX + "," + bgY + "), bWbH" + bgW + "," + bgH +
-               " from " + bgTileLup + " image " + bgImage.getWidth + "," + bgImage.getHeight +
-               " w " + w + ", h " + h + " windowLup " + windowLup)
-     }
-   }
-   return bgImage.getSubimage(bgX, bgY, bgW, bgH)
-  }
-  
-  def drawBackground(g2 : Graphics2D, center : Point, w : Int, h : Int) {
-    
-    drawTiles(g2, worldPointToTileIndex(Point(center.x - w/2, center.y - h/2)),
-                  worldPointToTileIndex(Point(center.x + w/2, center.y + w/2)))
-  }
- 
-  def drawTiles(g2 : Graphics2D, tileLup : (Int,Int), tileRlp : (Int,Int)) {
-    
-   if (!bgImageAsTileRectangle.contains(Rectangle(tileLup, tileRlp))) {
-     
-// Add buffering so that we do not recreate the background too late
-// Do all this in a separate thread!!!
-     println(bgImageAsTileRectangle + " does not contain " + Rectangle(tileLup, tileRlp))
-     createBackgroundImageFromTiles(tileLup, tileRlp)       
-     println("New bg image left upper corner: " + bgTileLup)
-   }
-      
-   g2.drawImage(bgImage, bgTileLup._1*tileW, bgTileLup._2*tileH, null)
+   val bgY = bgTileLup._2*tileH   
+   val bgImageVisiblePart = 
+       Rectangle(bgX, bgY, bgX + bgImage.getWidth, bgY + bgImage.getHeight).intersect(
+       Rectangle(windowLup, windowRlp)).translate(-bgX, -bgY)  
    
+   bgImageVisiblePartLup = bgImageVisiblePart.lup
+   
+   return bgImage.getSubimage(bgImageVisiblePart.lup._1.toInt, bgImageVisiblePart.lup._2.toInt,
+                              bgImageVisiblePart.w.toInt, bgImageVisiblePart.h.toInt)
   }
-  
+    
   def createBackgroundImageFromTiles(oLup:(Int,Int), oRlp:(Int,Int)) {
     bgImageAsTileRectangle = Rectangle(Rectangle(oLup, oRlp), TILE_BUFFER_PADDING_TILES).limitBy(Rectangle((0,0), (wInTiles-1, hInTiles-1)))
     val lup = (bgImageAsTileRectangle.minX.toInt, bgImageAsTileRectangle.minY.toInt)
     val rlp = (bgImageAsTileRectangle.maxX.toInt, bgImageAsTileRectangle.maxY.toInt)
-println("bgImage: lup " + lup + ", rlp " + rlp + " size (" + (bgImageAsTileRectangle.w.toInt*tileW), 
-                                (bgImageAsTileRectangle.h.toInt*tileH) + ")");    
-                                
-    bgImage = new BufferedImage(bgImageAsTileRectangle.w.toInt*tileW, 
-                                bgImageAsTileRectangle.h.toInt*tileH, Config.imageType)
+    bgImage = new BufferedImage((bgImageAsTileRectangle.w.toInt+1)*tileW, 
+                                (bgImageAsTileRectangle.h.toInt+1)*tileH, Config.imageType)
     bgGraphics = bgImage.createGraphics
     bgTileLup = lup
     
@@ -94,8 +62,8 @@ println("bgImage: lup " + lup + ", rlp " + rlp + " size (" + (bgImageAsTileRecta
       }
     }
 
-println("Created bg image of size (" + bgImage.getWidth + "," + bgImage.getHeight + ")")
-val debugRec = new java.awt.Rectangle(0, 0, bgImage.getWidth, bgImage.getHeight)
+println("Created bg image from tiles " + Rectangle(lup, rlp) + ", in pixels (" + bgImage.getWidth + "," + bgImage.getHeight + ")")
+val debugRec = new java.awt.Rectangle(0, 0, bgImage.getWidth-1, bgImage.getHeight-1)
 bgGraphics.setColor(java.awt.Color.RED)
 bgGraphics.draw(debugRec)
   }
@@ -227,8 +195,8 @@ object MapLoader {
       case e:java.io.FileNotFoundException => println("Unknown map " + mapFileName)
     }
 
-    println("Loaded map " + mapFileName + "of size (" + map.wInTiles + "," + map.hInTiles + 
-            "),  with " + map.layers.size + " layers and " + map.tiles.size + " tiles")
+    println("Loaded map " + mapFileName + "of size in tiles (" + map.wInTiles + "," + map.hInTiles + 
+            "), in pixels ( " + map.w + "," + map.h + ") with " + map.layers.size + " layers and " + map.tiles.size + " tiles")
     
     return map
   }

@@ -218,6 +218,9 @@ class Rectangle(val minX:Double, val minY:Double, val maxX:Double, val maxY:Doub
     return Rectangle((mnX.toInt, mnY.toInt), (mxX.toInt, mxY.toInt))    
   }
   
+  def translate(by:(Double, Double)) : Rectangle = 
+          new Rectangle(minX + by._1, minY + by._2, maxX + by._1, maxY + by._2)                                         
+  
   override def equals(other : Any) = other match {    
     case that : Rectangle => ((this.center == that.center) && 
                               (this.w == that.w) && (this.h == that.h))
@@ -225,7 +228,7 @@ class Rectangle(val minX:Double, val minY:Double, val maxX:Double, val maxY:Doub
   }        
         
   override def toString : String = {
-    return "Rectangle(" + center.x + "," + center.y + ") : " + w + "w, " + h + "h)"
+    return "Rectangle((" + lup + "),(" + rlp + "))"
   }  
 }
 
@@ -237,6 +240,7 @@ object Rectangle {
   def apply(rectangle:Rectangle, padding : Double) : Rectangle 
      = new Rectangle(rectangle.minX - padding, rectangle.minY - padding, 
                      rectangle.maxX + padding, rectangle.maxY + padding)
+  def apply(lup:Point, rlp:Point) : Rectangle = new Rectangle(lup.x, lup.y, rlp.x, rlp.y)                   
      
 }
 
