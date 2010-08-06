@@ -21,7 +21,7 @@ class Map(var wInTiles:Int, var hInTiles:Int, var tileW:Int, var tileH:Int) {
   var bgImageAsTileRectangle = Rectangle((0,0),(0,0))
   var bgGraphics : Graphics2D =_
   var bgTileLup : (Int, Int) = _
-  var bgImageVisiblePartLup : (Double, Double) = _
+  var bgImageWorldLup : (Double, Double) = _
 
   def getMapImage(center : Point, w : Int, h : Int) : BufferedImage = {
     val windowLup = Point(center.x - w/2, center.y - h/2)
@@ -40,7 +40,7 @@ class Map(var wInTiles:Int, var hInTiles:Int, var tileW:Int, var tileH:Int) {
        Rectangle(bgX, bgY, bgX + bgImage.getWidth, bgY + bgImage.getHeight).intersect(
        Rectangle(windowLup, windowRlp)).translate(-bgX, -bgY)  
    
-   bgImageVisiblePartLup = bgImageVisiblePart.lup
+   bgImageWorldLup = (bgImageVisiblePart.lup._1 + bgX, bgImageVisiblePart.lup._2 + bgY)
    
    return bgImage.getSubimage(bgImageVisiblePart.lup._1.toInt, bgImageVisiblePart.lup._2.toInt,
                               bgImageVisiblePart.w.toInt, bgImageVisiblePart.h.toInt)
