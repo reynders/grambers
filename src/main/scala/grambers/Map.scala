@@ -5,24 +5,29 @@ import java.awt.image._
 import java.awt._
 import scala.collection.mutable._
 import scala.xml._
+import scala.actors.Actor
+import scala.actors.Actor._
 
-class Map(var wInTiles:Int, var hInTiles:Int, var tileW:Int, var tileH:Int) {
-
-  var tileSets = new Array[TileSet](0)
-  var tiles = new Array[Tile](0)
-  var layers = new Array[Layer](0)
+class Map(val wInTiles:Int, val hInTiles:Int, val tileW:Int, val tileH:Int, 
+val tileSets:Array[TileSet], val layers:Array[Layer], val tiles:Array[Tile]) {
   
   def w = tileW * wInTiles
   def h = tileH * hInTiles  
   
-  // Tile buffering optimization stuff
-  var TILE_BUFFER_PADDING_TILES = 2
-  var bgImage : BufferedImage = _
-  var bgImageAsTileRectangle = Rectangle((0,0),(0,0))
-  var bgGraphics : Graphics2D =_
-  var bgTileLup : (Int, Int) = _
+  val TILE_BUFFER_PADDING_TILES = 2
   var bgImageWorldLup : (Double, Double) = _
+  var bgImage : BackgroundImage = createBackgroundImageFromTiles((0,0), (1,1))
+  
+  lazy val bgImageCreatorActor = actor {
+    loop {
+      receiveWithin(5000) {
+        case s: String => println("I got a String: " + s)
+        case _ => println("I have no idea what I just got.")
+      }
+    } 
+  }
 
+  
   def getMapImage(center : Point, w : Int, h : Int) : BufferedImage = {
     val windowLup = Point(center.x - w/2, center.y - h/2)
     val windowRlp = Point(center.x + w/2, center.y + w/2)
@@ -30,42 +35,43 @@ class Map(var wInTiles:Int, var hInTiles:Int, var tileW:Int, var tileH:Int) {
     val tileRlp = worldPointToTileIndex(windowRlp)
 
 // TODO: Add buffering so that we do not recreate the background too late    
-    if (!bgImageAsTileRectangle.contains(Rectangle(tileLup, tileRlp))) {     
+    if (!bgImage.tileRectangle.contains(Rectangle(tileLup, tileRlp))) {     
 // TODO: Do all this in a separate thread!!!
-     createBackgroundImageFromTiles(tileLup, tileRlp)       
+     bgImage = createBackgroundImageFromTiles(tileLup, tileRlp)       
    }
-   val bgX = bgTileLup._1*tileW
-   val bgY = bgTileLup._2*tileH   
+   val bgX = bgImage.tileLup._1*tileW
+   val bgY = bgImage.tileLup._2*tileH   
    val bgImageVisiblePart = 
-       Rectangle(bgX, bgY, bgX + bgImage.getWidth, bgY + bgImage.getHeight).intersect(
+       Rectangle(bgX, bgY, bgX + bgImage.image.getWidth, bgY + bgImage.image.getHeight).intersect(
        Rectangle(windowLup, windowRlp)).translate(-bgX, -bgY)  
    
    bgImageWorldLup = (bgImageVisiblePart.lup._1 + bgX, bgImageVisiblePart.lup._2 + bgY)
    
-   return bgImage.getSubimage(bgImageVisiblePart.lup._1.toInt, bgImageVisiblePart.lup._2.toInt,
-                              bgImageVisiblePart.w.toInt, bgImageVisiblePart.h.toInt)
+   return bgImage.image.getSubimage(bgImageVisiblePart.lup._1.toInt, bgImageVisiblePart.lup._2.toInt,
+                                    bgImageVisiblePart.w.toInt, bgImageVisiblePart.h.toInt)
   }
     
-  def createBackgroundImageFromTiles(oLup:(Int,Int), oRlp:(Int,Int)) {
-    bgImageAsTileRectangle = Rectangle(Rectangle(oLup, oRlp), TILE_BUFFER_PADDING_TILES).limitBy(Rectangle((0,0), (wInTiles-1, hInTiles-1)))
+  def createBackgroundImageFromTiles(oLup:(Int,Int), oRlp:(Int,Int)) : BackgroundImage = {
+    val bgImageAsTileRectangle = Rectangle(Rectangle(oLup, oRlp), TILE_BUFFER_PADDING_TILES).limitBy(Rectangle((0,0), (wInTiles-1, hInTiles-1)))
     val lup = (bgImageAsTileRectangle.minX.toInt, bgImageAsTileRectangle.minY.toInt)
     val rlp = (bgImageAsTileRectangle.maxX.toInt, bgImageAsTileRectangle.maxY.toInt)
-    bgImage = new BufferedImage((bgImageAsTileRectangle.w.toInt+1)*tileW, 
-                                (bgImageAsTileRectangle.h.toInt+1)*tileH, Config.imageType)
-    bgGraphics = bgImage.createGraphics
-    bgTileLup = lup
-    
+println("BGIMAGE AS TILE REC: " + bgImageAsTileRectangle + ", wInTiles " + wInTiles)
+    val bgImage = new BackgroundImage(
+         new BufferedImage((bgImageAsTileRectangle.w.toInt+1)*tileW, (bgImageAsTileRectangle.h.toInt+1)*tileH, Config.imageType), 
+                           bgImageAsTileRectangle)    
 // TODO, unit test this
     for (y <- lup._2 to rlp._2) {
       for (x <- lup._1 to rlp._1) {
-        bgGraphics.drawImage(getTile(0, x, y).image, (x-lup._1)*tileW, (y-lup._2)*tileH, null)
+        bgImage.bgGraphics.drawImage(getTile(0, x, y).image, (x-lup._1)*tileW, (y-lup._2)*tileH, null)
       }
     }
 
-println("Created bg image from tiles " + Rectangle(lup, rlp) + ", in pixels (" + bgImage.getWidth + "," + bgImage.getHeight + ")")
-val debugRec = new java.awt.Rectangle(0, 0, bgImage.getWidth-1, bgImage.getHeight-1)
-bgGraphics.setColor(java.awt.Color.RED)
-bgGraphics.draw(debugRec)
+println("Created bg image from tiles " + Rectangle(lup, rlp) + ", in pixels (" + bgImage.image.getWidth + "," + bgImage.image.getHeight + ")")
+val debugRec = new java.awt.Rectangle(0, 0, bgImage.image.getWidth-1, bgImage.image.getHeight-1)
+bgImage.bgGraphics.setColor(java.awt.Color.RED)
+bgImage.bgGraphics.draw(debugRec)
+    
+    return bgImage
   }
   
   def worldPointToTileIndex(worldPoint : Point) : (Int, Int) = {
@@ -88,6 +94,13 @@ bgGraphics.draw(debugRec)
   }
 }
 
+class DummyMap extends Map(1, 1, 1, 1, new Array[TileSet](0), new Array[Layer](0), new Array[Tile](0)) {
+}
+
+class BackgroundImage(val image:BufferedImage, val tileRectangle:Rectangle) {
+  lazy val bgGraphics : Graphics2D = image.createGraphics
+  lazy val tileLup = (tileRectangle.lup._1.toInt, tileRectangle.lup._2.toInt)
+}
 
 class TileSet(val firstTileIndex:Int, val tiles:Array[Tile], val w:Int, val h:Int, val tileW:Int, val tileH:Int) {
 }
@@ -185,31 +198,33 @@ object Tile {
   }
 }
 
+
 object MapLoader {
   
   def loadMap(mapFileName : String) : Map = {
-    var map = new Map(0, 0, 0, 0)
     try {
-      map = parseMapFromXml(XML.loadFile(mapFileName))
+      val map = parseMapFromXml(XML.loadFile(mapFileName))
+
+      println("Loaded map " + mapFileName + "of size in tiles (" + map.wInTiles + "," + map.hInTiles + 
+            "), in pixels ( " + map.w + "," + map.h + ") with " + map.layers.size + " layers and " + map.tiles.size + " tiles")
+      return map
+      
     } catch {
       case e:java.io.FileNotFoundException => println("Unknown map " + mapFileName)
     }
-
-    println("Loaded map " + mapFileName + "of size in tiles (" + map.wInTiles + "," + map.hInTiles + 
-            "), in pixels ( " + map.w + "," + map.h + ") with " + map.layers.size + " layers and " + map.tiles.size + " tiles")
     
-    return map
+    return new DummyMap()
   }
   
-  def parseMapFromXml(mapXml : Elem) : Map = {
-    val map = new Map((mapXml \ "@width").text.toInt, 
-                      (mapXml \ "@height").text.toInt, 
-                      (mapXml \ "@tilewidth").text.toInt, 
-                      (mapXml \ "@tileheight").text.toInt)
-    map.tileSets = parseTileSets(mapXml)
-    map.layers = parseLayers(mapXml)
-    map.tiles = createSingleTileMapFromManyTileSets(map.tileSets)
-    return map
+  def parseMapFromXml(mapXml : Elem) : Map = {    
+    val w = (mapXml \ "@width").text.toInt
+    val h = (mapXml \ "@height").text.toInt
+    val tileW = (mapXml \ "@tilewidth").text.toInt 
+    val tileH = (mapXml \ "@tileheight").text.toInt
+    val tileSets = parseTileSets(mapXml)
+    val layers = parseLayers(mapXml)
+    val tiles = createSingleTileMapFromManyTileSets(tileSets)
+    return new Map(w, h, tileW, tileH, tileSets, layers, tiles)
   }
 
   

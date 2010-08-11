@@ -5,18 +5,7 @@ import Assert._
 import net.iharder.Base64
 
 class MapTest extends TestCase {
-
-  def testWorldPointToTilePoint {
-    val map = new Map(10, 10, 10, 10)
-    assertEquals((0, 0), map.worldPointToTileIndex(Point(0, 0)))
-    assertEquals((0, 0), map.worldPointToTileIndex(Point(-1, -1)))
-    assertEquals((9, 9), map.worldPointToTileIndex(Point(15*10, 15*10)))
-    assertEquals((1, 1), map.worldPointToTileIndex(Point(10, 10)))
-    assertEquals((0, 1), map.worldPointToTileIndex(Point(5, 10)))
-    assertEquals((1, 0), map.worldPointToTileIndex(Point(10, 5)))
-    assertEquals((9, 9), map.worldPointToTileIndex(Point(95, 95)))
-  }
-      
+     
   val testMapXml = <map version="1.0" orientation="orthogonal" width="4" height="3" tilewidth="32" tileheight="32">
                     <tileset firstgid="1" name="tileset0" tilewidth="32" tileheight="32" spacing="1">
                       <image source="resources/gfx/testtileset_8x6.png"/>
@@ -30,6 +19,18 @@ class MapTest extends TestCase {
                       </data>
                     </layer>
                   </map>
+
+ def testWorldPointToTilePoint {
+    //val map = new Map(10, 10, 10, 10, new Array[TileSet](0), new Array[Layer](0), new Array[Tile](0))
+    val map = MapLoader.parseMapFromXml(testMapXml)
+    assertEquals((0, 0), map.worldPointToTileIndex(Point(0, 0)))
+    assertEquals((0, 0), map.worldPointToTileIndex(Point(-1, -1)))
+    assertEquals((1, 1), map.worldPointToTileIndex(Point(32, 32)))
+    assertEquals((0, 1), map.worldPointToTileIndex(Point(5, 32)))
+    assertEquals((1, 0), map.worldPointToTileIndex(Point(32, 5)))
+    assertEquals((3, 2), map.worldPointToTileIndex(Point(32*3, 32*2)))
+  }
+ 
                   
      def testParseLayersFromMapXml {
        val layers = MapLoader.parseLayers(testMapXml)
