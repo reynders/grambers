@@ -141,6 +141,8 @@ class Rectangle(val minX:Double, val minY:Double, val maxX:Double, val maxY:Doub
   val lup = (minX, minY)
   val rlp = (maxX, maxY)
   lazy val w = maxX - minX
+  lazy val lupPoint = Point(minX, minY)
+  lazy val rlpPoint = Point(maxX, maxY)
   lazy val h = maxY - minY
   lazy val asLines = convertToLines
   lazy val side_down = asLines(0)
@@ -153,6 +155,8 @@ class Rectangle(val minX:Double, val minY:Double, val maxX:Double, val maxY:Doub
   def this(center:Point, w:Double, h:Double) = this(center.x-(w/2), center.y-(h/2), 
                                                     center.x+(w/2), center.y+(h/2))
   
+  def this(lup:Point, rlp:Point) = this(lup.x, lup.y, rlp.x, rlp.y)                                                    
+                                                    
   def convertToLines : Array[Line] = {
     val lines = new ArrayBuffer[Line]()
     

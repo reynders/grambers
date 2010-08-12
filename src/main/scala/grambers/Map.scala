@@ -28,38 +28,32 @@ val tileSets:Array[TileSet], val layers:Array[Layer], val tiles:Array[Tile]) {
   }
 
   
-  def getMapImage(center : Point, w : Int, h : Int) : BufferedImage = {
+  def getBackgroundImage(center : Point, w : Int, h : Int) : BackgroundImage = {
     val windowLup = Point(center.x - w/2, center.y - h/2)
     val windowRlp = Point(center.x + w/2, center.y + w/2)
     val tileLup = worldPointToTileIndex(windowLup)
     val tileRlp = worldPointToTileIndex(windowRlp)
 
 // TODO: Add buffering so that we do not recreate the background too late    
-    if (!bgImage.tileRectangle.contains(Rectangle(tileLup, tileRlp))) {     
+    if (!worldRectangleToTileRectangle(bgImage.worldCoordinates).contains(
+        Rectangle(tileLup, tileRlp))) {     
 // TODO: Do all this in a separate thread!!!
      bgImage = createBackgroundImageFromTiles(tileLup, tileRlp)       
    }
-   val bgX = bgImage.tileLup._1*tileW
-   val bgY = bgImage.tileLup._2*tileH   
-   val bgImageVisiblePart = 
-       Rectangle(bgX, bgY, bgX + bgImage.image.getWidth, bgY + bgImage.image.getHeight).intersect(
-       Rectangle(windowLup, windowRlp)).translate(-bgX, -bgY)  
-   
-   bgImageWorldLup = (bgImageVisiblePart.lup._1 + bgX, bgImageVisiblePart.lup._2 + bgY)
-   
-   return bgImage.image.getSubimage(bgImageVisiblePart.lup._1.toInt, bgImageVisiblePart.lup._2.toInt,
-                                    bgImageVisiblePart.w.toInt, bgImageVisiblePart.h.toInt)
+
+   return bgImage.getVisiblePart(Rectangle(windowLup, windowRlp))
   }
     
   def createBackgroundImageFromTiles(oLup:(Int,Int), oRlp:(Int,Int)) : BackgroundImage = {
     val bgImageAsTileRectangle = Rectangle(Rectangle(oLup, oRlp), TILE_BUFFER_PADDING_TILES).limitBy(Rectangle((0,0), (wInTiles-1, hInTiles-1)))
+    val bgImageWorldCoordinates = new Rectangle(bgImageAsTileRectangle.lup._1*tileW, bgImageAsTileRectangle.lup._2*tileH,
+                                                bgImageAsTileRectangle.rlp._1*tileW, bgImageAsTileRectangle.rlp._2*tileH)
+    val bgImage = new BackgroundImage(new BufferedImage((bgImageAsTileRectangle.w.toInt+1)*tileW, (bgImageAsTileRectangle.h.toInt+1)*tileH, Config.imageType), 
+                                      bgImageWorldCoordinates)
+                                      
     val lup = (bgImageAsTileRectangle.minX.toInt, bgImageAsTileRectangle.minY.toInt)
     val rlp = (bgImageAsTileRectangle.maxX.toInt, bgImageAsTileRectangle.maxY.toInt)
-println("BGIMAGE AS TILE REC: " + bgImageAsTileRectangle + ", wInTiles " + wInTiles)
-    val bgImage = new BackgroundImage(
-         new BufferedImage((bgImageAsTileRectangle.w.toInt+1)*tileW, (bgImageAsTileRectangle.h.toInt+1)*tileH, Config.imageType), 
-                           bgImageAsTileRectangle)    
-// TODO, unit test this
+
     for (y <- lup._2 to rlp._2) {
       for (x <- lup._1 to rlp._1) {
         bgImage.bgGraphics.drawImage(getTile(0, x, y).image, (x-lup._1)*tileW, (y-lup._2)*tileH, null)
@@ -88,6 +82,12 @@ bgImage.bgGraphics.draw(debugRec)
     return (tx, ty)
   }
   
+  def worldRectangleToTileRectangle(worldRectangle:Rectangle) : Rectangle = {
+    val lup = worldPointToTileIndex(worldRectangle.lupPoint)
+    val rlp = worldPointToTileIndex(worldRectangle.rlpPoint)
+    return new Rectangle(lup._1,lup._2, rlp._1, rlp._2)
+  }
+  
   def getTile(layerId : Int, x:Int, y:Int) : Tile = {
     val tileIndex = layers(layerId).tileMap(x)(y)
     return tiles(tileIndex._2-1)                                                                  
@@ -97,9 +97,23 @@ bgImage.bgGraphics.draw(debugRec)
 class DummyMap extends Map(1, 1, 1, 1, new Array[TileSet](0), new Array[Layer](0), new Array[Tile](0)) {
 }
 
-class BackgroundImage(val image:BufferedImage, val tileRectangle:Rectangle) {
+class BackgroundImage(val image:BufferedImage, val worldCoordinates:Rectangle) {
   lazy val bgGraphics : Graphics2D = image.createGraphics
-  lazy val tileLup = (tileRectangle.lup._1.toInt, tileRectangle.lup._2.toInt)
+  lazy val lup = (worldCoordinates.lup._1.toInt, worldCoordinates.lup._2.toInt)
+    
+  def getVisiblePart(visibleWindow : Rectangle) : BackgroundImage = {
+    val bgX = lup._1
+    val bgY = lup._2   
+    val bgImageVisiblePart = 
+         Rectangle(bgX, bgY, bgX + image.getWidth, bgY + image.getHeight).intersect(
+         visibleWindow).translate(-bgX, -bgY)  
+    val visiblePartWorldCoordinates = new Rectangle(bgImageVisiblePart.lup._1 + bgX, bgImageVisiblePart.lup._2 + bgY,
+                                                bgImageVisiblePart.rlp._1 + bgX, bgImageVisiblePart.rlp._2 + bgY)
+   
+    val visiblePartImage = image.getSubimage(bgImageVisiblePart.lup._1.toInt, bgImageVisiblePart.lup._2.toInt,
+                                             bgImageVisiblePart.w.toInt, bgImageVisiblePart.h.toInt)
+    return new BackgroundImage(visiblePartImage, visiblePartWorldCoordinates)
+  }
 }
 
 class TileSet(val firstTileIndex:Int, val tiles:Array[Tile], val w:Int, val h:Int, val tileW:Int, val tileH:Int) {
