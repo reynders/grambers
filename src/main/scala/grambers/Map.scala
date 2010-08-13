@@ -5,7 +5,7 @@ import java.awt.image._
 import java.awt._
 import scala.collection.mutable._
 import scala.xml._
-import scala.actors.Actor
+import scala.actors._
 import scala.actors.Actor._
 
 class Map(val wInTiles:Int, val hInTiles:Int, val tileW:Int, val tileH:Int, 
@@ -26,7 +26,11 @@ val tileSets:Array[TileSet], val layers:Array[Layer], val tiles:Array[Tile]) {
       }
     } 
   }
+  
 
+  import scala.actors.Futures._
+  var myFuture : Future[BackgroundImage] = _
+  var creatingNewBgImage = false
   
   def getBackgroundImage(center : Point, w : Int, h : Int) : BackgroundImage = {
     val windowLup = Point(center.x - w/2, center.y - h/2)
@@ -36,14 +40,21 @@ val tileSets:Array[TileSet], val layers:Array[Layer], val tiles:Array[Tile]) {
 
 // TODO: Add buffering so that we do not recreate the background too late    
     if (!worldRectangleToTileRectangle(bgImage.worldCoordinates).contains(
-        Rectangle(tileLup, tileRlp))) {     
+        Rectangle(tileLup, tileRlp)) && !creatingNewBgImage) {     
 // TODO: Do all this in a separate thread!!!
-     bgImage = createBackgroundImageFromTiles(tileLup, tileRlp)       
-   }
-
-   return bgImage.getVisiblePart(Rectangle(windowLup, windowRlp))
-  }
+      creatingNewBgImage = true
+      myFuture = future {createBackgroundImageFromTiles(tileLup, tileRlp)}       
+    }
     
+    if (myFuture.isSet) {
+      bgImage = myFuture()
+      creatingNewBgImage = false
+    }
+    
+    return bgImage.getVisiblePart(Rectangle(windowLup, windowRlp))
+  }
+
+  
   def createBackgroundImageFromTiles(oLup:(Int,Int), oRlp:(Int,Int)) : BackgroundImage = {
     val bgImageAsTileRectangle = Rectangle(Rectangle(oLup, oRlp), TILE_BUFFER_PADDING_TILES).limitBy(Rectangle((0,0), (wInTiles-1, hInTiles-1)))
     val bgImageWorldCoordinates = new Rectangle(bgImageAsTileRectangle.lup._1*tileW, bgImageAsTileRectangle.lup._2*tileH,

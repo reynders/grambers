@@ -64,11 +64,11 @@ class Observer (var w: Int, var h: Int, val universe : Universe, var thingInFocu
       }
     
       var lastUpdateTime = Config.currentTimeMillis
-      
+
       def drawUniverse(g2 : Graphics2D) {
         val at = g2.getTransform();
         g2.translate(xViewTranslation, yViewTranslation)
-        
+
         val bgImage = universe.map.getBackgroundImage(position, w, h)
         g2.drawImage(bgImage.image, bgImage.lup._1, bgImage.lup._2, null)
 
