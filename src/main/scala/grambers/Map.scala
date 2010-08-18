@@ -41,7 +41,6 @@ val tileSets:Array[TileSet], val layers:Array[Layer], val tiles:Array[Tile]) {
 // TODO: Add buffering so that we do not recreate the background too late    
     if (!worldRectangleToTileRectangle(bgImage.worldCoordinates).contains(
         Rectangle(tileLup, tileRlp)) && !creatingNewBgImage) {     
-// TODO: Do all this in a separate thread!!!
       creatingNewBgImage = true
       myFuture = future {createBackgroundImageFromTiles(tileLup, tileRlp)}       
     }

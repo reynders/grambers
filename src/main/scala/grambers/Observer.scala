@@ -63,32 +63,35 @@ class Observer (var w: Int, var h: Int, val universe : Universe, var thingInFocu
         }
       }
     
-      var lastUpdateTime = Config.currentTimeMillis
+      var lastX = 0.0
 
       def drawUniverse(g2 : Graphics2D) {
-        val at = g2.getTransform();
+val t1 = Config.currentTimeMillis        
+        val at = g2.getTransform
         g2.translate(xViewTranslation, yViewTranslation)
 
+val t11 = Config.currentTimeMillis        
         val bgImage = universe.map.getBackgroundImage(position, w, h)
+val t12 = Config.currentTimeMillis
+        
+val t13 = Config.currentTimeMillis        
         g2.drawImage(bgImage.image, bgImage.lup._1, bgImage.lup._2, null)
-
-g2.drawString("DEBUG lup", 100, 100)
-g2.drawString("DEBUG rup", 1180, 100)
+val t14 = Config.currentTimeMillis
 
         universe.staticThings.foreach(thing => thing.draw(g2, thing.center))
-        
-        // Moving the objects in the graphics thread should fix at least some of 
-        // the graphics studdering once most of the computation is done outside 
-        // the graphics thread
-        val msElapsed = (Config.currentTimeMillis - lastUpdateTime)
-        universe.moveMovingThings(universe.movingThings, msElapsed)
-        lastUpdateTime = Config.currentTimeMillis
-        
+val t15 = Config.currentTimeMillis        
         universe.movingThings.foreach(thing => thing.draw(g2, thing.center))
-        
+val t16 = Config.currentTimeMillis        
+
         g2.setTransform(at);
-        g2.dispose
+  
         Config.fps += 1
+val t2 = Config.currentTimeMillis
+if ((t2 - t1) > 100) println("Draw took " + (t2-t1) + "ms! " + 
+                             "getBg was " + (t12-t11) + "ms " +
+                             "drawBg was " + (t14-t13) + "ms " +
+                             "drawSt was " + (t15-t14) + "ms " +
+                             "drawMv was " + (t16-t15) + "ms " )                             
       }
     }
       

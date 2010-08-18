@@ -97,7 +97,7 @@ println("Resolving " + leftThing + " collision with " + rightThing)
       }
       
       // Moved to graphics thread to reduce flickering
-      //moveMovingThings(movingThings, Config.currentTimeMillis - lastWorldUpdateTime)
+      moveMovingThings(movingThings, Config.currentTimeMillis - lastWorldUpdateTime)
       lastWorldUpdateTime = Config.currentTimeMillis
       
       observer.observe()
