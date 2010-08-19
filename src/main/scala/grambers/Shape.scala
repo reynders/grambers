@@ -222,6 +222,10 @@ class Rectangle(val minX:Double, val minY:Double, val maxX:Double, val maxY:Doub
     return Rectangle((mnX.toInt, mnY.toInt), (mxX.toInt, mxY.toInt))    
   }
   
+  def isSameSize(other:Rectangle) : Boolean = {
+    w == other.w && h == other.h
+  }
+  
   def translate(by:(Double, Double)) : Rectangle = 
           new Rectangle(minX + by._1, minY + by._2, maxX + by._1, maxY + by._2)                                         
   

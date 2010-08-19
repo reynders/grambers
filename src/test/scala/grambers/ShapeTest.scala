@@ -63,6 +63,10 @@ class ShapeTest extends TestCase {
     assertEquals(Rectangle((0, 0), (5, 5)), Rectangle((5, 6), (10, 11)).translate(-5, -6))
   }
 
+  def testIsSameSize {
+    assertEquals(true, Rectangle((-5, -5), (5, 5)).isSameSize(Rectangle((0, 0), (10, 10))))
+  }
+  
   def testRectangleOverlappingWhenNotColliding() {
     val r_1 = new grambers.Rectangle(new Point(2, 2), 2, 2)
     val r_2 = new grambers.Rectangle(new Point(5, 5), 2, 2)
