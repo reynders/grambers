@@ -212,7 +212,9 @@ class Rectangle(val minX:Double, val minY:Double, val maxX:Double, val maxY:Doub
   def contains(other:Rectangle) : Boolean = 
         ((other.minX >= minX && other.maxX <= maxX) &&
         (other.minY >= minY && other.maxY <= maxY))
-   
+  
+  def fitsIn(other:Rectangle) : Boolean = ((w < other.w) || (h < other.h)) 
+        
   def limitBy(other:Rectangle) : Rectangle = {
     val mnX = if (minX > other.minX) minX else other.minX
     val mnY = if (minY > other.minY) minY else other.minY

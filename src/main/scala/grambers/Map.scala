@@ -16,18 +16,8 @@ val tileSets:Array[TileSet], val layers:Array[Layer], val tiles:Array[Tile]) {
   
   val TILE_BUFFER_PADDING_TILES = 2
   var bgImageWorldLup : (Double, Double) = _
-  var bgImage : BackgroundImage = createBackgroundImageFromTiles((0,0), (1,1))
+  var bgImage : BackgroundImage = new BackgroundImage(new BufferedImage(1, 1, Config.imageType), Rectangle((0,0), (1,1)))
   
-  lazy val bgImageCreatorActor = actor {
-    loop {
-      receiveWithin(5000) {
-        case s: String => println("I got a String: " + s)
-        case _ => println("I have no idea what I just got.")
-      }
-    } 
-  }
-  
-
   import scala.actors.Futures._
   var myFuture : Future[BackgroundImage] = _
   var creatingNewBgImage = false
@@ -58,8 +48,12 @@ val tileSets:Array[TileSet], val layers:Array[Layer], val tiles:Array[Tile]) {
     val bgImageAsTileRectangle = Rectangle(Rectangle(oLup, oRlp), TILE_BUFFER_PADDING_TILES).limitBy(Rectangle((0,0), (wInTiles-1, hInTiles-1)))
     val bgImageWorldCoordinates = new Rectangle(bgImageAsTileRectangle.lup._1*tileW, bgImageAsTileRectangle.lup._2*tileH,
                                                 bgImageAsTileRectangle.rlp._1*tileW, bgImageAsTileRectangle.rlp._2*tileH)
-    val bgImage = new BackgroundImage(new BufferedImage((bgImageAsTileRectangle.w.toInt+1)*tileW, (bgImageAsTileRectangle.h.toInt+1)*tileH, Config.imageType), 
-                                      bgImageWorldCoordinates)
+    val newBgImage : BufferedImage = if (bgImageWorldCoordinates.fitsIn(this.bgImage.worldCoordinates))
+                       this.bgImage.image
+                     else
+                       new BufferedImage((bgImageAsTileRectangle.w.toInt+1)*tileW, (bgImageAsTileRectangle.h.toInt+1)*tileH, Config.imageType)
+    
+    val bgImage = new BackgroundImage(newBgImage, bgImageWorldCoordinates)
                                       
     val lup = (bgImageAsTileRectangle.minX.toInt, bgImageAsTileRectangle.minY.toInt)
     val rlp = (bgImageAsTileRectangle.maxX.toInt, bgImageAsTileRectangle.maxY.toInt)
