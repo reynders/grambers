@@ -48,12 +48,8 @@ val tileSets:Array[TileSet], val layers:Array[Layer], val tiles:Array[Tile]) {
     val bgImageAsTileRectangle = Rectangle(Rectangle(oLup, oRlp), TILE_BUFFER_PADDING_TILES).limitBy(Rectangle((0,0), (wInTiles-1, hInTiles-1)))
     val bgImageWorldCoordinates = new Rectangle(bgImageAsTileRectangle.lup._1*tileW, bgImageAsTileRectangle.lup._2*tileH,
                                                 bgImageAsTileRectangle.rlp._1*tileW, bgImageAsTileRectangle.rlp._2*tileH)
-    val newBgImage : BufferedImage = if (bgImageWorldCoordinates.fitsIn(this.bgImage.worldCoordinates))
-                       this.bgImage.image
-                     else
-                       new BufferedImage((bgImageAsTileRectangle.w.toInt+1)*tileW, (bgImageAsTileRectangle.h.toInt+1)*tileH, Config.imageType)
-    
-    val bgImage = new BackgroundImage(newBgImage, bgImageWorldCoordinates)
+                                                
+    val bgImage = new BackgroundImage(new BufferedImage((bgImageAsTileRectangle.w.toInt+1)*tileW, (bgImageAsTileRectangle.h.toInt+1)*tileH, Config.imageType), bgImageWorldCoordinates)
                                       
     val lup = (bgImageAsTileRectangle.minX.toInt, bgImageAsTileRectangle.minY.toInt)
     val rlp = (bgImageAsTileRectangle.maxX.toInt, bgImageAsTileRectangle.maxY.toInt)
@@ -64,11 +60,7 @@ val tileSets:Array[TileSet], val layers:Array[Layer], val tiles:Array[Tile]) {
       }
     }
 
-println("Created bg image from tiles " + Rectangle(lup, rlp) + ", in pixels (" + bgImage.image.getWidth + "," + bgImage.image.getHeight + ")")
-val debugRec = new java.awt.Rectangle(0, 0, bgImage.image.getWidth-1, bgImage.image.getHeight-1)
-bgImage.bgGraphics.setColor(java.awt.Color.RED)
-bgImage.bgGraphics.draw(debugRec)
-    
+println("Created bg image from tiles " + Rectangle(lup, rlp) + ", in pixels (" + bgImage.image.getWidth + "," + bgImage.image.getHeight + ")")    
     return bgImage
   }
   
