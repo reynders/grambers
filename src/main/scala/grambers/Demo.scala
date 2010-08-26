@@ -10,6 +10,7 @@ object Demo {
     val WINDOW_W = 600
     val WINDOW_H = 300
     val TESTMAP = "resources/maps/testmap_40x20.tmx"  
+    val STARMAP = "resources/maps/starsky_100x100.tmx"  
   
     def twoWallsAndABallDemo {      
 
@@ -159,10 +160,23 @@ object Demo {
       
       universe.run(observer)
     }
+
+    def starDemo {
+      val universe = new Universe(STARMAP)
+      addWalls(universe)
+      
+      val ball = ImageRoundThing(100, 100, 23, 23, "resources/gfx/ball_50x50.gif", 10, 0)
+      addBall(universe, ball, (ball) => {})
+      val observer = new Observer(WINDOW_W, WINDOW_H, universe, ball)
+      
+      universe.run(observer)
+    }
+
     
     def main(args:Array[String]) {
       if (args.length > 0)
         args(0) match {
+          case "S" => starDemo
           case "D" => debugDemo
           case "I" => imageDemo
           case "3" => ballsAndWallsAndCameraDemo
