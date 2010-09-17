@@ -20,18 +20,35 @@ class MapTest extends TestCase {
                     </layer>
                   </map>
 
- def testWorldPointToTilePoint {
-    //val map = new Map(10, 10, 10, 10, new Array[TileSet](0), new Array[Layer](0), new Array[Tile](0))
-    val map = MapLoader.parseMapFromXml(testMapXml)
-    assertEquals((0, 0), map.worldPointToTileIndex(Point(0, 0)))
-    assertEquals((0, 0), map.worldPointToTileIndex(Point(-1, -1)))
-    assertEquals((1, 1), map.worldPointToTileIndex(Point(32, 32)))
-    assertEquals((0, 1), map.worldPointToTileIndex(Point(5, 32)))
-    assertEquals((1, 0), map.worldPointToTileIndex(Point(32, 5)))
-    assertEquals((3, 2), map.worldPointToTileIndex(Point(32*3, 32*2)))
+  // Warning: causes a file read to the tile sets referenced in the parsed XML!     
+  val map = MapLoader.parseMapFromXml(testMapXml)    
+  
+  def testWorldPointToTilePoint {    
+      assertEquals((0, 0), map.worldPointToTileIndex(Point(0, 0)))
+      assertEquals((0, 0), map.worldPointToTileIndex(Point(-1, -1)))
+      assertEquals((1, 1), map.worldPointToTileIndex(Point(32, 32)))
+      assertEquals((0, 1), map.worldPointToTileIndex(Point(5, 32)))
+      assertEquals((1, 0), map.worldPointToTileIndex(Point(32, 5)))
+      assertEquals((3, 2), map.worldPointToTileIndex(Point(32*3, 32*2)))
   }
- 
-                  
+
+  def testCreateBackgroundImageFromTiles {
+    var bg = map.createBackgroundImageFromTiles((0,0), (1,1))
+    var expectedW = (map.TILE_BUFFER_PADDING_TILES + 2) * map.tileW 
+    assertEquals(expectedW, bg.image.getWidth)
+    var expectedH = (map.TILE_BUFFER_PADDING_TILES + 1) * map.tileH // The method under testing limits the height to the max height of the test map which is 3
+    assertEquals(expectedH, bg.image.getHeight) 
+    assertEquals(Rectangle(0, 0, expectedW-1, expectedH-1), bg.worldCoordinates)
+
+    bg = map.createBackgroundImageFromTiles((3,2), (3,2)) // Just a single tile, the rlp of 4,3 size test map
+    expectedW = (map.TILE_BUFFER_PADDING_TILES + 1) * map.tileW 
+    assertEquals(expectedW, bg.image.getWidth)
+    expectedH = (map.TILE_BUFFER_PADDING_TILES + 1) * map.tileH
+    assertEquals(expectedH, bg.image.getHeight) 
+    assertEquals(Rectangle(32, 0, 32+(map.tileW*3)-1, (map.tileH*3)-1), bg.worldCoordinates)
+  }
+
+              
      def testParseLayersFromMapXml {
        val layers = MapLoader.parseLayers(testMapXml)
        assertEquals(1, layers.size)
@@ -49,8 +66,7 @@ class MapTest extends TestCase {
        assertEquals(37, tileMap(0)(0)._2)
        assertEquals(55, tileMap(3)(2)._2)
      }
-     
-   // Warning: causes a file read to the tile sets referenced in the parsed XML! 
+    
    def testParseTileSetsFromMapXml {
      val tileSets = MapLoader.parseTileSets(testMapXml)
      assertEquals(2, tileSets.size)

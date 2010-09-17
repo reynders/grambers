@@ -70,7 +70,8 @@ class ShapeTest extends TestCase {
   def testRectangleFitsIn {
     assertEquals(true, Rectangle((-3, -3), (3, 3)).fitsIn(Rectangle((0, 0), (7, 7))))
     assertEquals(false, Rectangle((0, 0), (7, 7)).fitsIn(Rectangle((-3, -3), (3, 3))))
-    assertEquals(false, Rectangle((-3, -3), (3, 3)).fitsIn(Rectangle((0, 0), (6, 6))))    
+    assertEquals(true, Rectangle((-3, -3), (3, 3)).fitsIn(Rectangle((0, 0), (6, 6))))    
+    assertEquals(false, Rectangle((0, 0), (1, 3)).fitsIn(Rectangle((0, 0), (6, 2))))
   }
   
   def testRectangleOverlappingWhenNotColliding() {

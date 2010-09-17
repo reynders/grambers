@@ -43,16 +43,44 @@ val tileSets:Array[TileSet], val layers:Array[Layer], val tiles:Array[Tile]) {
     return bgImage.getVisiblePart(Rectangle(windowLup, windowRlp))
   }
 
+  var bgImage1 = new BackgroundImage(new BufferedImage(1, 1, Config.imageType), Rectangle(0, 0, 1, 1))
+  var bgImage2 = new BackgroundImage(new BufferedImage(1, 1, Config.imageType), Rectangle(0, 0, 1, 1))
+  var currentBgImage = bgImage1
+  
+  def getBgImage(bgImageInTiles : Rectangle) : BackgroundImage = {
+    val worldCoordinates = new Rectangle(bgImageInTiles.minX*tileW, bgImageInTiles.minY*tileH,
+                                        ((bgImageInTiles.maxX+1)*tileW)-1, ((bgImageInTiles.maxY+1)*tileH)-1)
+    val imageW = (bgImageInTiles.w.toInt+1)*tileW
+    val imageH = (bgImageInTiles.h.toInt+1)*tileH
+    
+    if (currentBgImage == bgImage2) {
+      val image = if (worldCoordinates.fitsIn(bgImage1.worldCoordinates)) bgImage1.image 
+                  else new BufferedImage(imageW, imageH, Config.imageType)
+
+println("Had to recreate bg1: " + bgImageInTiles + " of world coordinates " + bgImage1.worldCoordinates)
+      
+      bgImage1 = new BackgroundImage(image, worldCoordinates)      
+      currentBgImage=bgImage1
+    }
+    else {
+      val image = if (worldCoordinates.fitsIn(bgImage2.worldCoordinates)) bgImage2.image 
+                  else new BufferedImage(imageW, imageH, Config.imageType)
+
+println("Had to recreate bg2: " + bgImageInTiles + " of world coordinates " + bgImage2.worldCoordinates)
+      
+      bgImage2 = new BackgroundImage(image, worldCoordinates)      
+      currentBgImage=bgImage2
+    }
+    
+    return currentBgImage
+  }
   
   def createBackgroundImageFromTiles(oLup:(Int,Int), oRlp:(Int,Int)) : BackgroundImage = {
-    val bgImageAsTileRectangle = Rectangle(Rectangle(oLup, oRlp), TILE_BUFFER_PADDING_TILES).limitBy(Rectangle((0,0), (wInTiles-1, hInTiles-1)))
-    val bgImageWorldCoordinates = new Rectangle(bgImageAsTileRectangle.lup._1*tileW, bgImageAsTileRectangle.lup._2*tileH,
-                                                bgImageAsTileRectangle.rlp._1*tileW, bgImageAsTileRectangle.rlp._2*tileH)
-                                                
-    val bgImage = new BackgroundImage(new BufferedImage((bgImageAsTileRectangle.w.toInt+1)*tileW, (bgImageAsTileRectangle.h.toInt+1)*tileH, Config.imageType), bgImageWorldCoordinates)
-                                      
-    val lup = (bgImageAsTileRectangle.minX.toInt, bgImageAsTileRectangle.minY.toInt)
-    val rlp = (bgImageAsTileRectangle.maxX.toInt, bgImageAsTileRectangle.maxY.toInt)
+    val bgImageAsTiles = Rectangle(Rectangle(oLup, oRlp), TILE_BUFFER_PADDING_TILES).limitBy(Rectangle((0,0), (wInTiles-1, hInTiles-1)))
+    val bgImage = getBgImage(bgImageAsTiles)
+    
+    val lup = (bgImageAsTiles.minX.toInt, bgImageAsTiles.minY.toInt)
+    val rlp = (bgImageAsTiles.maxX.toInt, bgImageAsTiles.maxY.toInt)
 
     for (y <- lup._2 to rlp._2) {
       for (x <- lup._1 to rlp._1) {
@@ -60,7 +88,7 @@ val tileSets:Array[TileSet], val layers:Array[Layer], val tiles:Array[Tile]) {
       }
     }
 
-println("Created bg image from tiles " + Rectangle(lup, rlp) + ", in pixels (" + bgImage.image.getWidth + "," + bgImage.image.getHeight + ")")    
+//println("Created bg image from tiles " + Rectangle(lup, rlp) + ", in pixels (" + bgImage.image.getWidth + "," + bgImage.image.getHeight + ")")    
     return bgImage
   }
   
