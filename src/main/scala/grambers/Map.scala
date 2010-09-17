@@ -49,7 +49,7 @@ val tileSets:Array[TileSet], val layers:Array[Layer], val tiles:Array[Tile]) {
                                               new BackgroundImage(new BufferedImage(1, 1, Config.imageType), Rectangle(0, 0, 1, 1)))
   
   
-  def getBgImage(bgImageInTiles : Rectangle) : BackgroundImage = {
+  def getNonvisibleBgImage(bgImageInTiles : Rectangle) : BackgroundImage = {
     val worldCoordinates = new Rectangle(bgImageInTiles.minX*tileW, bgImageInTiles.minY*tileH,
                                         ((bgImageInTiles.maxX+1)*tileW)-1, ((bgImageInTiles.maxY+1)*tileH)-1)
     val imageW = (bgImageInTiles.w.toInt+1)*tileW
@@ -66,7 +66,7 @@ val tileSets:Array[TileSet], val layers:Array[Layer], val tiles:Array[Tile]) {
   
   def createBackgroundImageFromTiles(oLup:(Int,Int), oRlp:(Int,Int)) : BackgroundImage = {
     val bgImageAsTiles = Rectangle(Rectangle(oLup, oRlp), TILE_BUFFER_PADDING_TILES).limitBy(Rectangle((0,0), (wInTiles-1, hInTiles-1)))
-    val bgImage = getBgImage(bgImageAsTiles)
+    val bgImage = getNonvisibleBgImage(bgImageAsTiles)
     
     val lup = (bgImageAsTiles.minX.toInt, bgImageAsTiles.minY.toInt)
     val rlp = (bgImageAsTiles.maxX.toInt, bgImageAsTiles.maxY.toInt)
