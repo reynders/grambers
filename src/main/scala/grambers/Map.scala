@@ -43,9 +43,11 @@ val tileSets:Array[TileSet], val layers:Array[Layer], val tiles:Array[Tile]) {
     return bgImage.getVisiblePart(Rectangle(windowLup, windowRlp))
   }
 
-  var bgImage1 = new BackgroundImage(new BufferedImage(1, 1, Config.imageType), Rectangle(0, 0, 1, 1))
-  var bgImage2 = new BackgroundImage(new BufferedImage(1, 1, Config.imageType), Rectangle(0, 0, 1, 1))
-  var currentBgImage = bgImage1
+  import scala.collection.mutable.ArrayBuffer
+  
+  var bgImages = ArrayBuffer[BackgroundImage](new BackgroundImage(new BufferedImage(1, 1, Config.imageType), Rectangle(0, 0, 1, 1)), 
+                                              new BackgroundImage(new BufferedImage(1, 1, Config.imageType), Rectangle(0, 0, 1, 1)))
+  
   
   def getBgImage(bgImageInTiles : Rectangle) : BackgroundImage = {
     val worldCoordinates = new Rectangle(bgImageInTiles.minX*tileW, bgImageInTiles.minY*tileH,
@@ -53,26 +55,13 @@ val tileSets:Array[TileSet], val layers:Array[Layer], val tiles:Array[Tile]) {
     val imageW = (bgImageInTiles.w.toInt+1)*tileW
     val imageH = (bgImageInTiles.h.toInt+1)*tileH
     
-    if (currentBgImage == bgImage2) {
-      val image = if (worldCoordinates.fitsIn(bgImage1.worldCoordinates)) bgImage1.image 
-                  else new BufferedImage(imageW, imageH, Config.imageType)
-
-println("Had to recreate bg1: " + bgImageInTiles + " of world coordinates " + bgImage1.worldCoordinates)
-      
-      bgImage1 = new BackgroundImage(image, worldCoordinates)      
-      currentBgImage=bgImage1
-    }
-    else {
-      val image = if (worldCoordinates.fitsIn(bgImage2.worldCoordinates)) bgImage2.image 
-                  else new BufferedImage(imageW, imageH, Config.imageType)
-
-println("Had to recreate bg2: " + bgImageInTiles + " of world coordinates " + bgImage2.worldCoordinates)
-      
-      bgImage2 = new BackgroundImage(image, worldCoordinates)      
-      currentBgImage=bgImage2
-    }
+    bgImages = bgImages.reverse
     
-    return currentBgImage
+    val image = if (worldCoordinates.fitsIn(bgImages(0).worldCoordinates)) bgImages(0).image 
+                else new BufferedImage(imageW, imageH, Config.imageType)
+
+    bgImages(0) = new BackgroundImage(image, worldCoordinates)      
+    return bgImages(0)
   }
   
   def createBackgroundImageFromTiles(oLup:(Int,Int), oRlp:(Int,Int)) : BackgroundImage = {
