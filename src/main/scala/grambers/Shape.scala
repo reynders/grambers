@@ -231,6 +231,8 @@ class Rectangle(val minX:Double, val minY:Double, val maxX:Double, val maxY:Doub
   def translate(by:(Double, Double)) : Rectangle = 
           new Rectangle(minX + by._1, minY + by._2, maxX + by._1, maxY + by._2)                                         
   
+  def normalize : Rectangle = translate(-minX, -minY)
+  
   override def equals(other : Any) = other match {    
     case that : Rectangle => ((this.center == that.center) && 
                               (this.w == that.w) && (this.h == that.h))
@@ -250,7 +252,8 @@ object Rectangle {
   def apply(rectangle:Rectangle, padding : Double) : Rectangle 
      = new Rectangle(rectangle.minX - padding, rectangle.minY - padding, 
                      rectangle.maxX + padding, rectangle.maxY + padding)
-  def apply(lup:Point, rlp:Point) : Rectangle = new Rectangle(lup.x, lup.y, rlp.x, rlp.y)                   
+  def apply(lup:Point, rlp:Point) : Rectangle = new Rectangle(lup.x, lup.y, rlp.x, rlp.y)   
+  def apply(w:Int, h:Int) : Rectangle = new Rectangle(0, 0, w, h)
      
 }
 

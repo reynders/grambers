@@ -57,11 +57,16 @@ val tileSets:Array[TileSet], val layers:Array[Layer], val tiles:Array[Tile]) {
     
     bgImages = bgImages.reverse
     
-    val image = if (worldCoordinates.fitsIn(bgImages(0).worldCoordinates)) bgImages(0).image 
-                else new BufferedImage(imageW, imageH, Config.imageType)
-
+    val image = if (worldCoordinates.fitsIn(Rectangle(bgImages(0).image.getWidth, bgImages(0).image.getHeight))) bgImages(0).image 
+                else XXX(imageW, imageH) //new BufferedImage(imageW, imageH, Config.imageType)
+                
     bgImages(0) = new BackgroundImage(image, worldCoordinates)      
     return bgImages(0)
+  }
+  
+  def XXX(imageW:Int, imageH:Int) : BufferedImage = {
+    println("CREATING A NEW BGIMAGE OF SIZE (" + imageW + "," + imageH + ")")
+    return new BufferedImage(imageW, imageH, Config.imageType)
   }
   
   def createBackgroundImageFromTiles(oLup:(Int,Int), oRlp:(Int,Int)) : BackgroundImage = {
