@@ -66,32 +66,20 @@ class Observer (var w: Int, var h: Int, val universe : Universe, var thingInFocu
       var lastX = 0.0
 
       def drawUniverse(g2 : Graphics2D) {
-val t1 = Config.currentTimeMillis        
         val at = g2.getTransform
         g2.translate(xViewTranslation, yViewTranslation)
 
-val t11 = Config.currentTimeMillis        
         val bgImage = universe.map.getBackgroundImage(position, w, h)
-val t12 = Config.currentTimeMillis
         
-val t13 = Config.currentTimeMillis        
         g2.drawImage(bgImage.image, bgImage.lup._1, bgImage.lup._2, null)
-val t14 = Config.currentTimeMillis
 
         universe.staticThings.foreach(thing => thing.draw(g2, thing.center))
-val t15 = Config.currentTimeMillis        
-        universe.movingThings.foreach(thing => thing.draw(g2, thing.center))
-val t16 = Config.currentTimeMillis        
-
-        g2.setTransform(at);
-  
+        universe.movingThings.foreach(thing => if (thing!=thingInFocus) thing.draw(g2, thing.center))
+        // This is a hack to get rid to the jittering of whatever object we are following
+        // It might be better to build the translation functionality by hand and fix this there but until that...
+        g2.setTransform(at)
+        thingInFocus.draw(g2, Point(w/2, h/2))
         Config.fps += 1
-val t2 = Config.currentTimeMillis
-if ((t2 - t1) > 100) println("Draw took " + (t2-t1) + "ms! " + 
-                             "getBg was " + (t12-t11) + "ms " +
-                             "drawBg was " + (t14-t13) + "ms " +
-                             "drawSt was " + (t15-t14) + "ms " +
-                             "drawMv was " + (t16-t15) + "ms " )                             
       }
     }
       
