@@ -165,7 +165,7 @@ object Demo {
       val universe = new Universe(STARMAP)
       addWalls(universe)
       
-      val ball = ImageRoundThing(100, 100, 23, 23, "resources/gfx/ball_50x50.gif", 10, 0)
+      val ball = ImageRoundThing(100, 100, 45, 57, "resources/gfx/ship.gif", 10, 270)
       addBall(universe, ball, (ball) => {})
       val observer = new Observer(WINDOW_W, WINDOW_H, universe, ball)
       
