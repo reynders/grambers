@@ -30,7 +30,9 @@ object Shape {
     case (circle : Circle, rectangle : Rectangle) => circle.r >= rectangle.facingSide(circle.center).distanceFrom(circle.center) 
     case (leftCircle : Circle, rightCircle : Circle) => !((leftCircle.r + rightCircle.r) < leftCircle.distanceFrom(rightCircle))
     case (leftRectangle: Rectangle, rightRectangle : Rectangle) => leftRectangle.overlaps(rightRectangle)
-    case _ => return false  
+    case (line : Line, circle:Circle) => line.shortestVectorTo(circle.center).length <= circle.r
+    case _ => println("Warning: do not know how to collide " + leftShape + " with " + rightShape)
+              return false  
   }
   
 }
@@ -121,6 +123,10 @@ class Line(val startX : Double, val startY : Double, val endX : Double, val endY
   override def toString : String = {
     return "Line(" + startX + "," + startY + "-" + endX + "," + endY + ")"
   }
+}
+
+object Line {
+  def apply(start:Point, end:Point) : Line = new Line(start.x, start.y, end.x, end.y)
 }
 
 class Circle(center : Point, val r : Double) extends Shape(center) {

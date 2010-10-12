@@ -34,7 +34,7 @@ println("Resolving " + leftThing + " collision with " + rightThing)
     val lVector = new Vector(leftThing.xSpeed, leftThing.ySpeed)       
     val rVector = new Vector(rightThing.xSpeed, rightThing.ySpeed)      
     val collisionUnitVector = Shape.collisionUnitVector(leftThing.shape, rightThing.shape)
-//println("Collision vector: " + collisionUnitVector)
+println("Collision vector: " + collisionUnitVector)
     if (((lVector dot collisionUnitVector) - (rVector dot collisionUnitVector)) < 0) {
       println("Impact already happened, no need to act")       
       return

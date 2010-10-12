@@ -42,8 +42,16 @@ object Demo {
       val observer = new Observer(WINDOW_W, WINDOW_H, universe, ball)
       universe.run(observer)
     }  
-    
+
     def addWalls(universe : Universe) {
+      println("addWalls: (" + universe.WIDTH + "," + universe.HEIGHT + ")")
+      universe.addThing(new Wall(Point(0,0), Point(universe.WIDTH-1, 0)))
+      universe.addThing(new Wall(Point(0,0), Point(0, universe.HEIGHT-1)))
+      universe.addThing(new Wall(Point(universe.WIDTH-1,0), Point(universe.WIDTH-1, universe.HEIGHT-1)))
+      universe.addThing(new Wall(Point(0, universe.HEIGHT-1), Point(universe.WIDTH-1, universe.HEIGHT-1)))
+    }
+
+    def addWalls2(universe : Universe) {
       println("addWalls: (" + universe.WIDTH + "," + universe.HEIGHT + ")")
       universe.addThing(Box(universe.WIDTH/2, 5, universe.WIDTH, 1, Color.blue))
       universe.addThing(Box(universe.WIDTH/2, universe.HEIGHT-5, universe.WIDTH, 1, Color.blue))    

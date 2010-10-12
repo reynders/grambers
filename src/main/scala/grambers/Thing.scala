@@ -64,10 +64,22 @@ abstract class Thing (var center : Point, val w:Double, val h:Double) {
 
 
 trait StaticThing extends Thing {
+  mass = Math.MAX_DOUBLE / 2 // Kludge to make sure collisions with static objects work correctly
   override def setSpeedAndDirection(xSpeed : Double, ySpeed : Double) = {}
 }
 
 trait MovingThing extends Thing {
+}
+
+class Wall(val start:Point, val end:Point) extends Thing(Point(end.x - start.x, end.y-start.y), 0, 0) with StaticThing {
+  def shape : Shape = {
+    Line(start, end)
+  }
+  def draw(g2 : Graphics2D, position : Point ) = {}
+  
+  override def toString : String = {
+    return "Wall(" + start + "," + end + ")"
+  }
 }
 
 class RoundThing(var c : Point, val radius:Double) extends Thing(c, radius*2, radius*2) with MovingThing {
@@ -139,7 +151,6 @@ object Box {
   def apply(x : Double, y : Double, w : Double, h : Double, color : Color) : Box = {
     val box = new Box(new Point(x, y), w, h)
     box.color = color
-    box.mass = Math.MAX_DOUBLE / 2 // Kludge to make sure collisions with static objects work correctly
     return box
   }
 }
@@ -175,21 +186,12 @@ class ImageRoundThing(var cntr : Point, val rad:Double, fileName : String) exten
     
   def getRotatedImageNumberBasedOnDirection : Int = direction.toInt / (360 / ROTATED_IMAGE_COUNT)
   
-var previousX = 0
-
   override def draw(g2: Graphics2D, position : Point) {
-
-var currentX = position.x.toInt
-if (previousX != currentX) {    
-//  println(Config.currentTimeMillis + " : Drawing to x " + currentX + " : " + (currentX - previousX))
-  previousX = currentX
-}
-
     g2.drawImage(rotatedImage(getRotatedImageNumberBasedOnDirection), (position.x - w/2).toInt, (position.y-h/2).toInt, null)
   }
 
   override def toString : String = {
-    return "RoundThing" + super.toString + ":" + radius + "r"
+    return super.toString + ":" + radius + "r"
   }
 }
 
