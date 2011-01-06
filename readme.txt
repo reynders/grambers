@@ -1,15 +1,14 @@
 Backlog
 -------
-* Debug problem with flickering animation => java problem?
+* Walls of any angle
+* Fix bug on Mac OS X where rightmost column of pixels flicker white
 * IOC (http://programming-scala.labs.oreilly.com/ch13.html#DependencyInjectionInScala)
-* Eclipse Scala IDE
 * Polygon shapes
 * Switch to use the scala 2.8 Swing implementation 
   (http://www.scala-lang.org/sites/default/files/sids/imaier/Mon,%202009-11-02,%2008:55/scala-swing-design.pdf)
 * Bug: static things should have "infinite" mass when calculating collisiongs
 * Introduce gravitation force
 * Make it impossible to add a thing to universe that overlaps an existing one
-* Walls of any angle
 * Shape to case class (http://programming-scala.labs.oreilly.com/ch06.html#CaseClasses)
 * Scalafy code 
 
