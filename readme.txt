@@ -1,7 +1,7 @@
 Backlog
 -------
-* Walls of any angle
 * Fix bug on Mac OS X where rightmost column of pixels flicker white
+* Walls of any angle
 * IOC (http://programming-scala.labs.oreilly.com/ch13.html#DependencyInjectionInScala)
 * Polygon shapes
 * Switch to use the scala 2.8 Swing implementation 
@@ -14,6 +14,7 @@ Backlog
 
 Done
 -----
+* Fix bug on mac: tile buffering is one tile row too late (unreproducible)
 * Rewrite game loop to update objects for only specific point of time, 
   then interpolate until next update
 * Try out git branching locally

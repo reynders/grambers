@@ -17,7 +17,13 @@ class Observer (var w: Int, var h: Int, val universe : Universe, var thingInFocu
     
   var camera : Camera = new Camera {
                           override def move(observer : Observer) = {
-                            observer.position = thingInFocus.center
+                            var x = if ((thingInFocus.center.x - w/2) < 0) w/2 
+                                    else if ((thingInFocus.center.x + w/2) > universe.WIDTH) universe.WIDTH - w/2 
+                                    else thingInFocus.center.x
+                            var y = if ((thingInFocus.center.y - h/2) < 0) h/2 
+                                    else if ((thingInFocus.center.y + h/2) > universe.HEIGHT) universe.HEIGHT - h/2 
+                                    else thingInFocus.center.y
+                            observer.position = Point(x, y)
                           }
                         }
     
@@ -62,23 +68,14 @@ class Observer (var w: Int, var h: Int, val universe : Universe, var thingInFocu
           case _ => throw new ClassCastException
         }
       }
-    
-      var lastX = 0.0
-
+      
       def drawUniverse(g2 : Graphics2D) {
-        val at = g2.getTransform
-        g2.translate(xViewTranslation, yViewTranslation)
 
         val bgImage = universe.map.getBackgroundImage(position, w, h)
-        
-        g2.drawImage(bgImage.image, bgImage.lup._1, bgImage.lup._2, null)
+        g2.drawImage(bgImage.image, 0, 0, null)
+        universe.staticThings.foreach(thing => thing.draw(g2, thing.center + Point(xViewTranslation, yViewTranslation)))
+        universe.movingThings.foreach(thing => thing.draw(g2, thing.center + Point(xViewTranslation, yViewTranslation)))
 
-        universe.staticThings.foreach(thing => thing.draw(g2, thing.center))
-        universe.movingThings.foreach(thing => if (thing!=thingInFocus) thing.draw(g2, thing.center))
-        // This is a hack to get rid to the jittering of whatever object we are following
-        // It might be better to build the translation functionality by hand and fix this there but until that...
-        g2.setTransform(at)
-        thingInFocus.draw(g2, Point(w/2, h/2))
         Config.fps += 1
       }
     }
