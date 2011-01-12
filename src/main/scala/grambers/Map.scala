@@ -23,19 +23,23 @@ val tileSets:Array[TileSet], val layers:Array[Layer], val tiles:Array[Tile]) {
   var creatingNewBgImage = false
   
   def getBackgroundImage(center : Point, w : Int, h : Int) : BackgroundImage = {
-    val windowLup = Point(center.x - w/2, center.y - h/2)
-    val windowRlp = Point(center.x + w/2, center.y + w/2)
-    val tileLup = worldPointToTileIndex(windowLup)
-    val tileRlp = worldPointToTileIndex(windowRlp)
+    val windowLup = Point(Math.round(center.x - w/2), Math.round(center.y - h/2))
+    val windowRlp = Point(Math.round(center.x + w/2), Math.round(center.y + w/2))
 
-// TODO: Add buffering so that we do not recreate the background too late    
+    assert((windowRlp.x - windowLup.x) == w, "The width of requested bg image is not same as visible: " + (windowRlp.x - windowLup.x)) 
+
+    
+    // Determine the requested bg window in tiles, add buffering so that we do not recreate the background too late
+    val tileLup = worldPointToTileIndex(Point(windowLup.x - tileW, windowLup.y - tileH))
+    val tileRlp = worldPointToTileIndex(Point(windowRlp.x + tileW, windowRlp.y + tileH))
+    
     if (!worldRectangleToTileRectangle(bgImage.worldCoordinates).contains(
         Rectangle(tileLup, tileRlp)) && !creatingNewBgImage) {     
       creatingNewBgImage = true
       myFuture = future {createBackgroundImageFromTiles(tileLup, tileRlp)}       
     }
     
-    if (myFuture.isSet) {
+    if (creatingNewBgImage && myFuture.isSet) {
       bgImage = myFuture()
       creatingNewBgImage = false
     }
@@ -120,6 +124,10 @@ class BackgroundImage(val image:BufferedImage, val worldCoordinates:Rectangle) {
     val bgImageVisiblePart = 
          Rectangle(bgX, bgY, bgX + image.getWidth, bgY + image.getHeight).intersect(
          visibleWindow).translate(-bgX, -bgY)  
+         
+    assert(visibleWindow.w == bgImageVisiblePart.w, 
+        "Visible window w " + visibleWindow.w + " is not bgImageVisible w " + bgImageVisiblePart.w + " - " +
+        Rectangle(bgX, bgY, bgX + image.getWidth, bgY + image.getHeight) + " with " + visibleWindow)     
     val visiblePartWorldCoordinates = new Rectangle(bgImageVisiblePart.lup._1 + bgX, bgImageVisiblePart.lup._2 + bgY,
                                                 bgImageVisiblePart.rlp._1 + bgX, bgImageVisiblePart.rlp._2 + bgY)
    

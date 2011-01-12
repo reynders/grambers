@@ -72,6 +72,9 @@ class Observer (var w: Int, var h: Int, val universe : Universe, var thingInFocu
       def drawUniverse(g2 : Graphics2D) {
 
         val bgImage = universe.map.getBackgroundImage(position, w, h)
+
+        assert(bgImage.image.getWidth == w, "bgImage width " + bgImage.image.getWidth + " is not window width " + w);
+        
         g2.drawImage(bgImage.image, 0, 0, null)
         universe.staticThings.foreach(thing => thing.draw(g2, thing.center + Point(xViewTranslation, yViewTranslation)))
         universe.movingThings.foreach(thing => thing.draw(g2, thing.center + Point(xViewTranslation, yViewTranslation)))
