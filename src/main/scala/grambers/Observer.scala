@@ -37,14 +37,18 @@ class Observer (var w: Int, var h: Int, val universe : Universe, var thingInFocu
     import java.awt.event._
     object ObserverKeyListener extends KeyAdapter {
       override def keyPressed(e : KeyEvent) = {
-        val c = e.getKeyCode();
-        c match {
-          case KeyEvent.VK_LEFT => thingInControl.turn(-1)
-          case KeyEvent.VK_RIGHT => thingInControl.turn(1)
-          case KeyEvent.VK_DOWN => thingInControl.accelerate(-1)
-          case KeyEvent.VK_UP => thingInControl.accelerate(1)
-          case KeyEvent.VK_D => Config.debugOn = !Config.debugOn; println("Setting debug to " + Config.debugOn); 
-          case _ => println("Caught key event " + c)
+        thingInControl match {
+          case thing : MovingThing => {
+            val c = e.getKeyCode();
+            c match {
+              case KeyEvent.VK_LEFT => thing.turn(-1)
+              case KeyEvent.VK_RIGHT => thing.turn(1)
+              case KeyEvent.VK_DOWN => thing.accelerate(-1)
+              case KeyEvent.VK_UP => thing.accelerate(1)
+              case KeyEvent.VK_D => Config.debugOn = !Config.debugOn; println("Setting debug to " + Config.debugOn); 
+              case _ => println("Caught key event " + c)
+            }
+          }
         }
         
         e.consume();

@@ -3,7 +3,10 @@ package grambers
 object Config {
   val imageType = java.awt.image.BufferedImage.TYPE_INT_ARGB 
   
-  val worldUpdatesPerSecond = 50
+  val worldUpdatesPerSecond = 60
+  val worldUpdateDt : Float = 1.0f/worldUpdatesPerSecond
+  val velocityIterations = 10
+  val positionIterations = 10
   var fps = 0
   var worldUpdates = 0
   var measurementStartTime = currentTimeMillis    

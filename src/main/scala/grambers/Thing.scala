@@ -5,73 +5,58 @@ import java.lang.Math._
 import java.awt.geom._
 import java.lang.System._
 
-abstract class Thing (var center : Point, val w:Double, val h:Double) {
+import org.jbox2d.dynamics._
+import org.jbox2d.common._
+import org.jbox2d.collision.shapes._
 
-    def this(w : Double, h : Double) = this(new Point(0, 0), w, h)
-    var speed : Double = 0.0 // "pixels" per second
-    var direction : Double = 0 // 0-360
-    var mass : Double = 1.0
-    var doYourThing : ((Thing) => Unit) = (thing) => {}
-
-    def turn(degrees : Double) {
-        direction += degrees
-        direction %= 360
-        if (direction < 0 ) direction = 360 + direction
-    }
-
-    def collidesWith(thing : Thing) : Boolean = {
-      Shape.collidesWith(this.shape, thing.shape)
-    }
-  
-    def accelerate(amount : Double) {
-      speed += amount
-    }
-
-    def xSpeed : Double = {
-      return speed * cos(toRadians(direction))
-    }
-    
-    def ySpeed : Double = {
-      return speed * sin(toRadians(direction))
-    }
-
-    def setSpeedAndDirection(xSpeed : Double, ySpeed : Double) {
-      speed = Math.sqrt(xSpeed * xSpeed + ySpeed * ySpeed)
-      direction = toDegrees(atan2(ySpeed, xSpeed))
-      
-      if (ySpeed < 0) direction += 360
-    }
-    
-    def setSpeedAndDirection(vector : Vector) {
-      setSpeedAndDirection(vector.i, vector.j)
-    }
+abstract class Thing() {
+  def center : Point = Point(0, 0)
+  val body : Body                    
+  var speed : Double = 0.0
+  var mass = 0.0
+  var doYourThing : ((Thing) => Unit) = (thing) => {}
  
-    def distanceFrom(otherThing : Thing) : Double = {
-      val xDiff = Math.abs(otherThing.center.x - center.x)
-      val yDiff = Math.abs(otherThing.center.y - center.y)
-      
-      return Math.sqrt((xDiff*xDiff) + (yDiff*yDiff)) 
-    }
-     
-    def shape : Shape
-    
-    def draw(g2 : Graphics2D, position : Point )
+  def draw(g2 : Graphics2D, position : Point)
         
-    override def toString : String = {
-        "(" + center.x + "," + center.y + "):(" + w + "w," + h + "h):" + speed + "p/s:" + direction + "dg"
-    }
+  override def toString : String = "(" + center.x + "," + center.y + ")"
 }
 
-
-trait StaticThing extends Thing {
-  mass = Math.MAX_DOUBLE / 2 // Kludge to make sure collisions with static objects work correctly
-  override def setSpeedAndDirection(xSpeed : Double, ySpeed : Double) = {}
+abstract class StaticThing(location : Point) extends Thing {
+  lazy val body : Body = { val bd = new BodyDef()
+                      bd.`type` = BodyType.STATIC
+                      bd.position = new Vec2(location.x.toFloat, location.y.toFloat)
+                      Universe.world.createBody(bd) }
+  override def center : Point = location                    
 }
 
-trait MovingThing extends Thing {
+abstract class MovingThing(location : Point) extends Thing {
+  
+  lazy val body : Body = { val bd = new BodyDef()
+                           bd.`type` = BodyType.DYNAMIC
+                           bd.position = new Vec2(location.x.toFloat, location.y.toFloat)
+                           Universe.world.createBody(bd) }                    
+                             
+  override def center : Point = Point(body.getPosition.x, body.getPosition.y)
+  
+  var direction = toDegrees(body.getAngle)
+
+  def turn(degrees : Double) {
+    direction += degrees
+    direction %= 360
+    if (direction < 0 ) direction = 360 + direction
+  }
+
+  def accelerate(amount : Double) {
+    speed += amount
+  }
+  
+  def setSpeedAndDirection(direction : Vector, speed : Double) {
+    body.setLinearVelocity(new Vec2(direction.i.toFloat, direction.j.toFloat))
+  }
 }
 
-class Wall(val start:Point, val end:Point) extends Thing(Point(end.x - start.x, end.y-start.y), 0, 0) with StaticThing {
+/*
+class Wall(val start:Point, val end:Point) extends Thing(Point(end.x - start.x, end.y-start.y), 0, 0) extends StaticThing {
   def shape : Shape = {
     Line(start, end)
   }
@@ -80,16 +65,25 @@ class Wall(val start:Point, val end:Point) extends Thing(Point(end.x - start.x, 
   override def toString : String = {
     return "Wall(" + start + "," + end + ")"
   }
-}
+}*/
 
-class RoundThing(var c : Point, val radius:Double) extends Thing(c, radius*2, radius*2) with MovingThing {
-  
-  def this(radius : Double) = this(new Point(0, 0), radius)
+class CircleThing(var c : Point, val radius : Double) extends MovingThing(c) {
   
   var color = java.awt.Color.yellow
-   
-  def shape : Shape = {      
-    new Circle(this.center.x, this.center.y, radius)
+  val w = radius * 2
+  val h = radius * 2
+  
+  {
+    val cs = new CircleShape()    
+    cs.m_radius = radius.toFloat
+    
+    val fd = new FixtureDef();
+    fd.shape = cs;
+    fd.density = 1f;
+    fd.friction = 0.5f;
+    fd.restitution = 0.5f;
+
+    body.createFixture(fd)    
   }
   
   val image = new Ellipse2D.Double(center.x-w/2, center.y-h/2, radius*2, radius*2)
@@ -108,7 +102,16 @@ class RoundThing(var c : Point, val radius:Double) extends Thing(c, radius*2, ra
   }
 }
 
+object CircleThing {
+  def apply(x : Double, y : Double, radius : Double, color : Color) : CircleThing = {
+    val ct = new CircleThing(Point(x, y), radius)
+    ct.color = color
+    return ct
+  }
+}
 
+
+/*
 object RoundThing {
   def apply(x : Double, y : Double, r : Double, mass : Double, color: Color, speed : Double, direction : Double) : RoundThing = {
     val ball = new RoundThing(Point(x, y), r)
@@ -204,4 +207,4 @@ object ImageRoundThing {
     return ball
   }
 }
-
+*/

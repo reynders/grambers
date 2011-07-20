@@ -12,6 +12,7 @@ object Demo {
     val TESTMAP = "resources/maps/testmap_40x20.tmx"  
     val STARMAP = "resources/maps/starsky_100x100.tmx"  
   
+/*    
     def twoWallsAndABallDemo {      
 
       val universe = new Universe(TESTMAP)
@@ -67,11 +68,6 @@ object Demo {
       ball.speed = random * 20
       ball.direction = random * 360
       ball.doYourThing = (ball) => {ball.accelerate(0.001)}
-      universe.addThing(ball)
-    }
-
-    def addBall(universe : Universe, ball : RoundThing, doYourThing : (Thing)=>Unit) {
-      ball.doYourThing = doYourThing
       universe.addThing(ball)
     }
 
@@ -180,19 +176,41 @@ object Demo {
       universe.run(observer)
     }
 
+*/
+    def addBall(universe : Universe, ball : CircleThing, doYourThing : (Thing)=>Unit) {
+      ball.doYourThing = doYourThing
+      universe.addThing(ball)
+    }
     
+    def twoBallsDemo {
+      val universe = new Universe(TESTMAP, true)
+
+      var ball = CircleThing(200, 100, 10, Color.yellow)
+      ball.setSpeedAndDirection(new Vector(1, 1), 90)      
+
+      addBall(universe, ball, (ball) => {})
+ 
+      ball = CircleThing(150, 100, 20, Color.blue)
+      addBall(universe, ball, (ball) => {})
+      
+      val observer = new Observer(WINDOW_W, WINDOW_H, universe, ball)
+
+      universe.run(observer)
+    }
+
+
     def main(args:Array[String]) {
       if (args.length > 0)
-        args(0) match {
-          case "S" => starDemo
-          case "D" => debugDemo
-          case "I" => imageDemo
-          case "3" => ballsAndWallsAndCameraDemo
-          case "2" => edgesAndStuffDemo
-          case "1" => twoWallsAndABallDemo
-          case _ => ballsAndWallsDemo
+        args(0) match {          
+//          case "S" => starDemo
+//          case "D" => debugDemo
+//          case "I" => imageDemo
+//          case "3" => ballsAndWallsAndCameraDemo
+//          case "2" => edgesAndStuffDemo
+//          case "1" => twoWallsAndABallDemo          
+          case _ => twoBallsDemo
         }
       else 
-        ballsAndWallsDemo
+        twoBallsDemo
     }
 }
