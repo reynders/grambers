@@ -1,15 +1,21 @@
 package grambers
 
 object Config {
-  val imageType = java.awt.image.BufferedImage.TYPE_INT_ARGB 
-  
+  // World settings
   val worldUpdatesPerSecond = 60
   val worldUpdateDt : Float = 1.0f/worldUpdatesPerSecond
   val velocityIterations = 10
   val positionIterations = 10
+  
+  // Gfx settings
+  val imageType = java.awt.image.BufferedImage.TYPE_INT_ARGB 
+  val ROTATED_IMAGE_COUNT = 36
+  
+  // Measurements
   var fps = 0
   var worldUpdates = 0
-  var measurementStartTime = currentTimeMillis    
+  var measurementStartTime = currentTimeMillis
+  
   var debugOn : Boolean = false
 
   def measurementSamplePeriodMs : Long = {

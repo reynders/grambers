@@ -9,6 +9,8 @@ import org.jbox2d.dynamics._
 import org.jbox2d.common._
 import org.jbox2d.collision.shapes._
 
+import scala.collection.immutable.List
+
 abstract class Thing() {
   def center : Point = Point(0, 0)
   val body : Body                    
@@ -109,6 +111,62 @@ object CircleThing {
     return ct
   }
 }
+
+import java.awt.image._
+import java.io._
+
+class PolygonThing(var c : Point, density : Double, fileName : String, vertices : List[(Int, Int)]) extends MovingThing(c) {
+  
+  {
+    val ps = new PolygonShape()
+    val v = vertices.map(v => new org.jbox2d.common.Vec2(v._1, v._2))
+    ps.set(v.toArray, v.size)    
+    
+    val fd = new FixtureDef();
+    fd.shape = ps;
+    fd.density = density.toFloat;
+    fd.friction = 0.5f;
+    fd.restitution = 0.5f;
+
+    body.createFixture(fd)    
+  }
+  
+  val img : BufferedImage = javax.imageio.ImageIO.read(new File(fileName)).asInstanceOf[BufferedImage]
+  val rotatedImage = createRotatedImages(img)
+  
+  lazy val w : Int = img.getWidth
+  lazy val h : Int = img.getHeight
+  
+  import scala.collection.mutable._
+  def createRotatedImages(image : BufferedImage) : Buffer[Image] = {
+    val images = new ArrayBuffer[Image]()
+
+    for(i <- 0 until Config.ROTATED_IMAGE_COUNT) {
+      //val rotatedImage = image.getGraphics().asInstanceOf[Graphics2D].getDeviceConfiguration().createCompatibleImage(image.getWidth, image.getHeight, Transparency.TRANSLUCENT)      
+      val diameter = Math.max(image.getWidth, image.getHeight)
+      val rotatedImage = new BufferedImage(diameter, diameter, Config.imageType)
+      val at = new AffineTransform()
+      at.rotate(toRadians(i*(360/Config.ROTATED_IMAGE_COUNT)), diameter/2, diameter/2)
+      at.translate(Math.abs(diameter-image.getWidth)/2, Math.abs(diameter-image.getHeight)/2)
+      val g2d = rotatedImage.createGraphics.asInstanceOf[Graphics2D]      
+      g2d.drawImage(image, new AffineTransformOp(at, AffineTransformOp.TYPE_NEAREST_NEIGHBOR), 0, 0)
+      images += rotatedImage
+    }
+    
+    return images
+  }
+    
+  def getRotatedImageNumberBasedOnDirection : Int = direction.toInt / (360 / Config.ROTATED_IMAGE_COUNT)
+  
+  override def draw(g2: Graphics2D, position : Point) {
+    g2.drawImage(rotatedImage(getRotatedImageNumberBasedOnDirection), (position.x - w/2).toInt, (position.y-h/2).toInt, null)
+  }
+
+  override def toString : String = {
+    return super.toString + ": w: " + w + ", h: " + h
+  }
+}
+
 
 
 /*

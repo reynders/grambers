@@ -82,5 +82,5 @@ class Universe(mapName:String, withWalls : Boolean) {
 }
     
 object Universe {
-  val world = new World(new Vec2(0, -10), true)
+  val world = new World(new Vec2(0, 10), true)
 }

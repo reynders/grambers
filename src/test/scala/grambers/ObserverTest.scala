@@ -8,8 +8,8 @@ class ObserverTest extends TestCase {
   val WINDOW_H = 300
   
   def testObserverViewTranslations {
-    val universe = new Universe("resources/maps/testmap_40x20.tmx")
-    val observer = new Observer(WINDOW_W, WINDOW_H, universe, new grambers.RoundThing(Point(1, -1), 2))
+    val universe = new Universe("resources/maps/testmap_40x20.tmx", true)
+    val observer = new Observer(WINDOW_W, WINDOW_H, universe, new grambers.CircleThing(Point(1, -1), 2))
     observer.w = 100
     observer.h = 50
     assertEquals(-590.0, observer.xViewTranslation)
@@ -21,8 +21,8 @@ class ObserverTest extends TestCase {
   
   
   def testObserverViewTranslations2 {
-    val universe = new Universe("resources/maps/testmap_40x20.tmx")
-    val observer = new Observer(WINDOW_W, WINDOW_H, universe, new grambers.RoundThing(Point(1, -1), 2))
+    val universe = new Universe("resources/maps/testmap_40x20.tmx", true)
+    val observer = new Observer(WINDOW_W, WINDOW_H, universe, new grambers.CircleThing(Point(1, -1), 2))
     observer.w = 100
     observer.h = 50
     observer.position = Point(101, 51)
