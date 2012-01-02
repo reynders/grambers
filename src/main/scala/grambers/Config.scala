@@ -16,8 +16,11 @@ object Config {
   var worldUpdates = 0
   var measurementStartTime = currentTimeMillis
   
+  // Debug
   var debugOn : Boolean = false
-
+  var debugDrawShapes : Boolean = false
+  val debugDrawShapesColor : java.awt.Color = java.awt.Color.RED
+  
   def measurementSamplePeriodMs : Long = {
     currentTimeMillis - measurementStartTime
   }

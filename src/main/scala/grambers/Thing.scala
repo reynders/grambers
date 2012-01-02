@@ -19,6 +19,8 @@ abstract class Thing() {
   var doYourThing : ((Thing) => Unit) = (thing) => {}
  
   def draw(g2 : Graphics2D, position : Point)
+  
+  def drawDebugShapes(g2 : Graphics2D, position : Point)
         
   override def toString : String = "(" + center.x + "," + center.y + ")"
 }
@@ -99,6 +101,9 @@ class CircleThing(var c : Point, val radius : Double) extends MovingThing(c) {
     g2.setPaint(originalPaintColor)
   }
   
+  def drawDebugShapes(g2 : Graphics2D, position : Point) {
+  }
+  
   override def toString : String = {
     return "RoundThing" + super.toString + ":" + radius + "r"
   }
@@ -131,20 +136,21 @@ class PolygonThing(var c : Point, density : Double, fileName : String, vertices 
     body.createFixture(fd)    
   }
   
+  // Image should be square in size for the rotation to work correctly
+  // from jbox2d's side
   val img : BufferedImage = javax.imageio.ImageIO.read(new File(fileName)).asInstanceOf[BufferedImage]
   val rotatedImage = createRotatedImages(img)
-  
   lazy val w : Int = img.getWidth
   lazy val h : Int = img.getHeight
   
   import scala.collection.mutable._
   def createRotatedImages(image : BufferedImage) : Buffer[Image] = {
     val images = new ArrayBuffer[Image]()
-
+    
     for(i <- 0 until Config.ROTATED_IMAGE_COUNT) {
       //val rotatedImage = image.getGraphics().asInstanceOf[Graphics2D].getDeviceConfiguration().createCompatibleImage(image.getWidth, image.getHeight, Transparency.TRANSLUCENT)      
       val diameter = Math.max(image.getWidth, image.getHeight)
-      val rotatedImage = new BufferedImage(diameter, diameter, Config.imageType)
+      val rotatedImage = new BufferedImage(diameter, diameter, Config.imageType)   
       val at = new AffineTransform()
       at.rotate(toRadians(i*(360/Config.ROTATED_IMAGE_COUNT)), diameter/2, diameter/2)
       at.translate(Math.abs(diameter-image.getWidth)/2, Math.abs(diameter-image.getHeight)/2)
@@ -159,9 +165,36 @@ class PolygonThing(var c : Point, density : Double, fileName : String, vertices 
   def getRotatedImageNumberBasedOnDirection : Int = direction.toInt / (360 / Config.ROTATED_IMAGE_COUNT)
   
   override def draw(g2: Graphics2D, position : Point) {
-    g2.drawImage(rotatedImage(getRotatedImageNumberBasedOnDirection), (position.x - w/2).toInt, (position.y-h/2).toInt, null)
+    val image = rotatedImage(0)//(getRotatedImageNumberBasedOnDirection) 
+    
+    if (Config.debugDrawShapes) {
+      val ig = image.getGraphics.asInstanceOf[Graphics2D]
+      val originalPaintColor = ig.getPaint()
+      ig.setPaint(Config.debugDrawShapesColor)
+      
+      var previousVertice = vertices.last
+      
+      vertices.foreach { v => 
+        ig.drawLine(previousVertice._1, previousVertice._2, v._1, v._2)
+        previousVertice = v
+      }
+      
+      //DEBUG
+      ig.setPaint(java.awt.Color.GREEN)
+      ig.drawLine(0, 0, image.getWidth(null)-1, 0)
+      ig.drawLine(image.getWidth(null)-1, 0, image.getWidth(null)-1, image.getHeight(null)-1)
+      ig.drawLine(0, 0, 0, image.getHeight(null)-1)
+      ig.drawLine(0, image.getHeight(null)-1, image.getWidth(null)-1, image.getHeight(null)-1)
+      //DEBUG
+      ig.setPaint(originalPaintColor)    
+    }
+
+    g2.drawImage(image, (position.x - w/2).toInt, (position.y-h/2).toInt, null)    
   }
 
+  def drawDebugShapes(g2 : Graphics2D, position : Point) {
+  }
+  
   override def toString : String = {
     return super.toString + ": w: " + w + ", h: " + h
   }
