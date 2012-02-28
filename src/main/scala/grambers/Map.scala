@@ -21,6 +21,7 @@ val tileSets:Array[TileSet], val layers:Array[Layer], val tiles:Array[Tile]) {
   import scala.actors.Futures._
   var myFuture : Future[BackgroundImage] = _
   var creatingNewBgImage = false
+  var forceSynchronousCreateBgImage = true // Set if visible window size changes
   
   def getBackgroundImage(center : Point, w : Int, h : Int) : BackgroundImage = {
     val windowLup = Point(Math.round(center.x - w/2), Math.round(center.y - h/2))
@@ -30,16 +31,23 @@ val tileSets:Array[TileSet], val layers:Array[Layer], val tiles:Array[Tile]) {
     val tileLup = worldPointToTileIndex(Point(windowLup.x - tileW, windowLup.y - tileH))
     val tileRlp = worldPointToTileIndex(Point(windowRlp.x + tileW, windowRlp.y + tileH))
     
-    if (!worldRectangleToTileRectangle(bgImage.worldCoordinates).contains(
-          Rectangle(tileLup, tileRlp)) && !creatingNewBgImage) {     
-       creatingNewBgImage = true
-       myFuture = future {createBackgroundImageFromTiles(tileLup, tileRlp)}
-     }
+    if (forceSynchronousCreateBgImage) {
+      println("forceSynchronousCreateBgImage == true, creating new bgImage")
+      bgImage = createBackgroundImageFromTiles(tileLup, tileRlp)
+      forceSynchronousCreateBgImage = false
+    } else {
 
-     if (creatingNewBgImage && myFuture.isSet) {      
-       bgImage = myFuture()
-       creatingNewBgImage = false
-     }
+      if (!worldRectangleToTileRectangle(bgImage.worldCoordinates).contains(Rectangle(tileLup, tileRlp)) && 
+                                         !creatingNewBgImage) {     
+        creatingNewBgImage = true
+        myFuture = future {createBackgroundImageFromTiles(tileLup, tileRlp)}
+      }
+
+      if (creatingNewBgImage && myFuture.isSet) {      
+        bgImage = myFuture()
+        creatingNewBgImage = false
+      }
+    }
 
     return bgImage.getVisiblePart(Rectangle(windowLup, windowRlp))
   }
