@@ -26,9 +26,8 @@ val tileSets:Array[TileSet], val layers:Array[Layer], val tiles:Array[Tile]) {
     val windowLup = Point(Math.round(center.x - w/2), Math.round(center.y - h/2))
     val windowRlp = Point(Math.round(center.x + w/2), Math.round(center.y + w/2))
 
-    assert((windowRlp.x - windowLup.x) == w, "The width of requested bg image is not same as visible: " + (windowRlp.x - windowLup.x)) 
+    assert((windowRlp.x - windowLup.x) == w, "The width of requested bg image is not same as visible: " + (windowRlp.x - windowLup.x) + ", expected " + w) 
 
-    
     // Determine the requested bg window in tiles, add buffering so that we do not recreate the background too late
     val tileLup = worldPointToTileIndex(Point(windowLup.x - tileW, windowLup.y - tileH))
     val tileRlp = worldPointToTileIndex(Point(windowRlp.x + tileW, windowRlp.y + tileH))
