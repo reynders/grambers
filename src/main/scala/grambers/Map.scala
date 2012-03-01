@@ -9,7 +9,7 @@ import scala.actors._
 import scala.actors.Actor._
 
 class Map(val wInTiles:Int, val hInTiles:Int, val tileW:Int, val tileH:Int, 
-val tileSets:Array[TileSet], val layers:Array[Layer], val tiles:Array[Tile]) {
+val tileSets:Array[TileSet], val layers:Array[Layer], val tiles:Array[Tile], val mapObjectGroups:Array[MapObjectGroup]) {
   
   def w = tileW * wInTiles
   def h = tileH * hInTiles  
@@ -116,7 +116,7 @@ val tileSets:Array[TileSet], val layers:Array[Layer], val tiles:Array[Tile]) {
   }
 }
 
-class DummyMap extends Map(1, 1, 1, 1, new Array[TileSet](0), new Array[Layer](0), new Array[Tile](0)) {
+class DummyMap extends Map(1, 1, 1, 1, new Array[TileSet](0), new Array[Layer](0), new Array[Tile](0), new Array[MapObjectGroup](0)) {
 }
 
 class BackgroundImage(val image:BufferedImage, val worldCoordinates:Rectangle) {
@@ -209,7 +209,7 @@ object Layer {
     return tileMap
   }
 
-  def createInitialTileMap(w : Int, h : Int) : Array[Array[(Int, Int)]] ={
+  def createInitialTileMap(w : Int, h : Int) : Array[Array[(Int, Int)]] = {
     val tileMap = new ArrayBuffer[Array[(Int, Int)]]()
     for (x <- 0 until w) {
       val column = new ArrayBuffer[(Int, Int)](h)
@@ -228,7 +228,7 @@ object Layer {
 }
 
 
-class Tile(val image : BufferedImage){
+class Tile(val image : BufferedImage) {
   val w : Int = image.getWidth
   val h : Int = image.getHeight
 }
@@ -241,6 +241,21 @@ object Tile {
   }
 }
 
+class MapObjectGroup(val name : String, val mapObjects : Array[MapObject]) {
+}
+
+object MapObjectType extends Enumeration {
+  type MapObjectType = Value
+     val Box, Polygon = Value
+}
+
+import MapObjectType._
+import scala.collection.mutable.HashMap
+
+class MapObject(val name : String, val typeStr : String, val 
+                x : Int, val y : Int, val w : Int, val h: Int, 
+                val properties : HashMap[String, String]) {
+}
 
 object MapLoader {
   
@@ -267,7 +282,8 @@ object MapLoader {
     val tileSets = parseTileSets(mapXml)
     val layers = parseLayers(mapXml)
     val tiles = createSingleTileMapFromManyTileSets(tileSets)
-    return new Map(w, h, tileW, tileH, tileSets, layers, tiles)
+    val mapObjectGroups = parseMapObjectGroups(mapXml)
+    return new Map(w, h, tileW, tileH, tileSets, layers, tiles, mapObjectGroups)
   }
 
   
@@ -294,6 +310,51 @@ object MapLoader {
     return layers.toArray[Layer]
   }
   
+  def parseMapObjectGroups(mapXml : Elem) : Array[MapObjectGroup] = {
+    val mapObjectGroups = new ArrayBuffer[MapObjectGroup]()
+    
+    val mapObjectGroupElem = mapXml \\ "objectgroup"
+
+    mapObjectGroupElem.foreach { og =>
+      mapObjectGroups += new MapObjectGroup((og \ "@name").text, parseMapObjects(og))
+    }
+
+    return mapObjectGroups.toArray[MapObjectGroup]
+  }
+
+  def parseMapObjects(mapObjectsXml : Node) : Array[MapObject] = {
+
+    val mapObjects = new ArrayBuffer[MapObject]()
+
+    (mapObjectsXml \\ "object").foreach { mo =>
+      mapObjects += parseMapObject(mo)          
+    }
+
+    return mapObjects.toArray[MapObject]
+  }
+
+  def parseMapObject(mapObjectXml : Node) : MapObject = {
+    val name = (mapObjectXml \ "@name").text
+    val typeStr = (mapObjectXml \ "@type").text
+    val x = if ((mapObjectXml \ "@x").text != "") (mapObjectXml \ "@x").text.toInt else 0
+    val y = if ((mapObjectXml \ "@y").text != "") (mapObjectXml \ "@y").text.toInt else 0    
+    val w = if ((mapObjectXml \ "@width").text != "") (mapObjectXml \ "@width").text.toInt else 0
+    val h = if ((mapObjectXml \ "@height").text != "") (mapObjectXml \ "@height").text.toInt else 0
+    val properties = parseMapObjectProperties((mapObjectXml \ "properties"))
+
+    return new MapObject(name, typeStr, x, y, w, h, properties)
+  }
+
+  def parseMapObjectProperties(propertiesXml : NodeSeq) : HashMap[String, String] = {
+    val properties = new scala.collection.mutable.HashMap[String, String]()
+
+    (propertiesXml \ "property").foreach { property =>
+      properties += (property \ "@name").text -> (property \ "@value").text
+    }
+
+    return properties
+  }
+
   def createSingleTileMapFromManyTileSets(tileSets:Array[TileSet]) : Array[Tile] = {
     tileSets.sortWith((l:TileSet, r:TileSet)=>{l.firstTileIndex > r.firstTileIndex})
     val tiles = new ArrayBuffer[Tile](0)
@@ -301,4 +362,3 @@ object MapLoader {
     return tiles.toArray[Tile]
   }
 }
-
