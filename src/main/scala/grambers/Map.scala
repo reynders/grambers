@@ -254,7 +254,8 @@ import scala.collection.mutable.HashMap
 
 class MapObject(val name : String, val typeStr : String, val 
                 x : Int, val y : Int, val w : Int, val h: Int, 
-                val properties : HashMap[String, String]) {
+                val properties : HashMap[String, String], 
+                val polygonPoints : Array[Point], val polylinePoints : Array[Point]) {
 }
 
 object MapLoader {
@@ -341,8 +342,10 @@ object MapLoader {
     val w = if ((mapObjectXml \ "@width").text != "") (mapObjectXml \ "@width").text.toInt else 0
     val h = if ((mapObjectXml \ "@height").text != "") (mapObjectXml \ "@height").text.toInt else 0
     val properties = parseMapObjectProperties((mapObjectXml \ "properties"))
+    val polygonPoints = parseMapObjectPolygonPoints(mapObjectXml \ "polygon")
+    val polylinePoints = parseMapObjectPolylinePoints(mapObjectXml \ "polyline")
 
-    return new MapObject(name, typeStr, x, y, w, h, properties)
+    return new MapObject(name, typeStr, x, y, w, h, properties, polygonPoints, polylinePoints)
   }
 
   def parseMapObjectProperties(propertiesXml : NodeSeq) : HashMap[String, String] = {
@@ -353,6 +356,32 @@ object MapLoader {
     }
 
     return properties
+  }
+
+  def parseMapObjectPolygonPoints(polygonXml : NodeSeq) : Array[Point] = {
+    val points = new ArrayBuffer[Point]()
+    val pointsStr = (polygonXml \ "@points").text
+
+    if (pointsStr != "") {
+      pointsStr.split(" ").foreach{pointStr =>
+        points += Point(pointStr.split(",")(0), pointStr.split(",")(1))
+      }  
+    }
+
+    return points.toArray[Point]
+  }
+
+  def parseMapObjectPolylinePoints(polylineXml : NodeSeq) : Array[Point] = {
+    val points = new ArrayBuffer[Point]()
+    val pointsStr = (polylineXml \ "@points").text
+
+    if (pointsStr != "") {
+      pointsStr.split(" ").foreach{pointStr =>
+        points += Point(pointStr.split(",")(0), pointStr.split(",")(1))
+      }  
+    }
+
+    return points.toArray[Point]
   }
 
   def createSingleTileMapFromManyTileSets(tileSets:Array[TileSet]) : Array[Tile] = {

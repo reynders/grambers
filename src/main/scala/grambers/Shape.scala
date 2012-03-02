@@ -69,7 +69,7 @@ class Point(val x : Double, val y : Double) {
 
 object Point {
   def apply(x : Double, y : Double) : Point = new Point(x, y)
-
+  def apply(x : String, y : String) : Point = new Point(x.toInt, y.toInt)
 }
 
 class Line(val startX : Double, val startY : Double, val endX : Double, val endY : Double) extends Shape(startX, startY) {

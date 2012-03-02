@@ -26,20 +26,17 @@ class MapTest extends TestCase {
                         <property name="start_offset_y" value="15"/>
                        </properties>
                       </object>
+                      <object x="806" y="217">
+                       <polygon points="0,0 -62,62 62,62"/>
+                      </object>
+                      <object x="96" y="64">
+                        <polyline points="0,0 0,384 736,384 736,0"/>
+                      </object>
                       <object x="1248" y="32" width="32" height="608"/>
-                      <object x="0" y="608" width="1248" height="32"/>
-                      <object x="0" y="32" width="32" height="576"/>
-                      <object x="576" y="288" width="32" height="32"/>
                     </objectgroup>
                     <objectgroup name="SOLIDS_2" width="40" height="20">
                       <object x="992" y="589" width="31" height="124"/>
                       <object x="961" y="651" width="31" height="62"/>
-                      <object x="930" y="682" width="31" height="31"/>
-                      <object x="744" y="279" width="124" height="31"/>
-                      <object x="1457" y="279" width="93" height="31"/>
-                      <object x="806" y="217">
-                       <polygon points="0,0 -62,62 62,62"/>
-                      </object>
                     </objectgroup>
                   </map>
 
@@ -124,13 +121,32 @@ class MapTest extends TestCase {
     assertEquals(1280, mo.w); assertEquals(32, mo.h);
     assertEquals("", mo.name); assertEquals("", mo.typeStr)
     assertEquals(0, mo.properties.size)
+  }
 
-    mo = MapLoader.parseMapObject(solidsObjects(1)) // Second object of SOLIDS
+  def testParseMapObjectWithProperties {
+    val solidsObjects = (testMapXml \\ "objectgroup")(0) \ "object"
+    val mo = MapLoader.parseMapObject(solidsObjects(1)) // Second object of SOLIDS
 
     assertEquals(279, mo.x); assertEquals(217, mo.y);
     assertEquals(93, mo.w); assertEquals(31, mo.h);
     assertEquals("HOMEBASE", mo.name); assertEquals("GAME_OBJECT", mo.typeStr)
     assertEquals(2, mo.properties.size)
     assertEquals("50", mo.properties("start_offset_x")); assertEquals("15", mo.properties("start_offset_y"))
+  }
+
+  def testParseMapObjectWithPolygonPoints {
+    val solidsObjects = (testMapXml \\ "objectgroup")(0) \ "object"
+    val mo = MapLoader.parseMapObject(solidsObjects(2)) // Third object of SOLIDS
+    assertEquals(806, mo.x); assertEquals(217, mo.y);
+    assertEquals(3, mo.polygonPoints.size)
+    assertEquals(Point(0, 0), mo.polygonPoints(0)); assertEquals(Point(-62, 62), mo.polygonPoints(1));
+  }
+
+  def testParseMapObjectWithPolylinePoints {
+    val solidsObjects = (testMapXml \\ "objectgroup")(0) \ "object"
+    val mo = MapLoader.parseMapObject(solidsObjects(3)) // Fourth object of SOLIDS
+    assertEquals(96, mo.x); assertEquals(64, mo.y);
+    assertEquals(4, mo.polylinePoints.size)
+    assertEquals(Point(0, 0), mo.polylinePoints(0)); assertEquals(Point(0, 384), mo.polylinePoints(1));
   }
 }
