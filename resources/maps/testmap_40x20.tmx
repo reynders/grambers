@@ -8,7 +8,7 @@
  </tileset>
  <layer name="Layer 1" width="40" height="20">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAA+3WMQ7AIAxD0UAnYGrZeyrufxYciYqJEeFKHv4avclKMLNI2oUSaugly01l+E5bVsknn3z7fcHmXjH6/EYe9xh9N3pQJfXtSj755Pu/j/k//baVMd/7Dg3WZZmADAAA
+   H4sIAAAAAAAAA2NkYGBgGqSYGYg5gTgEiOUGGQa5iRvqvoF2Cy486r5R9426j/buY2RAlFeD0X0gM7ig5g2U+/zwyAkCsRAQCw/S8KMVHnXfqPtG3Tf03TeY26ewsnUwYlB5DwBOHEJzgAwAAA==
   </data>
  </layer>
  <objectgroup name="SOLIDS" width="40" height="20">

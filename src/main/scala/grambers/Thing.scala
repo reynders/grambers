@@ -71,7 +71,7 @@ class Wall(val start:Point, val end:Point) extends Thing(Point(end.x - start.x, 
   }
 }*/
 
-class CircleThing(var c : Point, val radius : Double) extends MovingThing(c) {
+class CircleMovingThing(var c : Point, val radius : Double) extends MovingThing(c) {
   
   var color = java.awt.Color.yellow
   val w = radius * 2
@@ -109,18 +109,69 @@ class CircleThing(var c : Point, val radius : Double) extends MovingThing(c) {
   }
 }
 
-object CircleThing {
-  def apply(x : Double, y : Double, radius : Double, color : Color) : CircleThing = {
-    val ct = new CircleThing(Point(x, y), radius)
+object CircleMovingThing {
+  def apply(x : Double, y : Double, radius : Double, color : Color) : CircleMovingThing = {
+    val ct = new CircleMovingThing(Point(x, y), radius)
     ct.color = color
     return ct
   }
 }
 
+class PolygonStaticThing(val c : Point, vertices : List[(Int, Int)]) extends StaticThing(c) {
+  {
+    val ps = new PolygonShape()
+    val v = vertices.map(v => new org.jbox2d.common.Vec2(v._1, v._2))
+    ps.set(v.toArray, v.size)    
+    
+    val fd = new FixtureDef();
+    fd.shape = ps;
+    fd.density = 1.0f;
+    fd.friction = 0.5f;
+    fd.restitution = 0.5f;
+
+    body.createFixture(fd)    
+  }
+
+  override def draw(g2 : Graphics2D, position : Point) = {}
+  
+  override def drawDebugShapes(g2 : Graphics2D, position : Point) = {}
+}
+
+object PolygonStaticThing {
+
+  def apply(c : Point, vertices : List[(Int, Int)]) : PolygonStaticThing = new PolygonStaticThing(c, vertices)
+
+  def apply(c : Point, vertices : Array[Point]) : PolygonStaticThing = 
+      new PolygonStaticThing(c, vertices.map { vertice => (vertice.x.toInt, vertice.y.toInt)}.toList)
+}
+
+class RectangleStaticThing(val c : Point, val w : Int, val h : Int) extends StaticThing(c) {
+  {
+    val ps = new PolygonShape()
+    ps.setAsBox(w.toFloat/2, h.toFloat/2) // SetAsBox takes half w / h    
+    
+    val fd = new FixtureDef();
+    fd.shape = ps;
+    fd.density = 1.0f;
+    fd.friction = 0.5f;
+    fd.restitution = 0.5f;
+
+    body.createFixture(fd)    
+  }
+
+  override def draw(g2 : Graphics2D, position : Point) = {}
+  
+  override def drawDebugShapes(g2 : Graphics2D, position : Point) = {}
+}
+
+/*
+      extends PolygonStaticThing(lup, Array((lup.x.toInt, lup.y.toInt), (lup.x.toInt + w, lup.y.toInt),
+                                            (lup.x.toInt + w, lup.y.toInt + h), (lup.x.toInt, lup.y.toInt + h)).toList)*/
+
 import java.awt.image._
 import java.io._
 
-class PolygonThing(var c : Point, density : Double, fileName : String, vertices : List[(Int, Int)]) extends MovingThing(c) {
+class PolygonMovingThing(var c : Point, density : Double, fileName : String, vertices : List[(Int, Int)]) extends MovingThing(c) {
   
   {
     val ps = new PolygonShape()
@@ -199,8 +250,6 @@ class PolygonThing(var c : Point, density : Double, fileName : String, vertices 
     return super.toString + ": w: " + w + ", h: " + h
   }
 }
-
-
 
 /*
 object RoundThing {

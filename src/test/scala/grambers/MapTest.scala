@@ -149,4 +149,14 @@ class MapTest extends TestCase {
     assertEquals(4, mo.polylinePoints.size)
     assertEquals(Point(0, 0), mo.polylinePoints(0)); assertEquals(Point(0, 384), mo.polylinePoints(1));
   }
+
+  def testMapObjectsToThings {
+    val solidsObjects = (testMapXml \\ "objectgroup")(0) \ "object"
+    val mapObjects = MapLoader.parseMapObjects(solidsObjects)
+    val things = MapLoader.mapObjectsToThings(mapObjects)
+    assertEquals(things.size, mapObjects.size)
+    assertTrue(things(0).isInstanceOf[RectangleStaticThing])
+    assertTrue(things(1).isInstanceOf[RectangleStaticThing])
+    assertTrue(things(2).isInstanceOf[PolygonStaticThing])
+  }
 }
