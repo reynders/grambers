@@ -1,5 +1,5 @@
 <gameobject name="ship_gf" type="moving">
   <gfx file="resources/gfx/ships.gif"
-       w="25" h="20" rows="1" columns="3" x_offset="0" y_offset="0"
+       w="25" h="20" rows="1" columns="3" x_offset="0" y_offset="0" animation_key="thrust" animation_fps="180"
        rotates="true" rotation_count="36"/>
 </gameobject>

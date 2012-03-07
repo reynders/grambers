@@ -5,15 +5,6 @@ import java.awt.image._
 import java.io._
 import scala.collection.mutable.ArrayBuffer
 
-class GameObject(val name : String) {
-}
-
-object GameObjectLoader {
-  def load(fileName : String) : GameObject = {
-    return new GameObject("dummy")
-  }
-}
-
 class Sprite(val name : String, val img : BufferedImage, val w : Int, val h : Int,
              val rows : Int, val columns : Int, val xOffset : Int, val yOffset : Int,
              val rotates : Boolean, val rotationCount : Int) {
@@ -21,6 +12,7 @@ class Sprite(val name : String, val img : BufferedImage, val w : Int, val h : In
   lazy val imgW : Int = img.getWidth
   lazy val imgH : Int = img.getHeight
   lazy val images : Array[BufferedImage] = splitImageToSprites(img, w, h, rows, columns, xOffset, yOffset)
+  lazy val rotatedImages : Array[Array[BufferedImage]] = createRotatedImages(images, rotationCount, rotates)
 
   def splitImageToSprites(img : BufferedImage, w : Int, h : Int, rows : Int, columns : Int,
                           xOffset : Int, yOffset : Int) : Array[BufferedImage] = {
@@ -31,6 +23,37 @@ class Sprite(val name : String, val img : BufferedImage, val w : Int, val h : In
       }
 
       return imgs.toArray[BufferedImage]
+  }
+
+  import java.awt.geom._
+  import java.lang.Math._
+
+  def createRotatedImages(images : Array[BufferedImage], rotationCount : Int, rotates: Boolean) : Array[Array[BufferedImage]] = {
+    val rotatedImages = new ArrayBuffer[Array[BufferedImage]]()
+
+    if (rotates)
+      images.foreach { image => rotatedImages += createRotatedImages(image, rotationCount)}
+
+    return rotatedImages.toArray
+  }
+
+  def createRotatedImages(img : BufferedImage, rotationCount : Int) : Array[BufferedImage] = {
+
+    val images = new ArrayBuffer[BufferedImage]()
+
+    for(i <- 0 until rotationCount) {
+      //val rotatedImage = image.getGraphics().asInstanceOf[Graphics2D].getDeviceConfiguration().createCompatibleImage(image.getWidth, image.getHeight, Transparency.TRANSLUCENT)
+      val diameter = Math.max(img.getWidth, img.getHeight)
+      val rotatedImage = new BufferedImage(diameter, diameter, Config.imageType)
+      val at = new AffineTransform()
+      at.rotate(toRadians(i*(360/rotationCount)), diameter/2, diameter/2)
+      at.translate(Math.abs(diameter-img.getWidth)/2, Math.abs(diameter-img.getHeight)/2)
+      val g2d = rotatedImage.createGraphics.asInstanceOf[Graphics2D]
+      g2d.drawImage(img, new AffineTransformOp(at, AffineTransformOp.TYPE_NEAREST_NEIGHBOR), 0, 0)
+      images += rotatedImage
+    }
+
+    return images.toArray
   }
 
   override def toString : String = "Sprite " + name + "; w: " + w + " h:" + h + " rows: " + rows + " columns: " + columns +
