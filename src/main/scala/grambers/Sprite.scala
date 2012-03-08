@@ -7,7 +7,8 @@ import scala.collection.mutable.ArrayBuffer
 
 class Sprite(val name : String, val img : BufferedImage, val w : Int, val h : Int,
              val rows : Int, val columns : Int, val xOffset : Int, val yOffset : Int,
-             val rotates : Boolean, val rotationCount : Int) {
+             val animationKey : String, val animationFps : Int,
+             val rotates : Boolean, val rotationCount : Int, val polygonPoints : Array[Point]) {
 
   lazy val imgW : Int = img.getWidth
   lazy val imgH : Int = img.getHeight
@@ -57,10 +58,12 @@ class Sprite(val name : String, val img : BufferedImage, val w : Int, val h : In
   }
 
   override def toString : String = "Sprite " + name + "; w: " + w + " h:" + h + " rows: " + rows + " columns: " + columns +
-                                   " xOffset:" + xOffset + " yOffset:" + yOffset
+                                    " animationKey: " + animationKey + " animationFps: " + animationFps
+                                   " xOffset:" + xOffset + " yOffset:" + yOffset +
+                                   " rotates: " + rotates + " rotationCount: " + rotationCount + " polygonPoints: " + polygonPoints
 }
 
-class DummySprite extends Sprite("dummy", new BufferedImage(1, 1, Config.imageType), 0, 0, 0, 0, 0, 0, false, 0) {}
+class DummySprite extends Sprite("dummy", new BufferedImage(1, 1, Config.imageType), 0, 0, 0, 0, 0, 0, "dummy", 0, false, 0, new Array[Point](0)) {}
 
 import scala.xml._
 
@@ -87,12 +90,17 @@ object SpriteLoader {
                                                  (xml \ "gfx" \ "@columns").text.toInt,
                                                  (xml \ "gfx" \ "@x_offset").text.toInt,
                                                  (xml \ "gfx" \ "@y_offset").text.toInt,
+                                                 (xml \ "gfx" \ "@animation_key").text,
+                                                 (xml \ "gfx" \ "@animation_fps").text.toInt,
                                                  (xml \ "gfx" \ "@rotates").text.equals("true"),
-                                                 (xml \ "gfx" \ "@rotation_count").text.toInt)
+                                                 (xml \ "gfx" \ "@rotation_count").text.toInt,
+                                                 Util.pointArrayStrToPointArray((xml \ "gfx" \ "@polygonPoints").text))
 
   def load(gfxFileName : String, w : Int, h : Int, rows : Int, columns : Int, xOffset : Int, yOffset : Int,
-           rotates : Boolean, rotationCount : Int) : Sprite = {
+           animationKey : String, animationFps : Int,
+           rotates : Boolean, rotationCount : Int, polygonPoints : Array[Point]) : Sprite = {
     val img : BufferedImage = javax.imageio.ImageIO.read(new File(gfxFileName)).asInstanceOf[BufferedImage]
-    return new Sprite(gfxFileName, img, w, h, rows, columns, xOffset, yOffset, rotates, rotationCount)
+    return new Sprite(gfxFileName, img, w, h, rows, columns, xOffset, yOffset,
+                      animationKey, animationFps, rotates, rotationCount, polygonPoints)
   }
 }
