@@ -37,14 +37,18 @@ class Observer (var w: Int, var h: Int, val universe : Universe, var thingInFocu
     import java.awt.event._
     object ObserverKeyListener extends KeyAdapter {
       override def keyPressed(e : KeyEvent) = {
-        val c = e.getKeyCode();
-        c match {
-          case KeyEvent.VK_LEFT => thingInControl.turn(-1)
-          case KeyEvent.VK_RIGHT => thingInControl.turn(1)
-          case KeyEvent.VK_DOWN => thingInControl.accelerate(-1)
-          case KeyEvent.VK_UP => thingInControl.accelerate(1)
-          case KeyEvent.VK_D => Config.debugOn = !Config.debugOn; println("Setting debug to " + Config.debugOn); 
-          case _ => println("Caught key event " + c)
+        thingInControl match {
+          case thing : MovingThing => {
+            val c = e.getKeyCode();
+            c match {
+              case KeyEvent.VK_LEFT => thing.turn(-1)
+              case KeyEvent.VK_RIGHT => thing.turn(1)
+              case KeyEvent.VK_DOWN => thing.accelerate(-1)
+              case KeyEvent.VK_UP => thing.accelerate(1)
+              case KeyEvent.VK_D => Config.debugOn = !Config.debugOn; println("Setting debug to " + Config.debugOn); 
+              case _ => println("Caught key event " + c)
+            }
+          }
         }
         
         e.consume();
@@ -73,7 +77,8 @@ class Observer (var w: Int, var h: Int, val universe : Universe, var thingInFocu
 
         val bgImage = universe.map.getBackgroundImage(position, w, h)
 
-        assert(bgImage.image.getWidth == w, "bgImage width " + bgImage.image.getWidth + " is not window width " + w);
+        if (bgImage.image.getWidth != w)
+          println("bgImage width " + bgImage.image.getWidth + " is not window width " + w)
         
         g2.drawImage(bgImage.image, 0, 0, null)
         universe.staticThings.foreach(thing => thing.draw(g2, thing.center + Point(xViewTranslation, yViewTranslation)))

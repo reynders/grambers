@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="51" height="25" tilewidth="31" tileheight="31">
+ <tileset firstgid="1" name="blocks1" tilewidth="32" tileheight="32" spacing="2" margin="2">
+  <image source="../../../../../project/grambers/tools/tiled_workdir/blocks1.gif" width="640" height="376"/>
+ </tileset>
+ <layer name="Tile Layer 1" width="51" height="25" opacity="0.85">
+  <data encoding="base64" compression="zlib">
+   eJztk8ENgDAMAzsGD5gGCTEKE8J65MkDSpw4bSSw5J+T5tpmK6VsH/Gdes/EYIhiQtWL5S1vVcQ9ofXaLJqJYEFq0BmRLOPvamu0/Tw8dxrEo3hS9NHIcseWt0SF1teynn1uwbKLj4vf8gjPLF7EayMWzaxoHrWFw1PbkyfiLrRi8rTsxeRhsjD3KQML6/8xzvZyWHmysjzNhfBk+GPIvDXW3izaXk+5CBamGLuUgcVzbiYWz9meff3d3idv0DWN
+  </data>
+ </layer>
+ <objectgroup name="SOLIDS" width="51" height="25">
+  <object x="0" y="0" width="124" height="775"/>
+  <object x="124" y="713" width="1457" height="62"/>
+  <object x="1426" y="310" width="155" height="403"/>
+  <object x="1550" y="186" width="31" height="124"/>
+  <object x="1519" y="155" width="31" height="62"/>
+  <object x="1488" y="124" width="31" height="62"/>
+  <object x="1457" y="93" width="31" height="62"/>
+  <object x="1426" y="62" width="31" height="62"/>
+  <object x="1395" y="62" width="31" height="31"/>
+  <object x="1581" y="0" height="62"/>
+  <object x="403" y="0" width="1178" height="62"/>
+  <object x="465" y="62" width="31" height="62"/>
+  <object x="496" y="62" width="124" height="558"/>
+  <object x="620" y="62" width="124" height="62"/>
+  <object x="620" y="124" width="31" height="31"/>
+  <object x="744" y="62" width="279" height="31"/>
+  <object x="899" y="93" width="31" height="248"/>
+  <object x="868" y="248" width="31" height="93"/>
+  <object x="837" y="93" width="62" height="31"/>
+  <object x="868" y="124" width="31" height="31"/>
+  <object x="930" y="93" width="31" height="93"/>
+  <object x="961" y="93" width="31" height="62"/>
+  <object x="1085" y="217" width="279" height="62"/>
+  <object x="1116" y="186" width="248" height="31"/>
+  <object x="1147" y="155" width="186" height="31"/>
+  <object x="1178" y="124" width="93" height="31"/>
+  <object x="1116" y="279" width="310" height="31"/>
+  <object x="1364" y="248" width="31" height="31"/>
+  <object x="1240" y="310" width="186" height="31"/>
+  <object x="1271" y="341" width="155" height="31"/>
+  <object x="1395" y="372" width="31" height="31"/>
+  <object x="1395" y="682" width="31" height="31"/>
+  <object x="1302" y="527" width="31" height="93"/>
+  <object x="1271" y="465" width="31" height="124"/>
+  <object x="1240" y="434" width="31" height="124"/>
+  <object x="1209" y="403" width="31" height="124"/>
+  <object x="1178" y="403" width="31" height="93"/>
+  <object x="1116" y="403" width="62" height="62"/>
+  <object x="930" y="248" width="31" height="124"/>
+  <object x="961" y="279" width="31" height="124"/>
+  <object x="992" y="310" width="31" height="124"/>
+  <object x="1023" y="341" width="31" height="93"/>
+  <object x="1054" y="372" width="31" height="62"/>
+  <object x="1085" y="403" width="31" height="31"/>
+  <object x="1023" y="527" width="62" height="186"/>
+  <object x="1085" y="558" width="31" height="155"/>
+  <object x="1116" y="589" width="31" height="124"/>
+  <object x="1147" y="651" width="31" height="62"/>
+  <object x="1178" y="682" width="31" height="31"/>
+  <object x="465" y="341" width="31" height="279"/>
+  <object x="434" y="372" width="31" height="248"/>
+  <object x="403" y="403" width="31" height="217"/>
+  <object x="372" y="496" width="31" height="62"/>
+  <object x="620" y="434" width="248" height="155"/>
+  <object x="620" y="589" width="217" height="31"/>
+  <object x="868" y="465" width="31" height="93"/>
+  <object x="899" y="496" width="31" height="31"/>
+  <object x="620" y="403" width="217" height="31"/>
+  <object x="620" y="372" width="62" height="31"/>
+  <object x="620" y="341" width="31" height="31"/>
+  <object x="124" y="0" width="279" height="31"/>
+  <object x="124" y="31" width="62" height="93"/>
+  <object x="186" y="31" width="62" height="31"/>
+  <object x="124" y="124" width="31" height="62"/>
+  <object x="124" y="403" width="124" height="310"/>
+  <object x="248" y="496" width="31" height="62"/>
+  <object x="124" y="341" width="62" height="62"/>
+  <object x="186" y="372" width="31" height="31"/>
+  <object x="992" y="589" width="31" height="124"/>
+  <object x="961" y="651" width="31" height="62"/>
+  <object x="930" y="682" width="31" height="31"/>
+  <object name="HOMEBASE" type="GAME_OBJECT" x="279" y="217" width="93" height="31">
+   <properties>
+    <property name="start_offset_x" value="50"/>
+    <property name="start_offset_y" value="15"/>
+   </properties>
+  </object>
+  <object x="744" y="279" width="124" height="31"/>
+  <object x="1457" y="279" width="93" height="31"/>
+  <object x="806" y="217">
+   <polygon points="0,0 -62,62 62,62"/>
+  </object>
+ </objectgroup>
+</map>
