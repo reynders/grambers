@@ -24,7 +24,11 @@ class Sprite(val name : String, val img : BufferedImage, val w : Int, val h : In
   }
 
   def getCurrentImageIndex(direction : Int, animate : Boolean, now : Long) : (Int, Int)= {
-    val directionFrameIndex = direction % 360 / (360 / rotationCount)
+    val directionFrameIndex = if (direction >= 0) 
+                                direction % 360 / (360 / rotationCount)
+                              else
+                                (360 + (direction % 360)) / (360 / rotationCount)
+                                
     var animationFrameIndex = 0
 
     if (animate) {

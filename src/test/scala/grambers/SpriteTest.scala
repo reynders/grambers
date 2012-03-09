@@ -66,7 +66,8 @@ class SpriteTest extends TestCase {
     assertEquals((0, 0), sprite.getCurrentImageIndex(360, false, now))
     assertEquals((0, 0), sprite.getCurrentImageIndex(720, false, now))
     assertEquals((0, sprite.rotationCount / 2), sprite.getCurrentImageIndex(180, false, now))
-    assertEquals((0, sprite.rotationCount - 1), sprite.getCurrentImageIndex(359, false, now))
+    assertEquals((0, sprite.rotationCount / 2), sprite.getCurrentImageIndex(-180, false, now))
+    assertEquals((0, 0), sprite.getCurrentImageIndex(-359, false, now))
   }
 
   def testCurrentAnimationIndex {
