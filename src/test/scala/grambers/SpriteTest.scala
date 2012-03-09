@@ -40,4 +40,40 @@ class SpriteTest extends TestCase {
     assertEquals(Point(-1,1), sprite.polygonPoints(1))
     assertEquals(Point(2,2), sprite.polygonPoints(2))
   }
+
+  def testGetCurrentImageIndex() {
+    val sprite = SpriteLoader.parseSprite(spriteXml)
+    var now = Config.currentTimeMillis
+    // Animation index tests
+    assertEquals((0, 0), sprite.getCurrentImageIndex(0, false, now))
+    now += sprite.animationDtBetweenFramesInMs
+    assertEquals((0, 0), sprite.getCurrentImageIndex(0, false, now))
+
+    // When animation just starts it should always return first fram
+    now += sprite.animationDtBetweenFramesInMs
+    assertEquals((0, 0), sprite.getCurrentImageIndex(0, true, now))
+
+    now += sprite.animationDtBetweenFramesInMs
+    assertEquals((1, 0), sprite.getCurrentImageIndex(0, true, now))
+
+    now += sprite.animationDtBetweenFramesInMs
+    assertEquals((2, 0), sprite.getCurrentImageIndex(0, true, now))
+
+    // When animation stops it should return 0 frame always
+    assertEquals((0, 0), sprite.getCurrentImageIndex(0, false, now))
+
+    // Rotation index tests
+    assertEquals((0, 0), sprite.getCurrentImageIndex(360, false, now))
+    assertEquals((0, 0), sprite.getCurrentImageIndex(720, false, now))
+    assertEquals((0, sprite.rotationCount / 2), sprite.getCurrentImageIndex(180, false, now))
+    assertEquals((0, sprite.rotationCount - 1), sprite.getCurrentImageIndex(359, false, now))
+  }
+
+  def testCurrentAnimationIndex {
+    val sprite = SpriteLoader.parseSprite(spriteXml)
+    assertEquals(0, sprite.currentAnimationFrameIndex(0))
+    assertEquals(1, sprite.currentAnimationFrameIndex(sprite.animationDtBetweenFramesInMs))
+    assertEquals(2, sprite.currentAnimationFrameIndex(sprite.animationDtBetweenFramesInMs*2))
+    assertEquals(0, sprite.currentAnimationFrameIndex(sprite.animationDtBetweenFramesInMs*3))
+  }
 }

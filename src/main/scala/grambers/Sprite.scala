@@ -12,49 +12,43 @@ class Sprite(val name : String, val img : BufferedImage, val w : Int, val h : In
 
   lazy val imgW : Int = img.getWidth
   lazy val imgH : Int = img.getHeight
-  lazy val images : Array[BufferedImage] = splitImageToSprites(img, w, h, rows, columns, xOffset, yOffset)
-  lazy val rotatedImages : Array[Array[BufferedImage]] = createRotatedImages(images, rotationCount, rotates)
+  lazy val images : Array[BufferedImage] = SpriteLoader.splitImageToSprites(img, w, h, rows, columns, xOffset, yOffset)
+  lazy val rotatedImages : Array[Array[BufferedImage]] = SpriteLoader.createRotatedImages(images, rotationCount, rotates)
 
-  def splitImageToSprites(img : BufferedImage, w : Int, h : Int, rows : Int, columns : Int,
-                          xOffset : Int, yOffset : Int) : Array[BufferedImage] = {
-    val imgs = new ArrayBuffer[BufferedImage]()
-    for (y <- 0 to (rows-1))
-      for (x <- 0 to (columns-1)) {
-        imgs += img.getSubimage(x*w + (x*xOffset), y*h + (y*yOffset), w, h)
-      }
+  var isAnimating = false
+  var lastGetCurrentImageTimestamp : Long = 0
 
-      return imgs.toArray[BufferedImage]
+  def getCurrentImage(direction : Int, animate : Boolean, now : Long) : BufferedImage = {
+    val index = getCurrentImageIndex(direction, animate, now)
+    rotatedImages(index._1)(index._2)
   }
 
-  import java.awt.geom._
-  import java.lang.Math._
+  def getCurrentImageIndex(direction : Int, animate : Boolean, now : Long) : (Int, Int)= {
+    val directionFrameIndex = direction % 360 / (360 / rotationCount)
+    var animationFrameIndex = 0
 
-  def createRotatedImages(images : Array[BufferedImage], rotationCount : Int, rotates: Boolean) : Array[Array[BufferedImage]] = {
-    val rotatedImages = new ArrayBuffer[Array[BufferedImage]]()
+    if (animate) {
+      if (isAnimating)
+        animationFrameIndex = currentAnimationFrameIndex(now - lastGetCurrentImageTimestamp)
+      else 
+        isAnimating = true   
+    
+      lastGetCurrentImageTimestamp = now
+    } else
+      isAnimating = false
 
-    if (rotates)
-      images.foreach { image => rotatedImages += createRotatedImages(image, rotationCount)}
-
-    return rotatedImages.toArray
+    return (animationFrameIndex, directionFrameIndex)
   }
 
-  def createRotatedImages(img : BufferedImage, rotationCount : Int) : Array[BufferedImage] = {
+  lazy val animationDtBetweenFramesInMs = 1000 / animationFps
+  var activeAnimationFrameIndex : Int = 0
 
-    val images = new ArrayBuffer[BufferedImage]()
-
-    for(i <- 0 until rotationCount) {
-      //val rotatedImage = image.getGraphics().asInstanceOf[Graphics2D].getDeviceConfiguration().createCompatibleImage(image.getWidth, image.getHeight, Transparency.TRANSLUCENT)
-      val diameter = Math.max(img.getWidth, img.getHeight)
-      val rotatedImage = new BufferedImage(diameter, diameter, Config.imageType)
-      val at = new AffineTransform()
-      at.rotate(toRadians(i*(360/rotationCount)), diameter/2, diameter/2)
-      at.translate(Math.abs(diameter-img.getWidth)/2, Math.abs(diameter-img.getHeight)/2)
-      val g2d = rotatedImage.createGraphics.asInstanceOf[Graphics2D]
-      g2d.drawImage(img, new AffineTransformOp(at, AffineTransformOp.TYPE_NEAREST_NEIGHBOR), 0, 0)
-      images += rotatedImage
+  def currentAnimationFrameIndex(dt : Long) : Int = {
+    if (dt >= animationDtBetweenFramesInMs) {
+      activeAnimationFrameIndex = (activeAnimationFrameIndex + 1) % images.size  
     }
 
-    return images.toArray
+    return activeAnimationFrameIndex
   }
 
   override def toString : String = "Sprite " + name + "; w: " + w + " h:" + h + " rows: " + rows + " columns: " + columns +
@@ -103,4 +97,46 @@ object SpriteLoader {
     return new Sprite(gfxFileName, img, w, h, rows, columns, xOffset, yOffset,
                       animationKey, animationFps, rotates, rotationCount, polygonPoints)
   }
+
+  def splitImageToSprites(img : BufferedImage, w : Int, h : Int, rows : Int, columns : Int,
+                          xOffset : Int, yOffset : Int) : Array[BufferedImage] = {
+    val imgs = new ArrayBuffer[BufferedImage]()
+    for (y <- 0 to (rows-1))
+      for (x <- 0 to (columns-1)) {
+        imgs += img.getSubimage(x*w + (x*xOffset), y*h + (y*yOffset), w, h)
+      }
+
+      return imgs.toArray[BufferedImage]
+  }
+  import java.awt.geom._
+  import java.lang.Math._
+
+  def createRotatedImages(images : Array[BufferedImage], rotationCount : Int, rotates: Boolean) : Array[Array[BufferedImage]] = {
+    val rotatedImages = new ArrayBuffer[Array[BufferedImage]]()
+
+    if (rotates)
+      images.foreach { image => rotatedImages += createRotatedImages(image, rotationCount)}
+
+    return rotatedImages.toArray
+  }
+
+  def createRotatedImages(img : BufferedImage, rotationCount : Int) : Array[BufferedImage] = {
+
+    val images = new ArrayBuffer[BufferedImage]()
+
+    for(i <- 0 until rotationCount) {
+      //val rotatedImage = image.getGraphics().asInstanceOf[Graphics2D].getDeviceConfiguration().createCompatibleImage(image.getWidth, image.getHeight, Transparency.TRANSLUCENT)
+      val diameter = Math.max(img.getWidth, img.getHeight)
+      val rotatedImage = new BufferedImage(diameter, diameter, Config.imageType)
+      val at = new AffineTransform()
+      at.rotate(toRadians(i*(360/rotationCount)), diameter/2, diameter/2)
+      at.translate(Math.abs(diameter-img.getWidth)/2, Math.abs(diameter-img.getHeight)/2)
+      val g2d = rotatedImage.createGraphics.asInstanceOf[Graphics2D]
+      g2d.drawImage(img, new AffineTransformOp(at, AffineTransformOp.TYPE_NEAREST_NEIGHBOR), 0, 0)
+      images += rotatedImage
+    }
+
+    return images.toArray
+  }
+
 }
