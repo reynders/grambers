@@ -14,12 +14,10 @@ object Demo {
     val TESTMAP = "resources/maps/testmap_40x20.tmx"
     val STARMAP = "resources/maps/starsky_100x100.tmx"
     val GAMEMAP = "resources/maps/map_1.tmx"
+    val SHIPSPRITE = "resources/gameobjects/ship_gf.xml"
 
-    def createShip(position : Point) : PolygonMovingThing = {
-      new PolygonMovingThing(position, 10, "resources/gfx/ship.gif",
-              List[(Int, Int)]((31, 10), (117, 56), (31, 102), (0, 66), (0, 43)))
-               //List[(Int, Int)]((0, 28), (22, 0), (36, 0), (74,25), (98, 25), (98, 33), (113, 43), (97, 54), (97, 60), (75, 60), (34, 85), (22, 85), (0, 54)))
-    }
+    def createShip(position : Point) : PolygonMovingThing = 
+      new PolygonMovingThing(position, 10, SpriteLoader.load(SHIPSPRITE))
 
     def addBall(universe : Universe, ball : CircleMovingThing, doYourThing : (Thing)=>Unit) {
       ball.doYourThing = doYourThing
@@ -48,13 +46,13 @@ object Demo {
 
     def shipDemo {
       org.jbox2d.common.Settings.maxPolygonVertices = 13
-      val universe = new Universe(STARMAP, true)
+      val universe = new Universe(TESTMAP, true)
       val ship1 = createShip(Point(100, 50))
       ship1.setSpeedAndDirection(new Vector(5, 10), 90)
       universe.addThing(ship1)
-      val ship2 = createShip(Point(250, 80))
-      ship2.setSpeedAndDirection(new Vector(-5, 10), 90)
-      universe.addThing(ship2)
+      //val ship2 = createShip(Point(250, 80))
+      //ship2.setSpeedAndDirection(new Vector(-5, 10), 90)
+      //universe.addThing(ship2)
 
       val observer = new Observer(WINDOW_W, WINDOW_H, universe, ship1)
       Config.debugDrawShapes = true

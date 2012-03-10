@@ -132,9 +132,29 @@ class PolygonStaticThing(val c : Point, vertices : List[(Int, Int)]) extends Sta
     body.createFixture(fd)    
   }
 
-  override def draw(g2 : Graphics2D, position : Point) = {}
+  override def draw(g2 : Graphics2D, position : Point) = {
+    if (Config.debugDrawShapes)
+      drawDebugShapes(g2, position)
+  }
   
-  override def drawDebugShapes(g2 : Graphics2D, position : Point) = {}
+  override def drawDebugShapes(g2 : Graphics2D, position : Point) {
+
+    val polygonShape = body.getFixtureList.getShape.asInstanceOf[org.jbox2d.collision.shapes.PolygonShape]
+    val poly = new java.awt.Polygon()
+
+    for (i <- 0 until polygonShape.getVertexCount) {
+      // TODO: The jbox2d polygonshape points are relative to "centroid"
+      poly.addPoint(polygonShape.getVertex(i).x.toInt, polygonShape.getVertex(i).y.toInt)
+    }
+
+    poly.translate(position.x.toInt, position.y.toInt)
+
+    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
+    val originalPaintColor = g2.getPaint()
+    g2.setPaint(Config.debugDrawShapesColor)
+    g2.draw(poly)
+    g2.setPaint(originalPaintColor)
+  }
 }
 
 object PolygonStaticThing {
@@ -171,11 +191,11 @@ class RectangleStaticThing(val c : Point, val w : Int, val h : Int) extends Stat
 import java.awt.image._
 import java.io._
 
-class PolygonMovingThing(var c : Point, density : Double, fileName : String, vertices : List[(Int, Int)]) extends MovingThing(c) {
-  
+class PolygonMovingThing(var c : Point, val density : Double, val sprite : Sprite) extends MovingThing(c) {
+
   {
     val ps = new PolygonShape()
-    val v = vertices.map(v => new org.jbox2d.common.Vec2(v._1, v._2))
+    val v = sprite.polygonPoints.map(v => new org.jbox2d.common.Vec2(v.x.toInt, v.y.toInt))
     ps.set(v.toArray, v.size)    
     
     val fd = new FixtureDef();
@@ -186,68 +206,37 @@ class PolygonMovingThing(var c : Point, density : Double, fileName : String, ver
 
     body.createFixture(fd)    
   }
-  
-  // Image should be square in size for the rotation to work correctly
-  // from jbox2d's side
-  val img : BufferedImage = javax.imageio.ImageIO.read(new File(fileName)).asInstanceOf[BufferedImage]
-  val rotatedImage = createRotatedImages(img)
-  lazy val w : Int = img.getWidth
-  lazy val h : Int = img.getHeight
-  
-  import scala.collection.mutable._
-  def createRotatedImages(image : BufferedImage) : Buffer[Image] = {
-    val images = new ArrayBuffer[Image]()
-    
-    for(i <- 0 until Config.ROTATED_IMAGE_COUNT) {
-      //val rotatedImage = image.getGraphics().asInstanceOf[Graphics2D].getDeviceConfiguration().createCompatibleImage(image.getWidth, image.getHeight, Transparency.TRANSLUCENT)      
-      val diameter = Math.max(image.getWidth, image.getHeight)
-      val rotatedImage = new BufferedImage(diameter, diameter, Config.imageType)   
-      val at = new AffineTransform()
-      at.rotate(toRadians(i*(360/Config.ROTATED_IMAGE_COUNT)), diameter/2, diameter/2)
-      at.translate(Math.abs(diameter-image.getWidth)/2, Math.abs(diameter-image.getHeight)/2)
-      val g2d = rotatedImage.createGraphics.asInstanceOf[Graphics2D]      
-      g2d.drawImage(image, new AffineTransformOp(at, AffineTransformOp.TYPE_NEAREST_NEIGHBOR), 0, 0)
-      images += rotatedImage
-    }
-    
-    return images
-  }
-    
-  def getRotatedImageNumberBasedOnDirection : Int = direction.toInt / (360 / Config.ROTATED_IMAGE_COUNT)
-  
+
   override def draw(g2: Graphics2D, position : Point) {
-    val image = rotatedImage(0)//(getRotatedImageNumberBasedOnDirection) 
-    
-    if (Config.debugDrawShapes) {
-      val ig = image.getGraphics.asInstanceOf[Graphics2D]
-      val originalPaintColor = ig.getPaint()
-      ig.setPaint(Config.debugDrawShapesColor)
-      
-      var previousVertice = vertices.last
-      
-      vertices.foreach { v => 
-        ig.drawLine(previousVertice._1, previousVertice._2, v._1, v._2)
-        previousVertice = v
-      }
-      
-      //DEBUG
-      ig.setPaint(java.awt.Color.GREEN)
-      ig.drawLine(0, 0, image.getWidth(null)-1, 0)
-      ig.drawLine(image.getWidth(null)-1, 0, image.getWidth(null)-1, image.getHeight(null)-1)
-      ig.drawLine(0, 0, 0, image.getHeight(null)-1)
-      ig.drawLine(0, image.getHeight(null)-1, image.getWidth(null)-1, image.getHeight(null)-1)
-      //DEBUG
-      ig.setPaint(originalPaintColor)    
+    if (Config.debugDrawShapes)
+      drawDebugShapes(g2, position)
+
+    val img = sprite.getCurrentImage(direction.toInt, false, Config.currentTimeMillis)
+
+    g2.drawImage(img, (center.x - img.getWidth/2).toInt, (center.y-img.getHeight/2).toInt, null)    
+  }
+  
+  override def drawDebugShapes(g2 : Graphics2D, position : Point) {
+
+    val polygonShape = body.getFixtureList.getShape.asInstanceOf[org.jbox2d.collision.shapes.PolygonShape]
+    val poly = new java.awt.Polygon()
+
+    for (i <- 0 until polygonShape.getVertexCount) {
+      // TODO: The jbox2d polygonshape points are relative to "centroid"
+      poly.addPoint(polygonShape.getVertex(i).x.toInt, polygonShape.getVertex(i).y.toInt)
     }
 
-    g2.drawImage(image, (position.x - w/2).toInt, (position.y-h/2).toInt, null)    
-  }
+    poly.translate(position.x.toInt, position.y.toInt)
 
-  def drawDebugShapes(g2 : Graphics2D, position : Point) {
+    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
+    val originalPaintColor = g2.getPaint()
+    g2.setPaint(Config.debugDrawShapesColor)
+    g2.draw(poly)
+    g2.setPaint(originalPaintColor)
   }
   
   override def toString : String = {
-    return super.toString + ": w: " + w + ", h: " + h
+    return "PolygonMovingThing: " + super.toString
   }
 }
 
