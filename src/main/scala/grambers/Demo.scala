@@ -17,7 +17,7 @@ object Demo {
     val SHIPSPRITE = "resources/gameobjects/ship_gf.xml"
 
     def createShip(position : Point) : PolygonMovingThing = 
-      new PolygonMovingThing(position, 10, SpriteLoader.load(SHIPSPRITE))
+      new PolygonMovingThing(position, SpriteLoader.load(SHIPSPRITE))
 
     def addBall(universe : Universe, ball : CircleMovingThing, doYourThing : (Thing)=>Unit) {
       ball.doYourThing = doYourThing
@@ -47,8 +47,8 @@ object Demo {
     def shipDemo {
       org.jbox2d.common.Settings.maxPolygonVertices = 13
       val universe = new Universe(TESTMAP, true)
-      val ship1 = createShip(Point(100, 50))
-      ship1.setSpeedAndDirection(new Vector(5, 10), 90)
+      val ship1 = createShip(Point(320, 320))
+      // ship1.setSpeedAndDirection(new Vector(5, 10), 90)
       universe.addThing(ship1)
       //val ship2 = createShip(Point(250, 80))
       //ship2.setSpeedAndDirection(new Vector(-5, 10), 90)

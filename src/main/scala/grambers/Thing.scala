@@ -44,16 +44,19 @@ abstract class MovingThing(location : Point) extends Thing {
   
   var direction = toDegrees(body.getAngle)
 
+  // TODO
   def turn(degrees : Double) {
     direction += degrees
     direction %= 360
     if (direction < 0 ) direction = 360 + direction
   }
 
+  // TODO
   def accelerate(amount : Double) {
     speed += amount
   }
   
+  // TODO: does not do what it says it does
   def setSpeedAndDirection(direction : Vector, speed : Double) {
     body.setLinearVelocity(new Vec2(direction.i.toFloat, direction.j.toFloat))
   }
@@ -191,7 +194,7 @@ class RectangleStaticThing(val c : Point, val w : Int, val h : Int) extends Stat
 import java.awt.image._
 import java.io._
 
-class PolygonMovingThing(var c : Point, val density : Double, val sprite : Sprite) extends MovingThing(c) {
+class PolygonMovingThing(var c : Point, val sprite : Sprite) extends MovingThing(c) {
 
   {
     val ps = new PolygonShape()
@@ -200,7 +203,7 @@ class PolygonMovingThing(var c : Point, val density : Double, val sprite : Sprit
     
     val fd = new FixtureDef();
     fd.shape = ps;
-    fd.density = density.toFloat;
+    fd.density = 1.0f;
     fd.friction = 0.5f;
     fd.restitution = 0.5f;
 
@@ -213,7 +216,7 @@ class PolygonMovingThing(var c : Point, val density : Double, val sprite : Sprit
 
     val img = sprite.getCurrentImage(direction.toInt, false, Config.currentTimeMillis)
 
-    g2.drawImage(img, (center.x - img.getWidth/2).toInt, (center.y-img.getHeight/2).toInt, null)    
+    g2.drawImage(img, (position.x - img.getWidth/2).toInt, (position.y-img.getHeight/2).toInt, null)    
   }
   
   override def drawDebugShapes(g2 : Graphics2D, position : Point) {
