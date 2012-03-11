@@ -44,16 +44,9 @@ abstract class MovingThing(location : Point) extends Thing {
   
   def direction = toDegrees(body.getAngle)
 
-  /* TODO
-  def turn(degrees : Double) {
-    direction += degrees
-    direction %= 360
-    if (direction < 0 ) direction = 360 + direction
-  } */
-
-  def turn(force : Double) = {
-    println("Applying force " + force + " angle: " + body.getAngle + " as direction " + direction)
-    body.setAngularVelocity(force.toFloat)
+  def turn(force : Float) = {
+    // TODO: wrong way to do this, should use applyForce etc
+    body.setTransform(body.getPosition, body.getAngle + force)
   }
 
   // TODO
@@ -121,9 +114,9 @@ class PolygonStaticThing(val c : Point, vertices : List[(Int, Int)]) extends Sta
     
     val fd = new FixtureDef();
     fd.shape = ps;
-    fd.density = 1.0f;
+    fd.density = 0.0f;
     fd.friction = 0.5f;
-    fd.restitution = 0.5f;
+    //fd.restitution = 0.5f;
 
     body.createFixture(fd)    
   }
