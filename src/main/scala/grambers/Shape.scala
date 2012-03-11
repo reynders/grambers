@@ -1,6 +1,7 @@
 package grambers
 
 import scala.collection.mutable._
+import org.jbox2d.common._
 
 abstract class Shape(val center : Point) {
 
@@ -71,6 +72,7 @@ object Point {
   def apply(x : Double, y : Double) : Point = new Point(x, y)
   def apply(x : String, y : String) : Point = new Point(x.toDouble, y.toDouble)
   def apply(x : Int, y : Int) : Point = new Point(x.toDouble, y.toDouble)
+  def apply(point : Vec2) : Point = new Point(point.x.toDouble, point.y.toDouble)
 }
 
 class Line(val startX : Double, val startY : Double, val endX : Double, val endY : Double) extends Shape(startX, startY) {

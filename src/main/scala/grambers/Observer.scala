@@ -75,6 +75,9 @@ class Observer (var w: Int, var h: Int, val universe : Universe, var thingInFocu
       
       def drawUniverse(g2 : Graphics2D) {
 
+        if (Config.limitFps)
+          Thread.sleep((1/Config.fpsLimit) * 1000)
+
         val bgImage = universe.map.getBackgroundImage(position, w, h)
 
         if (bgImage.image.getWidth != w)

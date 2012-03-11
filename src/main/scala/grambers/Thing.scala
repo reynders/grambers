@@ -21,7 +21,7 @@ abstract class Thing() {
   def draw(g2 : Graphics2D, position : Point)
   
   def drawDebugShapes(g2 : Graphics2D, position : Point)
-        
+
   override def toString : String = "(" + center.x + "," + center.y + ")"
 }
 
@@ -42,13 +42,18 @@ abstract class MovingThing(location : Point) extends Thing {
                              
   override def center : Point = Point(body.getPosition.x, body.getPosition.y)
   
-  var direction = toDegrees(body.getAngle)
+  def direction = toDegrees(body.getAngle)
 
-  // TODO
+  /* TODO
   def turn(degrees : Double) {
     direction += degrees
     direction %= 360
     if (direction < 0 ) direction = 360 + direction
+  } */
+
+  def turn(force : Double) = {
+    println("Applying force " + force + " angle: " + body.getAngle + " as direction " + direction)
+    body.setAngularVelocity(force.toFloat)
   }
 
   // TODO
@@ -129,22 +134,6 @@ class PolygonStaticThing(val c : Point, vertices : List[(Int, Int)]) extends Sta
   }
   
   override def drawDebugShapes(g2 : Graphics2D, position : Point) {
-
-    val polygonShape = body.getFixtureList.getShape.asInstanceOf[org.jbox2d.collision.shapes.PolygonShape]
-    val poly = new java.awt.Polygon()
-
-    for (i <- 0 until polygonShape.getVertexCount) {
-      // TODO: The jbox2d polygonshape points are relative to "centroid"
-      poly.addPoint(polygonShape.getVertex(i).x.toInt, polygonShape.getVertex(i).y.toInt)
-    }
-
-    poly.translate(position.x.toInt, position.y.toInt)
-
-    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
-    val originalPaintColor = g2.getPaint()
-    g2.setPaint(Config.debugDrawShapesColor)
-    g2.draw(poly)
-    g2.setPaint(originalPaintColor)
   }
 }
 
@@ -210,10 +199,13 @@ class PolygonMovingThing(var c : Point, val sprite : Sprite) extends MovingThing
 
     for (i <- 0 until polygonShape.getVertexCount) {
       // TODO: The jbox2d polygonshape points are relative to "centroid"
-      poly.addPoint(polygonShape.getVertex(i).x.toInt, polygonShape.getVertex(i).y.toInt)
+      //poly.addPoint(polygonShape.getVertex(i).x.toInt, polygonShape.getVertex(i).y.toInt)
+      val wp = Point(body.getWorldPoint(polygonShape.getVertex(i)))
+      //println("body position: " + body.getPosition + " lv: " + polygonShape.getVertex(i) + " wv: " + wp)
+      poly.addPoint(wp.x.toInt, wp.y.toInt)
     }
 
-    poly.translate(position.x.toInt, position.y.toInt)
+    poly.translate(position.x.toInt - center.x.toInt, position.y.toInt - center.y.toInt)
 
     g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
     val originalPaintColor = g2.getPaint()

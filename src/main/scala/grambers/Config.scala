@@ -10,7 +10,9 @@ object Config {
   // Gfx settings
   val imageType = java.awt.image.BufferedImage.TYPE_INT_ARGB 
   val ROTATED_IMAGE_COUNT = 36
-  
+  val limitFps = false
+  val fpsLimit = 1
+
   // Measurements
   var fps = 0
   var worldUpdates = 0
