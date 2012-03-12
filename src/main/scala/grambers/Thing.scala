@@ -174,7 +174,6 @@ class PolygonMovingThing(var c : Point, val sprite : Sprite) extends MovingThing
     fd.restitution = 0.5f;
 
     body.createFixture(fd)
-    body.setBullet(true)
   }
 
   override def draw(g2: Graphics2D, position : Point) {
