@@ -24,19 +24,19 @@ class Sprite(val name : String, val img : BufferedImage, val w : Int, val h : In
   }
 
   def getCurrentImageIndex(direction : Int, animate : Boolean, now : Long) : (Int, Int)= {
-    val directionFrameIndex = if (direction >= 0) 
+    val directionFrameIndex = if (direction >= 0)
                                 direction % 360 / (360 / rotationCount)
                               else
-                                (360 + (direction % 360)) / (360 / rotationCount)
-                                
+                                ((360 + (direction % 360)) % 360) / (360 / rotationCount)
+
     var animationFrameIndex = 0
 
     if (animate) {
       if (isAnimating)
         animationFrameIndex = currentAnimationFrameIndex(now - lastGetCurrentImageTimestamp)
-      else 
-        isAnimating = true   
-    
+      else
+        isAnimating = true
+
       lastGetCurrentImageTimestamp = now
     } else
       isAnimating = false
@@ -49,7 +49,7 @@ class Sprite(val name : String, val img : BufferedImage, val w : Int, val h : In
 
   def currentAnimationFrameIndex(dt : Long) : Int = {
     if (dt >= animationDtBetweenFramesInMs) {
-      activeAnimationFrameIndex = (activeAnimationFrameIndex + 1) % images.size  
+      activeAnimationFrameIndex = (activeAnimationFrameIndex + 1) % images.size
     }
 
     return activeAnimationFrameIndex
@@ -69,7 +69,6 @@ object SpriteLoader {
 
   def load(spriteFileName : String) : Sprite = {
     try {
-
       val sprite = parseSprite(XML.loadFile(spriteFileName))
       println("Loaded " + sprite)
       return sprite

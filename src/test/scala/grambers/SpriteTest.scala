@@ -10,7 +10,7 @@ class SpriteTest extends TestCase {
                               rows="1" columns="3" x_offset="0" y_offset="0"
                               animation_key="thrust" animation_fps="180"
                               rotates="true" rotation_count="10"
-                              polygonPoints="0,0 -1,1 2,2"/>
+                              polygonPoints="2,2, -1,1 0,0"/>
                       </gameobject>
 
   def testSpriteLoader {
@@ -36,9 +36,9 @@ class SpriteTest extends TestCase {
     assertTrue(sprite.rotates)
     assertEquals(10, sprite.rotationCount)
     assertEquals(3, sprite.polygonPoints.size)
-    assertEquals(Point(0,0), sprite.polygonPoints(0))
+    assertEquals(Point(2,2), sprite.polygonPoints(0))
     assertEquals(Point(-1,1), sprite.polygonPoints(1))
-    assertEquals(Point(2,2), sprite.polygonPoints(2))
+    assertEquals(Point(0,0), sprite.polygonPoints(2))
   }
 
   def testGetCurrentImageIndex() {
@@ -68,6 +68,8 @@ class SpriteTest extends TestCase {
     assertEquals((0, sprite.rotationCount / 2), sprite.getCurrentImageIndex(180, false, now))
     assertEquals((0, sprite.rotationCount / 2), sprite.getCurrentImageIndex(-180, false, now))
     assertEquals((0, 0), sprite.getCurrentImageIndex(-359, false, now))
+    assertEquals((0, 0), sprite.getCurrentImageIndex(-360, false, now))
+    assertEquals((0, 9), sprite.getCurrentImageIndex(-1, false, now))
   }
 
   def testCurrentAnimationIndex {

@@ -366,6 +366,7 @@ object MapLoader {
       PolygonStaticThing(Point(mapObject.x, mapObject.y), mapObject.polylinePoints.reverse)
     else {
       // jbox2d takes center point, tiled gives lup so conversion is needed
+      println("Creating RectangleStaticThing from " + mapObject)
       new RectangleStaticThing(Point(mapObject.x + (mapObject.w/2), mapObject.y + mapObject.h/2), mapObject.w, mapObject.h)
     }
   }

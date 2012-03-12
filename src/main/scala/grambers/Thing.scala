@@ -13,13 +13,13 @@ import scala.collection.immutable.List
 
 abstract class Thing() {
   def center : Point = Point(0, 0)
-  val body : Body                    
+  val body : Body
   var speed : Double = 0.0
   var mass = 0.0
   var doYourThing : ((Thing) => Unit) = (thing) => {}
- 
+
   def draw(g2 : Graphics2D, position : Point)
-  
+
   def drawDebugShapes(g2 : Graphics2D, position : Point)
 
   override def toString : String = "(" + center.x + "," + center.y + ")"
@@ -30,18 +30,18 @@ abstract class StaticThing(location : Point) extends Thing {
                       bd.`type` = BodyType.STATIC
                       bd.position = new Vec2(location.x.toFloat, location.y.toFloat)
                       Universe.world.createBody(bd) }
-  override def center : Point = location                    
+  override def center : Point = location
 }
 
 abstract class MovingThing(location : Point) extends Thing {
-  
+
   lazy val body : Body = { val bd = new BodyDef()
                            bd.`type` = BodyType.DYNAMIC
                            bd.position = new Vec2(location.x.toFloat, location.y.toFloat)
-                           Universe.world.createBody(bd) }                    
-                             
+                           Universe.world.createBody(bd) }
+
   override def center : Point = Point(body.getPosition.x, body.getPosition.y)
-  
+
   def direction = toDegrees(body.getAngle)
 
   def turn(force : Float) = {
@@ -53,7 +53,7 @@ abstract class MovingThing(location : Point) extends Thing {
   def accelerate(amount : Double) {
     speed += amount
   }
-  
+
   // TODO: does not do what it says it does
   def setSpeedAndDirection(direction : Vector, speed : Double) {
     body.setLinearVelocity(new Vec2(direction.i.toFloat, direction.j.toFloat))
@@ -61,24 +61,24 @@ abstract class MovingThing(location : Point) extends Thing {
 }
 
 class CircleMovingThing(var c : Point, val radius : Double) extends MovingThing(c) {
-  
+
   var color = java.awt.Color.yellow
   val w = radius * 2
   val h = radius * 2
-  
+
   {
-    val cs = new CircleShape()    
+    val cs = new CircleShape()
     cs.m_radius = radius.toFloat
-    
+
     val fd = new FixtureDef();
     fd.shape = cs;
     fd.density = 1f;
     fd.friction = 0.5f;
     fd.restitution = 0.5f;
 
-    body.createFixture(fd)    
+    body.createFixture(fd)
   }
-  
+
   val image = new Ellipse2D.Double(center.x-w/2, center.y-h/2, radius*2, radius*2)
 
   def draw(g2 : Graphics2D, position : Point) {
@@ -89,10 +89,10 @@ class CircleMovingThing(var c : Point, val radius : Double) extends MovingThing(
     g2.fill(image)
     g2.setPaint(originalPaintColor)
   }
-  
+
   def drawDebugShapes(g2 : Graphics2D, position : Point) {
   }
-  
+
   override def toString : String = {
     return "RoundThing" + super.toString + ":" + radius + "r"
   }
@@ -110,22 +110,22 @@ class PolygonStaticThing(val c : Point, vertices : List[(Int, Int)]) extends Sta
   {
     val ps = new PolygonShape()
     val v = vertices.map(v => new org.jbox2d.common.Vec2(v._1, v._2))
-    ps.set(v.toArray, v.size)    
-    
+    ps.set(v.toArray, v.size)
+
     val fd = new FixtureDef();
     fd.shape = ps;
     fd.density = 0.0f;
     fd.friction = 0.5f;
     //fd.restitution = 0.5f;
 
-    body.createFixture(fd)    
+    body.createFixture(fd)
   }
 
   override def draw(g2 : Graphics2D, position : Point) = {
     if (Config.debugDrawShapes)
       drawDebugShapes(g2, position)
   }
-  
+
   override def drawDebugShapes(g2 : Graphics2D, position : Point) {
   }
 }
@@ -134,26 +134,26 @@ object PolygonStaticThing {
 
   def apply(c : Point, vertices : List[(Int, Int)]) : PolygonStaticThing = new PolygonStaticThing(c, vertices)
 
-  def apply(c : Point, vertices : Array[Point]) : PolygonStaticThing = 
+  def apply(c : Point, vertices : Array[Point]) : PolygonStaticThing =
       new PolygonStaticThing(c, vertices.map { vertice => (vertice.x.toInt, vertice.y.toInt)}.toList)
 }
 
 class RectangleStaticThing(val c : Point, val w : Int, val h : Int) extends StaticThing(c) {
   {
     val ps = new PolygonShape()
-    ps.setAsBox(w.toFloat/2, h.toFloat/2) // SetAsBox takes half w / h    
-    
+    ps.setAsBox(w.toFloat/2, h.toFloat/2) // SetAsBox takes half w / h
+
     val fd = new FixtureDef();
     fd.shape = ps;
     fd.density = 1.0f;
     fd.friction = 0.5f;
     fd.restitution = 0.5f;
 
-    body.createFixture(fd)    
+    body.createFixture(fd)
   }
 
   override def draw(g2 : Graphics2D, position : Point) = {}
-  
+
   override def drawDebugShapes(g2 : Graphics2D, position : Point) = {}
 }
 
@@ -165,15 +165,16 @@ class PolygonMovingThing(var c : Point, val sprite : Sprite) extends MovingThing
   {
     val ps = new PolygonShape()
     val v = sprite.polygonPoints.map(v => new org.jbox2d.common.Vec2(v.x.toInt, v.y.toInt))
-    ps.set(v.toArray, v.size)    
-    
+    ps.set(v.toArray, v.size)
+
     val fd = new FixtureDef();
     fd.shape = ps;
     fd.density = 1.0f;
     fd.friction = 0.5f;
     fd.restitution = 0.5f;
 
-    body.createFixture(fd)    
+    body.createFixture(fd)
+    body.setBullet(true)
   }
 
   override def draw(g2: Graphics2D, position : Point) {
@@ -182,9 +183,9 @@ class PolygonMovingThing(var c : Point, val sprite : Sprite) extends MovingThing
 
     val img = sprite.getCurrentImage(direction.toInt, false, Config.currentTimeMillis)
 
-    g2.drawImage(img, (position.x - img.getWidth/2).toInt, (position.y-img.getHeight/2).toInt, null)    
+    g2.drawImage(img, (position.x - img.getWidth/2).toInt, (position.y-img.getHeight/2).toInt, null)
   }
-  
+
   override def drawDebugShapes(g2 : Graphics2D, position : Point) {
 
     val polygonShape = body.getFixtureList.getShape.asInstanceOf[org.jbox2d.collision.shapes.PolygonShape]
@@ -206,7 +207,7 @@ class PolygonMovingThing(var c : Point, val sprite : Sprite) extends MovingThing
     g2.draw(poly)
     g2.setPaint(originalPaintColor)
   }
-  
+
   override def toString : String = {
     return "PolygonMovingThing: " + super.toString
   }
