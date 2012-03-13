@@ -1,7 +1,7 @@
 <gameobject name="ship_gf" type="moving">
   <gfx file="resources/gfx/ships.gif"
        w="25" h="20" rows="1" columns="3" x_offset="0" y_offset="0" animation_key="thrust" animation_fps="180"
-       rotates="true" rotation_count="36" polygonPoints="-1,-2 -4,-7 0,-10 4,-7 2,-2 12,4 0,7 -12,4">
+       rotates="true" rotation_count="36" > <!-- polygonPoints="-1,-2 -4,-7 0,-10 4,-7 2,-2 12,4 0,7 -12,4"> -->
     <mass_body type="circle" center="0,6" r="3" />
     <mass_body type="circle" center="0,-3" r="4" />
     <mass_body type="rectangle" center="-8,-4" w="5" h="4" />

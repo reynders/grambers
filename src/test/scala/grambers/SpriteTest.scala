@@ -6,15 +6,16 @@ import Assert._
 class SpriteTest extends TestCase {
 
   val spriteXml = <gameobject name="ship_gf" type="moving">
-                         <gfx file="resources/gfx/ships.gif" animated="true" w="25" h="20"
-                              rows="1" columns="3" x_offset="0" y_offset="0"
-                              animation_key="thrust" animation_fps="180"
-                              rotates="true" rotation_count="10"
-                              polygonPoints="2,2, -1,1 0,0"/>
-                      </gameobject>
+                    <gfx file="resources/gfx/ships.gif" animated="true" w="25" h="20"
+                         rows="1" columns="3" x_offset="0" y_offset="0"
+                         animation_key="thrust" animation_fps="180"
+                         rotates="true" rotation_count="10">
+                      <mass_body type="polygon" center="0,0" points="2,2, -1,1 0,0"/>     
+                    </gfx>
+                  </gameobject>
 
   def testSpriteLoader {
-    val sprite = SpriteLoader.load("resources/gfx/ships.gif", 25, 20, 1, 3, 0, 0, "testKey", 360, false, 0, new Array[Point](0))
+    val sprite = SpriteLoader.load("resources/gfx/ships.gif", 25, 20, 1, 3, 0, 0, "testKey", 360, false, 0, new Array[MassBody](0))
     assertEquals("resources/gfx/ships.gif", sprite.name)
     assertEquals(75, sprite.imgW)
     assertEquals(20, sprite.imgH)
@@ -35,10 +36,12 @@ class SpriteTest extends TestCase {
     assertEquals(180, sprite.animationFps)
     assertTrue(sprite.rotates)
     assertEquals(10, sprite.rotationCount)
-    assertEquals(3, sprite.polygonPoints.size)
-    assertEquals(Point(2,2), sprite.polygonPoints(0))
-    assertEquals(Point(-1,1), sprite.polygonPoints(1))
-    assertEquals(Point(0,0), sprite.polygonPoints(2))
+    assertEquals(1, sprite.massBodies.size)
+    val pmb = sprite.massBodies(0).asInstanceOf[PolygonMassBody]
+    assertEquals(3, pmb.points.size)
+    assertEquals(Point(2,2), pmb.points(0))
+    assertEquals(Point(-1,1), pmb.points(1))
+    assertEquals(Point(0,0), pmb.points(2))
   }
 
   def testGetCurrentImageIndex() {
@@ -87,12 +90,18 @@ class SpriteTest extends TestCase {
     assertEquals(Point(0,6), cmb.c)
     assertEquals(3.0, cmb.r)
 
-
     massBody = SpriteLoader.parseMassBody(<mass_body type="rectangle" center="-8,-4" w="5" h="4" />)
     assertTrue(massBody.isInstanceOf[RectangleMassBody])
     val rmb = massBody.asInstanceOf[RectangleMassBody]
     assertEquals(Point(-8,-4), rmb.c)
     assertEquals(5.0, rmb.w)
     assertEquals(4.0, rmb.h)
+
+    massBody = SpriteLoader.parseMassBody(<mass_body type="polygon" center="1,-1" points="13,-12 13,13 -12,-12" />)
+    assertTrue(massBody.isInstanceOf[PolygonMassBody])
+    val pmb = massBody.asInstanceOf[PolygonMassBody]
+    assertEquals(Point(1,-1), pmb.c)
+    assertEquals(3, pmb.points.size)
+    assertEquals(Point(-12, -12), pmb.points(2))
   }
 }

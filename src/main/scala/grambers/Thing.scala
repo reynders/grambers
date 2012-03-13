@@ -160,20 +160,43 @@ class RectangleStaticThing(val c : Point, val w : Int, val h : Int) extends Stat
 import java.awt.image._
 import java.io._
 
-class PolygonMovingThing(var c : Point, val sprite : Sprite) extends MovingThing(c) {
+class SpriteMovingThing(var c : Point, val sprite : Sprite) extends MovingThing(c) {
 
   {
-    val ps = new PolygonShape()
-    val v = sprite.polygonPoints.map(v => new org.jbox2d.common.Vec2(v.x.toInt, v.y.toInt))
-    ps.set(v.toArray, v.size)
+    sprite.massBodies.foreach { massBody =>
+      body.createFixture(massBodyToFixture(massBody))
+    }
+  }
+
+  def massBodyToFixture(massBody : MassBody) : FixtureDef = {
+    val shape : org.jbox2d.collision.shapes.Shape = massBody match {
+      case cmb : CircleMassBody =>
+        val cs = new CircleShape()
+        cs.m_radius = cmb.r.toFloat
+        cs
+      case rmb : RectangleMassBody =>
+        val ps = new PolygonShape()
+        ps.setAsBox(rmb.w.toFloat/2, rmb.h.toFloat/2)
+        ps
+      case pmb : PolygonMassBody =>
+        val ps = new PolygonShape()
+        val v = pmb.points.map(v => new org.jbox2d.common.Vec2(v.x.toInt, v.y.toInt))
+        ps.set(v.toArray, v.size)
+        ps
+      case _ =>
+        println("Unknown MassBody type!!")
+        val cs = new CircleShape()
+        cs.m_radius = 0
+        cs
+    }
 
     val fd = new FixtureDef();
-    fd.shape = ps;
-    fd.density = 1.0f;
-    fd.friction = 0.5f;
-    fd.restitution = 0.5f;
+    fd.shape = shape;
+    fd.density = massBody.density.toFloat;
+    fd.friction = massBody.friction.toFloat;
+    fd.restitution = massBody.restitution.toFloat;  
 
-    body.createFixture(fd)
+    return fd
   }
 
   override def draw(g2: Graphics2D, position : Point) {
@@ -187,6 +210,10 @@ class PolygonMovingThing(var c : Point, val sprite : Sprite) extends MovingThing
 
   override def drawDebugShapes(g2 : Graphics2D, position : Point) {
 
+// TODO: support all types of fixtures!
+// TODO: Fix the reverse y
+// TODO: Fix T demo
+/*
     val polygonShape = body.getFixtureList.getShape.asInstanceOf[org.jbox2d.collision.shapes.PolygonShape]
     val poly = new java.awt.Polygon()
 
@@ -205,6 +232,7 @@ class PolygonMovingThing(var c : Point, val sprite : Sprite) extends MovingThing
     g2.setPaint(Config.debugDrawShapesColor)
     g2.draw(poly)
     g2.setPaint(originalPaintColor)
+    */
   }
 
   override def toString : String = {

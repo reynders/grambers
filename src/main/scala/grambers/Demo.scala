@@ -17,11 +17,11 @@ object Demo {
     val SHIPSPRITE = "resources/gameobjects/ship_gf.xml"
     val TRIANGLESPRITE = "resources/gameobjects/triangle.xml"
 
-    def createShip(position : Point) : PolygonMovingThing =
-      new PolygonMovingThing(position, SpriteLoader.load(SHIPSPRITE))
+    def createShip(position : Point) : SpriteMovingThing =
+      new SpriteMovingThing(position, SpriteLoader.load(SHIPSPRITE))
 
-    def createTriangle(position : Point) : PolygonMovingThing =
-        new PolygonMovingThing(position, SpriteLoader.load(TRIANGLESPRITE))
+    def createTriangle(position : Point) : SpriteMovingThing =
+        new SpriteMovingThing(position, SpriteLoader.load(TRIANGLESPRITE))
 
     def addBall(universe : Universe, ball : CircleMovingThing, doYourThing : (Thing)=>Unit) {
       ball.doYourThing = doYourThing

@@ -8,7 +8,8 @@ import scala.collection.mutable.ArrayBuffer
 class Sprite(val name : String, val img : BufferedImage, val w : Int, val h : Int,
              val rows : Int, val columns : Int, val xOffset : Int, val yOffset : Int,
              val animationKey : String, val animationFps : Int,
-             val rotates : Boolean, val rotationCount : Int, val polygonPoints : Array[Point]) {
+             val rotates : Boolean, val rotationCount : Int, 
+             val massBodies : Array[MassBody]) {
 
   lazy val imgW : Int = img.getWidth
   lazy val imgH : Int = img.getHeight
@@ -58,10 +59,10 @@ class Sprite(val name : String, val img : BufferedImage, val w : Int, val h : In
   override def toString : String = "Sprite " + name + "; w: " + w + " h:" + h + " rows: " + rows + " columns: " + columns +
                                     " animationKey: " + animationKey + " animationFps: " + animationFps
                                    " xOffset:" + xOffset + " yOffset:" + yOffset +
-                                   " rotates: " + rotates + " rotationCount: " + rotationCount + " polygonPoints: " + polygonPoints
+                                   " rotates: " + rotates + " rotationCount: " + rotationCount + " massBodies: " + massBodies
 }
 
-class DummySprite extends Sprite("dummy", new BufferedImage(1, 1, Config.imageType), 0, 0, 0, 0, 0, 0, "dummy", 0, false, 0, new Array[Point](0)) {}
+class DummySprite extends Sprite("dummy", new BufferedImage(1, 1, Config.imageType), 0, 0, 0, 0, 0, 0, "dummy", 0, false, 0, new Array[MassBody](0)) {}
 
 import scala.xml._
 
@@ -91,26 +92,32 @@ object SpriteLoader {
                                                  (xml \ "gfx" \ "@animation_fps").text.toInt,
                                                  (xml \ "gfx" \ "@rotates").text.equals("true"),
                                                  (xml \ "gfx" \ "@rotation_count").text.toInt,
-                                                 Util.pointArrayStrToPointArray((xml \ "gfx" \ "@polygonPoints").text))
+                                                 parseMassBodies(xml \ "gfx" \ "mass_body"))
 
   def load(gfxFileName : String, w : Int, h : Int, rows : Int, columns : Int, xOffset : Int, yOffset : Int,
            animationKey : String, animationFps : Int,
-           rotates : Boolean, rotationCount : Int, polygonPoints : Array[Point]) : Sprite = {
+           rotates : Boolean, rotationCount : Int, massBodies : Array[MassBody]) : Sprite = {
     val img : BufferedImage = javax.imageio.ImageIO.read(new File(gfxFileName)).asInstanceOf[BufferedImage]
     return new Sprite(gfxFileName, img, w, h, rows, columns, xOffset, yOffset,
-                      animationKey, animationFps, rotates, rotationCount, polygonPoints)
+                      animationKey, animationFps, rotates, rotationCount, massBodies)
   }
+
+  def parseMassBodies(xml : NodeSeq) : Array[MassBody] = xml.map{massBody => parseMassBody(xml)}.toArray[MassBody]
 
   def parseMassBody(xml : NodeSeq) : MassBody = (xml \\ "@type").text match {
     case "circle" => 
-      val center = Util.strPointToPoint((xml \\ "@center").text)
+      val center = Util.strPointToPoint((xml \ "@center").text)
       val r = (xml \\ "@r").text.toDouble
       new CircleMassBody(center, r)
     case "rectangle" =>
-      val center = Util.strPointToPoint((xml \\ "@center").text)
+      val center = Util.strPointToPoint((xml \ "@center").text)
       val w = (xml \\ "@w").text.toDouble
       val h = (xml \\ "@h").text.toDouble
       new RectangleMassBody(center, w, h)
+    case "polygon" =>
+      val center = Util.strPointToPoint((xml \ "@center").text)
+      val points = Util.pointArrayStrToPointArray((xml \ "@points").text)
+      new PolygonMassBody(center, points) 
     case _ => 
       println("WARNING: don't know how to parse fixture type " + (xml \\ "@type").text)
       new CircleMassBody(Point(0,0), 0.0)
@@ -158,12 +165,14 @@ object SpriteLoader {
   }
 }
 
-class MassBody(val c : Point) {
-  var density = 1f
-  var friction = 1f
-  var restitution = 1f
+abstract class MassBody(c : Point) {
+  var density = 1.0
+  var friction = 1.0
+  var restitution = 1.0
 }
 
-class CircleMassBody(c : Point, val r : Double) extends MassBody(c) {}
+case class CircleMassBody(c : Point, r : Double) extends MassBody(c) {}
 
-class RectangleMassBody(c : Point, val w : Double, val h : Double) extends MassBody(c) {}
+case class RectangleMassBody(c : Point, w : Double, h : Double) extends MassBody(c) {}
+
+case class PolygonMassBody(c : Point, points : Array[Point]) extends MassBody(c) {}
