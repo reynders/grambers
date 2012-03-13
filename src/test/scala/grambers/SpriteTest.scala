@@ -79,4 +79,20 @@ class SpriteTest extends TestCase {
     assertEquals(2, sprite.currentAnimationFrameIndex(sprite.animationDtBetweenFramesInMs*2))
     assertEquals(0, sprite.currentAnimationFrameIndex(sprite.animationDtBetweenFramesInMs*3))
   }
+
+  def testParseMassBody {
+    var massBody = SpriteLoader.parseMassBody(<mass_body type="circle" center="0,6" r="3" />)
+    assertTrue(massBody.isInstanceOf[CircleMassBody])
+    val cmb = massBody.asInstanceOf[CircleMassBody]
+    assertEquals(Point(0,6), cmb.c)
+    assertEquals(3.0, cmb.r)
+
+
+    massBody = SpriteLoader.parseMassBody(<mass_body type="rectangle" center="-8,-4" w="5" h="4" />)
+    assertTrue(massBody.isInstanceOf[RectangleMassBody])
+    val rmb = massBody.asInstanceOf[RectangleMassBody]
+    assertEquals(Point(-8,-4), rmb.c)
+    assertEquals(5.0, rmb.w)
+    assertEquals(4.0, rmb.h)
+  }
 }

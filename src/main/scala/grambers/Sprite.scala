@@ -101,6 +101,21 @@ object SpriteLoader {
                       animationKey, animationFps, rotates, rotationCount, polygonPoints)
   }
 
+  def parseMassBody(xml : NodeSeq) : MassBody = (xml \\ "@type").text match {
+    case "circle" => 
+      val center = Util.strPointToPoint((xml \\ "@center").text)
+      val r = (xml \\ "@r").text.toDouble
+      new CircleMassBody(center, r)
+    case "rectangle" =>
+      val center = Util.strPointToPoint((xml \\ "@center").text)
+      val w = (xml \\ "@w").text.toDouble
+      val h = (xml \\ "@h").text.toDouble
+      new RectangleMassBody(center, w, h)
+    case _ => 
+      println("WARNING: don't know how to parse fixture type " + (xml \\ "@type").text)
+      new CircleMassBody(Point(0,0), 0.0)
+  }
+
   def splitImageToSprites(img : BufferedImage, w : Int, h : Int, rows : Int, columns : Int,
                           xOffset : Int, yOffset : Int) : Array[BufferedImage] = {
     val imgs = new ArrayBuffer[BufferedImage]()
@@ -141,5 +156,14 @@ object SpriteLoader {
 
     return images.toArray
   }
-
 }
+
+class MassBody(val c : Point) {
+  var density = 1f
+  var friction = 1f
+  var restitution = 1f
+}
+
+class CircleMassBody(c : Point, val r : Double) extends MassBody(c) {}
+
+class RectangleMassBody(c : Point, val w : Double, val h : Double) extends MassBody(c) {}

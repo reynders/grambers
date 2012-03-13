@@ -4,6 +4,7 @@ import junit.framework._
 import Assert._
 
 class UtilTest extends TestCase {
+
   def testPointArrayStrToPointArray {
     val pointArrayStr = "0,0 -1,-1 2,2"
     val pointArray = Util.pointArrayStrToPointArray(pointArrayStr)
@@ -14,5 +15,11 @@ class UtilTest extends TestCase {
     assertEquals(Point(2,2), pointArray(2))
 
     assertEquals(0, Util.pointArrayStrToPointArray("").size)
+  }
+
+  def testStrPointToPoint {
+  	assertEquals(Point(0,0), Util.strPointToPoint("0,0"))
+  	assertEquals(Point(-999,0), Util.strPointToPoint("-999,0"))
+  	assertEquals(Point(-1,-1), Util.strPointToPoint("-1,-1"))
   }
 }

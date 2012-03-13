@@ -5,6 +5,11 @@ object Util {
     if (str.trim.equals(""))
       new Array[Point](0)
     else
-      str.split(" ").map { pair => Point(pair.split(",")(0), pair.split(",")(1))}
+      str.split(" ").map { pair => strPointToPoint(pair)}
+  }
+
+  def strPointToPoint(str : String) : Point = {
+  	val numbers = str.split(",")
+  	return Point(numbers(0), numbers(1))
   }
 }
