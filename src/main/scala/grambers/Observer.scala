@@ -41,10 +41,10 @@ class Observer (var w: Int, var h: Int, val universe : Universe, var thingInFocu
           case thing : MovingThing => {
             val c = e.getKeyCode();
             c match {
-              case KeyEvent.VK_LEFT => thing.turn(-0.1f)
-              case KeyEvent.VK_RIGHT => thing.turn(0.1f)
-              case KeyEvent.VK_DOWN => thing.accelerate(-1)
-              case KeyEvent.VK_UP => thing.accelerate(1)
+              case KeyEvent.VK_LEFT => thing.turn(-2f)
+              case KeyEvent.VK_RIGHT => thing.turn(2f)
+              case KeyEvent.VK_DOWN => thing.accelerate(-2)
+              case KeyEvent.VK_UP => thing.accelerate(2)
               case KeyEvent.VK_D => Config.debugOn = !Config.debugOn; println("Setting debug to " + Config.debugOn); 
               case _ => println("Caught key event " + c)
             }

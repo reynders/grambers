@@ -91,12 +91,13 @@ abstract class MovingThing(location : Point) extends Thing {
 
   def turn(force : Float) = {
     // TODO: wrong way to do this, should use applyForce etc
-    body.setTransform(body.getPosition, body.getAngle + force)
+    //body.setTransform(body.getPosition, body.getAngle + force)
+    body.applyTorque(force * 100000f)
   }
 
   // TODO
-  def accelerate(amount : Double) {
-    speed += amount
+  def accelerate(force: Double) {
+    body.applyForce(body.getWorldVector(new Vec2(0f, force.toFloat * 50000f)), body.getWorldCenter())
   }
 
   // TODO: does not do what it says it does

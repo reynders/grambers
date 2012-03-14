@@ -17,8 +17,8 @@ object Demo {
     val SHIPSPRITE = "resources/gameobjects/ship_gf.xml"
     val TRIANGLESPRITE = "resources/gameobjects/triangle.xml"
 
-    def createShip(position : Point) : SpriteMovingThing =
-      new SpriteMovingThing(position, SpriteLoader.load(SHIPSPRITE))
+    def createShip(position : Point) : SpriteMovingThing = new SpriteMovingThing(position, SpriteLoader.load(SHIPSPRITE))
+    
 
     def createTriangle(position : Point) : SpriteMovingThing =
         new SpriteMovingThing(position, SpriteLoader.load(TRIANGLESPRITE))
@@ -59,7 +59,6 @@ object Demo {
       addBall(universe, ball, (ball) => {})
 
       val observer = new Observer(WINDOW_W, WINDOW_H, universe, ship1)
-      Config.debugDrawShapes = true
       universe.run(observer)
     }
 
@@ -74,7 +73,6 @@ object Demo {
       addBall(universe, ball, (ball) => {})
 
       val observer = new Observer(WINDOW_W, WINDOW_H, universe, ship1)
-      Config.debugDrawShapes = true
       universe.run(observer)
     }
 

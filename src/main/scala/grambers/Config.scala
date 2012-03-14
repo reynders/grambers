@@ -20,7 +20,7 @@ object Config {
   
   // Debug
   var debugOn : Boolean = false
-  var debugDrawShapes : Boolean = true
+  val debugDrawShapes : Boolean = false
   val debugDrawShapesColor : java.awt.Color = java.awt.Color.RED
   
   def measurementSamplePeriodMs : Long = {
