@@ -19,8 +19,53 @@ abstract class Thing() {
   var doYourThing : ((Thing) => Unit) = (thing) => {}
 
   def draw(g2 : Graphics2D, position : Point)
+  
+  def drawDebugShapes(g2 : Graphics2D, position : Point) {
+    var fixture = body.getFixtureList
 
-  def drawDebugShapes(g2 : Graphics2D, position : Point)
+    while (fixture != null) {
+      val shape = fixture.getShape
+
+      if (shape.isInstanceOf[org.jbox2d.collision.shapes.PolygonShape]) {
+        drawShape(g2, position, shape.asInstanceOf[PolygonShape])
+      } else if (shape.isInstanceOf[org.jbox2d.collision.shapes.CircleShape]) {
+        drawShape(g2, position, shape.asInstanceOf[CircleShape])
+      }
+
+      fixture = fixture.getNext
+    }
+  }
+
+  def drawShape(g2 : Graphics2D, position : Point, polygonShape : PolygonShape) {
+    val poly = new java.awt.Polygon()
+
+    for (i <- 0 until polygonShape.getVertexCount) {
+      // TODO: The jbox2d polygonshape points are relative to "centroid"
+      val wp = Point(body.getWorldPoint(polygonShape.getVertex(i)))
+      poly.addPoint(wp.x.toInt, wp.y.toInt)
+    }
+
+    poly.translate(position.x.toInt - center.x.toInt, position.y.toInt - center.y.toInt)
+
+    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
+    val originalPaintColor = g2.getPaint()
+    g2.setPaint(Config.debugDrawShapesColor)
+    g2.draw(poly)
+    g2.setPaint(originalPaintColor)
+  }
+
+  def drawShape(g2 : Graphics2D, position : Point, circleShape : CircleShape) {
+    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
+    val originalPaintColor = g2.getPaint()
+    g2.setPaint(Config.debugDrawShapesColor)
+    val r = circleShape.m_radius.toInt
+    val wp = body.getWorldPoint(circleShape.m_p)
+    val x = wp.x.toInt - (center.x.toInt - position.x.toInt) - r
+    val y = wp.y.toInt - (center.y.toInt - position.y.toInt) - r
+
+    g2.drawOval(x, y, r*2, r*2)
+    g2.setPaint(originalPaintColor)
+  }
 
   override def toString : String = "(" + center.x + "," + center.y + ")"
 }
@@ -209,57 +254,6 @@ class SpriteMovingThing(var c : Point, val sprite : Sprite) extends MovingThing(
     val img = sprite.getCurrentImage(direction.toInt, false, Config.currentTimeMillis)
 
     g2.drawImage(img, (position.x - img.getWidth/2).toInt, (position.y-img.getHeight/2).toInt, null)
-  }
-
-  override def drawDebugShapes(g2 : Graphics2D, position : Point) {
-
-    var fixture = body.getFixtureList
-
-    while (fixture != null) {
-// TODO: support all types of fixtures!
-// TODO: Fix the reverse y if needed
-
-      val shape = fixture.getShape
-
-      if (shape.isInstanceOf[org.jbox2d.collision.shapes.PolygonShape]) {
-        drawShape(g2, position, shape.asInstanceOf[PolygonShape])
-      } else if (shape.isInstanceOf[org.jbox2d.collision.shapes.CircleShape]) {
-        drawShape(g2, position, shape.asInstanceOf[CircleShape])
-      }
-
-      fixture = fixture.getNext
-    }
-  }
-
-  def drawShape(g2 : Graphics2D, position : Point, polygonShape : PolygonShape) {
-    val poly = new java.awt.Polygon()
-
-    for (i <- 0 until polygonShape.getVertexCount) {
-      // TODO: The jbox2d polygonshape points are relative to "centroid"
-      val wp = Point(body.getWorldPoint(polygonShape.getVertex(i)))
-      poly.addPoint(wp.x.toInt, wp.y.toInt)
-    }
-
-    poly.translate(position.x.toInt - center.x.toInt, position.y.toInt - center.y.toInt)
-
-    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
-    val originalPaintColor = g2.getPaint()
-    g2.setPaint(Config.debugDrawShapesColor)
-    g2.draw(poly)
-    g2.setPaint(originalPaintColor)
-  }
-
-  def drawShape(g2 : Graphics2D, position : Point, circleShape : CircleShape) {
-    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
-    val originalPaintColor = g2.getPaint()
-    g2.setPaint(Config.debugDrawShapesColor)
-    val r = circleShape.m_radius.toInt
-    val wp = body.getWorldPoint(circleShape.m_p)
-    val x = wp.x.toInt - (center.x.toInt - position.x.toInt) - r
-    val y = wp.y.toInt - (center.y.toInt - position.y.toInt) - r
-
-    g2.drawOval(x, y, r*2, r*2)
-    g2.setPaint(originalPaintColor)
   }
 
   override def toString : String = {
