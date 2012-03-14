@@ -164,6 +164,7 @@ class SpriteMovingThing(var c : Point, val sprite : Sprite) extends MovingThing(
 
   {
     sprite.massBodies.foreach { massBody =>
+      println("SpriteMovingThing " + c + ": creating a fixture from " + massBody)
       body.createFixture(massBodyToFixture(massBody))
     }
   }
@@ -172,6 +173,7 @@ class SpriteMovingThing(var c : Point, val sprite : Sprite) extends MovingThing(
     val shape : org.jbox2d.collision.shapes.Shape = massBody match {
       case cmb : CircleMassBody =>
         val cs = new CircleShape()
+        cs.m_p.set(new Vec2(cmb.c.x.toFloat, cmb.c.y.toFloat))
         cs.m_radius = cmb.r.toFloat
         cs
       case rmb : RectangleMassBody =>
@@ -194,7 +196,7 @@ class SpriteMovingThing(var c : Point, val sprite : Sprite) extends MovingThing(
     fd.shape = shape;
     fd.density = massBody.density.toFloat;
     fd.friction = massBody.friction.toFloat;
-    fd.restitution = massBody.restitution.toFloat;  
+    fd.restitution = massBody.restitution.toFloat;
 
     return fd
   }
@@ -210,18 +212,30 @@ class SpriteMovingThing(var c : Point, val sprite : Sprite) extends MovingThing(
 
   override def drawDebugShapes(g2 : Graphics2D, position : Point) {
 
+    var fixture = body.getFixtureList
+
+    while (fixture != null) {
 // TODO: support all types of fixtures!
-// TODO: Fix the reverse y
-// TODO: Fix T demo
-/*
-    val polygonShape = body.getFixtureList.getShape.asInstanceOf[org.jbox2d.collision.shapes.PolygonShape]
+// TODO: Fix the reverse y if needed
+
+      val shape = fixture.getShape
+
+      if (shape.isInstanceOf[org.jbox2d.collision.shapes.PolygonShape]) {
+        drawShape(g2, position, shape.asInstanceOf[PolygonShape])
+      } else if (shape.isInstanceOf[org.jbox2d.collision.shapes.CircleShape]) {
+        drawShape(g2, position, shape.asInstanceOf[CircleShape])
+      }
+
+      fixture = fixture.getNext
+    }
+  }
+
+  def drawShape(g2 : Graphics2D, position : Point, polygonShape : PolygonShape) {
     val poly = new java.awt.Polygon()
 
     for (i <- 0 until polygonShape.getVertexCount) {
       // TODO: The jbox2d polygonshape points are relative to "centroid"
-      //poly.addPoint(polygonShape.getVertex(i).x.toInt, polygonShape.getVertex(i).y.toInt)
       val wp = Point(body.getWorldPoint(polygonShape.getVertex(i)))
-      //println("body position: " + body.getPosition + " lv: " + polygonShape.getVertex(i) + " wv: " + wp)
       poly.addPoint(wp.x.toInt, wp.y.toInt)
     }
 
@@ -232,10 +246,22 @@ class SpriteMovingThing(var c : Point, val sprite : Sprite) extends MovingThing(
     g2.setPaint(Config.debugDrawShapesColor)
     g2.draw(poly)
     g2.setPaint(originalPaintColor)
-    */
+  }
+
+  def drawShape(g2 : Graphics2D, position : Point, circleShape : CircleShape) {
+    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
+    val originalPaintColor = g2.getPaint()
+    g2.setPaint(Config.debugDrawShapesColor)
+    val r = circleShape.m_radius.toInt
+    val wp = body.getWorldPoint(circleShape.m_p)
+    val x = wp.x.toInt - (center.x.toInt - position.x.toInt) - r
+    val y = wp.y.toInt - (center.y.toInt - position.y.toInt) - r
+
+    g2.drawOval(x, y, r*2, r*2)
+    g2.setPaint(originalPaintColor)
   }
 
   override def toString : String = {
-    return "PolygonMovingThing: " + super.toString
+    return "SpriteMovingThing: " + super.toString
   }
 }

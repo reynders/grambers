@@ -8,7 +8,7 @@ import scala.collection.mutable.ArrayBuffer
 class Sprite(val name : String, val img : BufferedImage, val w : Int, val h : Int,
              val rows : Int, val columns : Int, val xOffset : Int, val yOffset : Int,
              val animationKey : String, val animationFps : Int,
-             val rotates : Boolean, val rotationCount : Int, 
+             val rotates : Boolean, val rotationCount : Int,
              val massBodies : Array[MassBody]) {
 
   lazy val imgW : Int = img.getWidth
@@ -102,10 +102,10 @@ object SpriteLoader {
                       animationKey, animationFps, rotates, rotationCount, massBodies)
   }
 
-  def parseMassBodies(xml : NodeSeq) : Array[MassBody] = xml.map{massBody => parseMassBody(xml)}.toArray[MassBody]
+  def parseMassBodies(xml : NodeSeq) : Array[MassBody] = xml.map{massBody => parseMassBody(massBody)}.toArray[MassBody]
 
   def parseMassBody(xml : NodeSeq) : MassBody = (xml \\ "@type").text match {
-    case "circle" => 
+    case "circle" =>
       val center = Util.strPointToPoint((xml \ "@center").text)
       val r = (xml \\ "@r").text.toDouble
       new CircleMassBody(center, r)
@@ -117,9 +117,9 @@ object SpriteLoader {
     case "polygon" =>
       val center = Util.strPointToPoint((xml \ "@center").text)
       val points = Util.pointArrayStrToPointArray((xml \ "@points").text)
-      new PolygonMassBody(center, points) 
-    case _ => 
-      println("WARNING: don't know how to parse fixture type " + (xml \\ "@type").text)
+      new PolygonMassBody(center, points)
+    case _ =>
+      println("WARNING: don't know how to parse fixture type " + (xml \\ "@type").text + " xml: \n" + xml)
       new CircleMassBody(Point(0,0), 0.0)
   }
 
@@ -168,7 +168,7 @@ object SpriteLoader {
 abstract class MassBody(c : Point) {
   var density = 1.0
   var friction = 1.0
-  var restitution = 1.0
+  var restitution = 0.5
 }
 
 case class CircleMassBody(c : Point, r : Double) extends MassBody(c) {}
