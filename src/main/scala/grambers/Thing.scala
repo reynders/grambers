@@ -19,7 +19,7 @@ abstract class Thing() {
   var doYourThing : ((Thing) => Unit) = (thing) => {}
 
   def draw(g2 : Graphics2D, position : Point)
-  
+
   def drawDebugShapes(g2 : Graphics2D, position : Point) {
     var fixture = body.getFixtureList
 
@@ -135,9 +135,6 @@ class CircleMovingThing(var c : Point, val radius : Double) extends MovingThing(
     g2.setPaint(originalPaintColor)
   }
 
-  def drawDebugShapes(g2 : Graphics2D, position : Point) {
-  }
-
   override def toString : String = {
     return "RoundThing" + super.toString + ":" + radius + "r"
   }
@@ -170,9 +167,6 @@ class PolygonStaticThing(val c : Point, vertices : List[(Int, Int)]) extends Sta
     if (Config.debugDrawShapes)
       drawDebugShapes(g2, position)
   }
-
-  override def drawDebugShapes(g2 : Graphics2D, position : Point) {
-  }
 }
 
 object PolygonStaticThing {
@@ -198,8 +192,6 @@ class RectangleStaticThing(val c : Point, val w : Int, val h : Int) extends Stat
   }
 
   override def draw(g2 : Graphics2D, position : Point) = {}
-
-  override def drawDebugShapes(g2 : Graphics2D, position : Point) = {}
 }
 
 import java.awt.image._
@@ -251,7 +243,7 @@ class SpriteMovingThing(var c : Point, val sprite : Sprite) extends MovingThing(
     if (Config.debugDrawShapes)
       drawDebugShapes(g2, position)
 
-    val img = sprite.getCurrentImage(direction.toInt, false, Config.currentTimeMillis)
+    val img = sprite.getCurrentImage(direction.toInt, true, Config.currentTimeMillis)
 
     g2.drawImage(img, (position.x - img.getWidth/2).toInt, (position.y-img.getHeight/2).toInt, null)
   }
