@@ -248,11 +248,6 @@ object Tile {
 class MapObjectGroup(val name : String, val mapObjects : Array[Thing]) {
 }
 
-object MapObjectType extends Enumeration {
-  type MapObjectType = Value
-     val Box, Polygon = Value
-}
-
 import MapObjectType._
 import scala.collection.mutable.HashMap
 

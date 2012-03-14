@@ -43,6 +43,13 @@ class Universe(mapName:String, withWalls : Boolean) {
     shape.setAsEdge(new Vec2(0, HEIGHT), new Vec2(WIDTH, HEIGHT));
     ground.createFixture(fixtureDef);
   }
+
+  if (Config.debugDrawShapes) {
+    map.mapObjectGroups(0).mapObjects.foreach { mapObject =>
+      println("DEBUG: adding mapobject to things: " + mapObject)
+      addThing(mapObject)
+    }
+  }
   
   def addThing(thing : Thing) {
     thing match {

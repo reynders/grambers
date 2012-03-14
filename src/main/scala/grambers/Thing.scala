@@ -164,8 +164,10 @@ class PolygonStaticThing(val c : Point, vertices : List[(Int, Int)]) extends Sta
   }
 
   override def draw(g2 : Graphics2D, position : Point) = {
-    if (Config.debugDrawShapes)
+    if (Config.debugDrawShapes) {
+      println("HERE")
       drawDebugShapes(g2, position)
+    }
   }
 }
 
@@ -191,7 +193,10 @@ class RectangleStaticThing(val c : Point, val w : Int, val h : Int) extends Stat
     body.createFixture(fd)
   }
 
-  override def draw(g2 : Graphics2D, position : Point) = {}
+  override def draw(g2 : Graphics2D, position : Point) = {
+    if (Config.debugDrawShapes)
+      drawDebugShapes(g2, position)
+  }
 }
 
 import java.awt.image._

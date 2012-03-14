@@ -1,19 +1,19 @@
 Backlog
 -------
-* Fix bug on Mac OS X where rightmost column of pixels flicker white
-* Walls of any angle
+* Take first game map into use
+* Control ship with impulses
+* Fix static object positioning
 * IOC (http://programming-scala.labs.oreilly.com/ch13.html#DependencyInjectionInScala)
-* Polygon shapes
 * Switch to use the scala 2.8 Swing implementation 
   (http://www.scala-lang.org/sites/default/files/sids/imaier/Mon,%202009-11-02,%2008:55/scala-swing-design.pdf)
-* Bug: static things should have "infinite" mass when calculating collisiongs
-* Introduce gravitation force
-* Make it impossible to add a thing to universe that overlaps an existing one
-* Shape to case class (http://programming-scala.labs.oreilly.com/ch06.html#CaseClasses)
 * Scalafy code 
 
 Done
 -----
+* Integrated jbox2d
+* Polygon shapes
+* Introduce gravitation force
+* Shape to case class (http://programming-scala.labs.oreilly.com/ch06.html#CaseClasses)
 * Fix bug on mac: tile buffering is one tile row too late (unreproducible)
 * Rewrite game loop to update objects for only specific point of time, 
   then interpolate until next update
