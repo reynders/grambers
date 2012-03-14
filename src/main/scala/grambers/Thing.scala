@@ -178,12 +178,13 @@ class SpriteMovingThing(var c : Point, val sprite : Sprite) extends MovingThing(
         cs
       case rmb : RectangleMassBody =>
         val ps = new PolygonShape()
-        ps.setAsBox(rmb.w.toFloat/2, rmb.h.toFloat/2)
+        ps.setAsBox(rmb.w.toFloat/2, rmb.h.toFloat/2, new org.jbox2d.common.Vec2(rmb.c.x.toFloat, rmb.c.y.toFloat), 0)
         ps
       case pmb : PolygonMassBody =>
         val ps = new PolygonShape()
         val v = pmb.points.map(v => new org.jbox2d.common.Vec2(v.x.toInt, v.y.toInt))
         ps.set(v.toArray, v.size)
+        ps.m_centroid.set(new Vec2(pmb.c.x.toFloat, pmb.c.y.toFloat))
         ps
       case _ =>
         println("Unknown MassBody type!!")
