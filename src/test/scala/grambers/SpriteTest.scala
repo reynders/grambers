@@ -8,9 +8,9 @@ class SpriteTest extends TestCase {
   val spriteXml = <gameobject name="ship_gf" type="moving">
                     <gfx file="resources/gfx/ships.gif" animated="true" w="25" h="20"
                          rows="1" columns="3" x_offset="0" y_offset="0"
-                         animation_key="thrust" animation_fps="180"
+                         action="thrust" animation_fps="180"
                          rotates="true" rotation_count="10">
-                      <mass_body type="polygon" center="0,0" points="2,2, -1,1 0,0"/>     
+                      <mass_body type="polygon" center="0,0" points="2,2, -1,1 0,0"/>
                     </gfx>
                   </gameobject>
 
@@ -20,7 +20,7 @@ class SpriteTest extends TestCase {
     assertEquals(75, sprite.imgW)
     assertEquals(20, sprite.imgH)
     assertEquals(3, sprite.images.size)
-    assertEquals("testKey", sprite.animationKey)
+    assertEquals("testKey", sprite.action)
     assertEquals(360, sprite.animationFps)
     assertFalse(sprite.rotates)
     assertEquals(0, sprite.rotationCount)
@@ -32,7 +32,7 @@ class SpriteTest extends TestCase {
     assertEquals(75, sprite.imgW)
     assertEquals(20, sprite.imgH)
     assertEquals(3, sprite.images.size)
-    assertEquals("thrust", sprite.animationKey)
+    assertEquals("thrust", sprite.action)
     assertEquals(180, sprite.animationFps)
     assertTrue(sprite.rotates)
     assertEquals(10, sprite.rotationCount)

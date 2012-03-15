@@ -12,4 +12,11 @@ object Util {
   	val numbers = str.split(",")
   	return Point(numbers(0), numbers(1))
   }
+
+  def parseInt(str : String, default : Int) : Int = {
+    if (str.equals(""))
+      default
+    else
+      str.toInt
+  }
 }

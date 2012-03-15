@@ -7,7 +7,7 @@ import scala.collection.mutable.ArrayBuffer
 
 class Sprite(val name : String, val img : BufferedImage, val w : Int, val h : Int,
              val rows : Int, val columns : Int, val xOffset : Int, val yOffset : Int,
-             val animationKey : String, val animationFps : Int,
+             val action : String, val animationFps : Int,
              val rotates : Boolean, val rotationCount : Int,
              val massBodies : Array[MassBody]) {
 
@@ -57,7 +57,7 @@ class Sprite(val name : String, val img : BufferedImage, val w : Int, val h : In
   }
 
   override def toString : String = "Sprite " + name + "; w: " + w + " h:" + h + " rows: " + rows + " columns: " + columns +
-                                    " animationKey: " + animationKey + " animationFps: " + animationFps
+                                    " action: " + action + " animationFps: " + animationFps
                                    " xOffset:" + xOffset + " yOffset:" + yOffset +
                                    " rotates: " + rotates + " rotationCount: " + rotationCount + " massBodies: " + massBodies
 }
@@ -88,18 +88,18 @@ object SpriteLoader {
                                                  (xml \ "gfx" \ "@columns").text.toInt,
                                                  (xml \ "gfx" \ "@x_offset").text.toInt,
                                                  (xml \ "gfx" \ "@y_offset").text.toInt,
-                                                 (xml \ "gfx" \ "@animation_key").text,
-                                                 (xml \ "gfx" \ "@animation_fps").text.toInt,
+                                                 (xml \ "gfx" \ "@action").text,
+                                                 Util.parseInt((xml \ "gfx" \ "@animation_fps").text, 0),
                                                  (xml \ "gfx" \ "@rotates").text.equals("true"),
                                                  (xml \ "gfx" \ "@rotation_count").text.toInt,
                                                  parseMassBodies(xml \ "gfx" \ "mass_body"))
 
   def load(gfxFileName : String, w : Int, h : Int, rows : Int, columns : Int, xOffset : Int, yOffset : Int,
-           animationKey : String, animationFps : Int,
+           action : String, animationFps : Int,
            rotates : Boolean, rotationCount : Int, massBodies : Array[MassBody]) : Sprite = {
     val img : BufferedImage = javax.imageio.ImageIO.read(new File(gfxFileName)).asInstanceOf[BufferedImage]
     return new Sprite(gfxFileName, img, w, h, rows, columns, xOffset, yOffset,
-                      animationKey, animationFps, rotates, rotationCount, massBodies)
+                      action, animationFps, rotates, rotationCount, massBodies)
   }
 
   def parseMassBodies(xml : NodeSeq) : Array[MassBody] = xml.map{massBody => parseMassBody(massBody)}.toArray[MassBody]

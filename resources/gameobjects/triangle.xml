@@ -1,7 +1,6 @@
 <gameobject name="triangle" type="moving">
   <gfx file="resources/gfx/triangle.gif"
-       w="25" h="25" rows="1" columns="1" x_offset="0" y_offset="0" animation_key="" animation_fps="0"
-       rotates="true" rotation_count="36">
+       w="25" h="25" rows="1" columns="1" x_offset="0" y_offset="0" rotates="true" rotation_count="36">
     <mass_body type="polygon" center="0,0" points="13,-12 13,13 -12,-12" />
     <!--<mass_body type="circle" center="0,0" r="13" />
     <mass_body type="circle" center="0,20" r="7" />-->
