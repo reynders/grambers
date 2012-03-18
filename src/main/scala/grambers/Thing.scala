@@ -89,23 +89,12 @@ abstract class MovingThing(location : Point) extends Thing {
 
   def direction = toDegrees(body.getAngle)
 
-  def turn(force : Float) = {
-    // TODO: wrong way to do this, should use applyForce etc
-    //body.setTransform(body.getPosition, body.getAngle + force)
-    println("Angular velocity: " + body.getAngularVelocity())
-    //body.applyTorque(force)
-    body.applyLinearImpulse(body.getWorldVector(new Vec2(0, 1000f)), body.getWorldPoint(new Vec2(force.toFloat * 12, -13)))
-  }
-
-  // TODO
-  def accelerate(force: Double) {
-    body.applyLinearImpulse(body.getWorldVector(new Vec2(0f, force.toFloat * 5000f)), body.getWorldCenter())
-  }
-
   // TODO: does not do what it says it does
   def setSpeedAndDirection(direction : Vector, speed : Double) {
     body.setLinearVelocity(new Vec2(direction.i.toFloat, direction.j.toFloat))
   }
+
+  def step(dt : Double) {}
 }
 
 class CircleMovingThing(var c : Point, val radius : Double) extends MovingThing(c) {
@@ -269,7 +258,29 @@ class SpriteMovingThing(var c : Point, val sprite : Sprite) extends MovingThing(
   }
 }
 
-class Ship(c : Point, sprite : Sprite) extends SpriteMovingThing(c, sprite) { 
+class Ship(c : Point, sprite : Sprite) extends SpriteMovingThing(c, sprite) {
+  var turnLeft = false
+  var turnRight = false
+  var accelerate = false
+  var reverse = false
+
+  def turn(force : Float) = {
+    //println("Angular velocity: " + body.getAngularVelocity())
+    //body.applyTorque(force)
+    body.applyLinearImpulse(body.getWorldVector(new Vec2(0, 50f)), body.getWorldPoint(new Vec2(force.toFloat * 12, -13)))
+  }
+
+  // TODO
+  def accelerate(force: Double) {
+    body.applyLinearImpulse(body.getWorldVector(new Vec2(0f, force.toFloat * 500f)), body.getWorldCenter())
+  }
+
+  override def step(dt : Double) {
+    if (turnLeft) turn(-1)
+    if (turnRight) turn(1)
+    if (accelerate) accelerate(1)
+    if (reverse) accelerate(-1)
+  }
 }
 
 import java.awt.event.KeyAdapter
@@ -281,14 +292,25 @@ class ShipKeyboardController(ship : Ship, keyActionMap : scala.collection.immuta
     if (keyActionMap.contains(c)) {
       val action = keyActionMap(c)
       action match {
-        case "TURN_LEFT" => ship.turn(-1f); println("Turning left")
-        case "TURN_RIGHT" => ship.turn(1f); println("Turning right")
-        case "ACCELERATE"  => ship.accelerate(-1); println("Accelerating")
-        case "REVERSE"  => ship.accelerate(1); println("Reversing")
+        case "TURN_LEFT" => ship.turnLeft = true; println("Turning left")
+        case "TURN_RIGHT" => ship.turnRight = true; println("Turning right")
+        case "ACCELERATE"  => ship.accelerate = true; println("Accelerating")
+        case "REVERSE"  => ship.reverse = true; println("Reversing")
         case _ => println("Unknown ship keyboard action " + action)
       }
+    }
+  }
 
-      e.consume();
+  override def keyReleased(e : KeyEvent) = {
+    val c = e.getKeyCode();
+    if (keyActionMap.contains(c)) {
+      val action = keyActionMap(c)
+      action match {
+        case "TURN_LEFT" => ship.turnLeft = false; println("Stop Turning left")
+        case "TURN_RIGHT" => ship.turnRight = false; println("Stop Turning right")
+        case "ACCELERATE"  => ship.accelerate = false; println("Stop Accelerating")
+        case "REVERSE"  => ship.reverse = false; println("Stop Reversing")
+      }
     }
   }
 }

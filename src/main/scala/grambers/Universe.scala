@@ -74,6 +74,8 @@ class Universe(mapName:String, withWalls : Boolean) {
         Universe.world.clearForces()
         nextWorldUpdateTime = now + (Config.worldUpdateDt * 1000).toLong        
         Config.worldUpdates += 1
+
+        movingThings.foreach { movingThing => movingThing.step(Config.worldUpdateDt) }
       }
       
       lastWorldUpdateTime = Config.currentTimeMillis
