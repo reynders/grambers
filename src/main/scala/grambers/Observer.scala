@@ -10,30 +10,30 @@ class Camera {
 }
 
 class Observer (var w: Int, var h: Int, val universe : Universe, var thingInFocus : Thing) {
-    
+
   var position : Point = Point(universe.WIDTH/2, universe.HEIGHT/2)
   var thingInControl = thingInFocus
   val random = new java.util.Random()
-    
+
   var camera : Camera = new Camera {
                           override def move(observer : Observer) = {
-                            var x = if ((thingInFocus.center.x - w/2) < 0) w/2 
-                                    else if ((thingInFocus.center.x + w/2) > universe.WIDTH) universe.WIDTH - w/2 
+                            var x = if ((thingInFocus.center.x - w/2) < 0) w/2
+                                    else if ((thingInFocus.center.x + w/2) > universe.WIDTH) universe.WIDTH - w/2
                                     else thingInFocus.center.x
-                            var y = if ((thingInFocus.center.y - h/2) < 0) h/2 
-                                    else if ((thingInFocus.center.y + h/2) > universe.HEIGHT) universe.HEIGHT - h/2 
+                            var y = if ((thingInFocus.center.y - h/2) < 0) h/2
+                                    else if ((thingInFocus.center.y + h/2) > universe.HEIGHT) universe.HEIGHT - h/2
                                     else thingInFocus.center.y
                             observer.position = Point(x, y)
                           }
                         }
-    
+
   def xViewTranslation = -1 * (position.x - w/2)
   def yViewTranslation = -1 * (position.y - h/2)
 
   object WindowToWorld extends JFrame {
-      
-    initGraphics        
-    
+
+    initGraphics
+
     import java.awt.event._
     object ObserverKeyListener extends KeyAdapter {
       override def keyPressed(e : KeyEvent) = {
@@ -41,20 +41,20 @@ class Observer (var w: Int, var h: Int, val universe : Universe, var thingInFocu
           case thing : MovingThing => {
             val c = e.getKeyCode();
             c match {
-              case KeyEvent.VK_LEFT => thing.turn(-2f)
-              case KeyEvent.VK_RIGHT => thing.turn(2f)
-              case KeyEvent.VK_DOWN => thing.accelerate(-2)
-              case KeyEvent.VK_UP => thing.accelerate(2)
-              case KeyEvent.VK_D => Config.debugOn = !Config.debugOn; println("Setting debug to " + Config.debugOn); 
+              case KeyEvent.VK_LEFT => thing.turn(-1f); println("Turning left")
+              case KeyEvent.VK_RIGHT => thing.turn(1f); println("Turning right")
+              case KeyEvent.VK_DOWN => thing.accelerate(-1); println("Accelerating")
+              case KeyEvent.VK_UP => thing.accelerate(1); println("Reversing")
+              case KeyEvent.VK_D => Config.debugOn = !Config.debugOn; println("Setting debug to " + Config.debugOn);
               case _ => println("Caught key event " + c)
             }
           }
         }
-        
+
         e.consume();
       }
     }
-    
+
     object WindowResizeListener extends ComponentAdapter {
       override def componentResized(e:ComponentEvent) {
         w = getWidth
@@ -62,9 +62,9 @@ class Observer (var w: Int, var h: Int, val universe : Universe, var thingInFocu
         println("Window resized to (" + w + "," + h + ")")
       }
     }
-    
+
     object ViewPanel extends JPanel {
-  
+
       override def paintComponent (g : Graphics) {
         super.paintComponent(g)
         g match {
@@ -72,7 +72,7 @@ class Observer (var w: Int, var h: Int, val universe : Universe, var thingInFocu
           case _ => throw new ClassCastException
         }
       }
-      
+
       def drawUniverse(g2 : Graphics2D) {
 
         if (Config.limitFps)
@@ -82,7 +82,7 @@ class Observer (var w: Int, var h: Int, val universe : Universe, var thingInFocu
 
         if (bgImage.image.getWidth != w)
           println("bgImage width " + bgImage.image.getWidth + " is not window width " + w)
-        
+
         g2.drawImage(bgImage.image, 0, 0, null)
         universe.staticThings.foreach(thing => thing.draw(g2, thing.center + Point(xViewTranslation, yViewTranslation)))
         universe.movingThings.foreach(thing => thing.draw(g2, thing.center + Point(xViewTranslation, yViewTranslation)))
@@ -90,11 +90,11 @@ class Observer (var w: Int, var h: Int, val universe : Universe, var thingInFocu
         Config.fps += 1
       }
     }
-      
-    def initGraphics {      
+
+    def initGraphics {
       addKeyListener(ObserverKeyListener)
       addComponentListener(WindowResizeListener)
-      setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);         
+      setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       add(ViewPanel)
       setSize(new Dimension(w, h));
       println("Window size is " + "(" + getWidth + "," + getHeight + ")")
@@ -102,10 +102,10 @@ class Observer (var w: Int, var h: Int, val universe : Universe, var thingInFocu
     }
   }
 
-  def observe() {    
-    WindowToWorld.repaint() 
+  def observe() {
+    WindowToWorld.repaint()
     camera.move(this)
     Thread.`yield`
-  } 
+  }
 }
 

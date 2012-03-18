@@ -1,14 +1,14 @@
 Backlog
 -------
 * Take first game map into use
-* Control ship with impulses
+* Control ship with impulses (FMI: http://www.monkeycoder.co.nz/Community/posts.php?topic=2440)
 * Check performance bottlenecks
 * Int Point
-* 
+*
 * IOC (http://programming-scala.labs.oreilly.com/ch13.html#DependencyInjectionInScala)
-* Switch to use the scala 2.8 Swing implementation 
+* Switch to use the scala 2.8 Swing implementation
   (http://www.scala-lang.org/sites/default/files/sids/imaier/Mon,%202009-11-02,%2008:55/scala-swing-design.pdf)
-* Scalafy code 
+* Scalafy code
 
 Done
 -----
@@ -17,7 +17,7 @@ Done
 * Introduce gravitation force
 * Shape to case class (http://programming-scala.labs.oreilly.com/ch06.html#CaseClasses)
 * Fix bug on mac: tile buffering is one tile row too late (unreproducible)
-* Rewrite game loop to update objects for only specific point of time, 
+* Rewrite game loop to update objects for only specific point of time,
   then interpolate until next update
 * Try out git branching locally
 * Detach view window coordinates from universe coordinates

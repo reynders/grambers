@@ -92,7 +92,10 @@ abstract class MovingThing(location : Point) extends Thing {
   def turn(force : Float) = {
     // TODO: wrong way to do this, should use applyForce etc
     //body.setTransform(body.getPosition, body.getAngle + force)
-    body.applyTorque(force * 100000f)
+    println("Angular velocity: " + body.getAngularVelocity())
+    println("Applying force to " + body.getWorldPoint(new Vec2(force.toFloat * 12, -13)))
+    //body.applyTorque(force)
+    body.applyForce(body.getWorldVector(new Vec2(0, 10000f)), body.getWorldPoint(new Vec2(force.toFloat * 12, -13)))
   }
 
   // TODO
@@ -210,6 +213,14 @@ class SpriteMovingThing(var c : Point, val sprite : Sprite) extends MovingThing(
       println("SpriteMovingThing " + c + ": creating a fixture from " + massBody)
       body.createFixture(massBodyToFixture(massBody))
     }
+
+    val md = new org.jbox2d.collision.shapes.MassData
+    body.getMassData(md)
+    println("Mass is: " + md.mass + " c " + md.center + " i " + md.I )
+    /*
+    md.I = 10.0f
+    body.setMassData(md)
+    */
   }
 
   def massBodyToFixture(massBody : MassBody) : FixtureDef = {
