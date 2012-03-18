@@ -1,5 +1,9 @@
 Backlog
 -------
+* Move object manipulation into game loop instead of key event handler
+* Fix keyboard input: key down -> apply, key up -> stop applying
+* Mass properties to gameobject xml
+* Force information to gameobject xml
 * Take first game map into use
 * Control ship with impulses (FMI: http://www.monkeycoder.co.nz/Community/posts.php?topic=2440)
 * Check performance bottlenecks

@@ -93,14 +93,13 @@ abstract class MovingThing(location : Point) extends Thing {
     // TODO: wrong way to do this, should use applyForce etc
     //body.setTransform(body.getPosition, body.getAngle + force)
     println("Angular velocity: " + body.getAngularVelocity())
-    println("Applying force to " + body.getWorldPoint(new Vec2(force.toFloat * 12, -13)))
     //body.applyTorque(force)
-    body.applyForce(body.getWorldVector(new Vec2(0, 10000f)), body.getWorldPoint(new Vec2(force.toFloat * 12, -13)))
+    body.applyLinearImpulse(body.getWorldVector(new Vec2(0, 1000f)), body.getWorldPoint(new Vec2(force.toFloat * 12, -13)))
   }
 
   // TODO
   def accelerate(force: Double) {
-    body.applyForce(body.getWorldVector(new Vec2(0f, force.toFloat * 50000f)), body.getWorldCenter())
+    body.applyLinearImpulse(body.getWorldVector(new Vec2(0f, force.toFloat * 5000f)), body.getWorldCenter())
   }
 
   // TODO: does not do what it says it does
@@ -268,4 +267,36 @@ class SpriteMovingThing(var c : Point, val sprite : Sprite) extends MovingThing(
   override def toString : String = {
     return "SpriteMovingThing: " + super.toString
   }
+}
+
+class Ship(c : Point, sprite : Sprite) extends SpriteMovingThing(c, sprite) { 
+}
+
+import java.awt.event.KeyAdapter
+import java.awt.event.KeyEvent
+
+class ShipKeyboardController(ship : Ship, keyActionMap : scala.collection.immutable.Map[Int, String]) extends KeyAdapter {
+  override def keyPressed(e : KeyEvent) = {
+    val c = e.getKeyCode();
+    if (keyActionMap.contains(c)) {
+      val action = keyActionMap(c)
+      action match {
+        case "TURN_LEFT" => ship.turn(-1f); println("Turning left")
+        case "TURN_RIGHT" => ship.turn(1f); println("Turning right")
+        case "ACCELERATE"  => ship.accelerate(-1); println("Accelerating")
+        case "REVERSE"  => ship.accelerate(1); println("Reversing")
+        case _ => println("Unknown ship keyboard action " + action)
+      }
+
+      e.consume();
+    }
+  }
+}
+
+object ShipKeyboardController {
+  def apply(ship : Ship) : ShipKeyboardController = new ShipKeyboardController(ship, scala.collection.immutable.Map(
+    KeyEvent.VK_LEFT -> "TURN_LEFT",
+    KeyEvent.VK_RIGHT -> "TURN_RIGHT",
+    KeyEvent.VK_UP -> "ACCELERATE", 
+    KeyEvent.VK_DOWN -> "REVERSE"))
 }

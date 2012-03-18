@@ -17,9 +17,8 @@ object Demo {
     val SHIPSPRITE = "resources/gameobjects/ship_gf.xml"
     val TRIANGLESPRITE = "resources/gameobjects/triangle.xml"
 
-    def createShip(position : Point) : SpriteMovingThing = new SpriteMovingThing(position, SpriteLoader.load(SHIPSPRITE))
-    
-
+    def createShip(position : Point) : Ship = new Ship(position, SpriteLoader.load(SHIPSPRITE))
+  
     def createTriangle(position : Point) : SpriteMovingThing =
         new SpriteMovingThing(position, SpriteLoader.load(TRIANGLESPRITE))
 
@@ -49,16 +48,15 @@ object Demo {
     }
 
     def shipDemo {
-      //org.jbox2d.common.Settings.maxPolygonVertices = 13
       val universe = new Universe(TESTMAP, true)
-      val ship1 = createShip(Point(320, 320))
-      // ship1.setSpeedAndDirection(new Vector(5, 10), 90)
-      universe.addThing(ship1)
+      val ship = createShip(Point(320, 320))
+      universe.addThing(ship)
 
       val ball = CircleMovingThing(320, 370, 32, Color.red)
       addBall(universe, ball, (ball) => {})
 
-      val observer = new Observer(WINDOW_W, WINDOW_H, universe, ship1)
+      val observer = new Observer(WINDOW_W, WINDOW_H, universe, ship)
+      observer.WindowToWorld.addKeyListener(ShipKeyboardController(ship))
       universe.run(observer)
     }
 
