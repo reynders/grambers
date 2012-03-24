@@ -67,6 +67,10 @@ abstract class Thing() {
     g2.setPaint(originalPaintColor)
   }
 
+  // Called inside the game loop to allow Things to do stuff like animation, 
+  // applying forces etc
+  def step(dt : Double) {}
+
   override def toString : String = "(" + center.x + "," + center.y + ")"
 }
 
@@ -93,8 +97,6 @@ abstract class MovingThing(location : Point) extends Thing {
   def setSpeedAndDirection(direction : Vector, speed : Double) {
     body.setLinearVelocity(new Vec2(direction.i.toFloat, direction.j.toFloat))
   }
-
-  def step(dt : Double) {}
 }
 
 class CircleMovingThing(var c : Point, val radius : Double) extends MovingThing(c) {

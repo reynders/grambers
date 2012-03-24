@@ -77,12 +77,20 @@ val tileSets:Array[TileSet], val layers:Array[Layer], val tiles:Array[Tile], val
     val bgImageAsTiles = Rectangle(Rectangle(oLup, oRlp), TILE_BUFFER_PADDING_TILES).limitBy(Rectangle((0,0), (wInTiles-1, hInTiles-1)))
     val bgImage = getNonvisibleBgImage(bgImageAsTiles)
 
+    // TODO: Might be faster to draw empty tiles than clear whole bgImage
+    bgImage.clear()
+
     val lup = (bgImageAsTiles.minX.toInt, bgImageAsTiles.minY.toInt)
     val rlp = (bgImageAsTiles.maxX.toInt, bgImageAsTiles.maxY.toInt)
 
     for (y <- lup._2 to rlp._2) {
       for (x <- lup._1 to rlp._1) {
-        bgImage.bgGraphics.drawImage(getTile(0, x, y).image, (x-lup._1)*tileW, (y-lup._2)*tileH, null)
+        val tile = getTile(0, x, y)
+
+        tile match {
+          case tile : EmptyTile =>
+          case tile : Tile => bgImage.bgGraphics.drawImage(tile.image, (x-lup._1)*tileW, (y-lup._2)*tileH, null)
+        }
       }
     }
 
@@ -112,7 +120,10 @@ val tileSets:Array[TileSet], val layers:Array[Layer], val tiles:Array[Tile], val
 
   def getTile(layerId : Int, x:Int, y:Int) : Tile = {
     val tileIndex = layers(layerId).tileMap(x)(y)
-    return tiles(tileIndex._2-1)
+    if (tileIndex._2 == 0)
+      return EmptyTile //println("WARNING: empty tiles not supported, make sure maps has a tile everywhere")
+    else
+      return tiles(tileIndex._2-1)
   }
 
   def getStaticThings() {
@@ -143,6 +154,11 @@ class BackgroundImage(val image:BufferedImage, val worldCoordinates:Rectangle) {
     val visiblePartImage = image.getSubimage(bgImageVisiblePart.lup._1.toInt, bgImageVisiblePart.lup._2.toInt,
                                              bgImageVisiblePart.w.toInt, bgImageVisiblePart.h.toInt)
     return new BackgroundImage(visiblePartImage, visiblePartWorldCoordinates)
+  }
+
+  def clear() {
+    bgGraphics.setPaint(Config.bgColor);
+    bgGraphics.fillRect(0, 0, image.getWidth(), image.getHeight());
   }
 }
 
@@ -231,11 +247,12 @@ object Layer {
 
 }
 
-
 class Tile(val image : BufferedImage) {
-  val w : Int = image.getWidth
-  val h : Int = image.getHeight
+  lazy val w : Int = image.getWidth
+  lazy val h : Int = image.getHeight
 }
+
+object EmptyTile extends Tile(null) {}
 
 object Tile {
   def apply(imageName : String) : Tile = {
@@ -295,7 +312,8 @@ object MapLoader {
       val map = parseMapFromXml(XML.loadFile(mapFileName))
 
       println("Loaded map " + mapFileName + " of size in tiles (" + map.wInTiles + "," + map.hInTiles +
-            "), in pixels (" + map.w + "," + map.h + ") with " + map.layers.size + " layers and " + map.tiles.size + " tiles")
+            "), in pixels (" + map.w + "," + map.h + "), tileW: " + map.tileW + " tileH: " + map.tileH + 
+            " with " + map.layers.size + " layers and " + map.tiles.size + " tiles")
       return map
 
     } catch {

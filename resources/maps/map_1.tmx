@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" width="51" height="25" tilewidth="31" tileheight="31">
  <tileset firstgid="1" name="blocks1" tilewidth="32" tileheight="32" spacing="2" margin="2">
-  <image source="../../../../../project/grambers/tools/tiled_workdir/blocks1.gif" width="640" height="376"/>
+  <image source="resources/gfx/blocks1.gif" width="640" height="376"/>
+  <!-- <image source="../../../../../project/grambers/tools/tiled_workdir/blocks1.gif" width="640" height="376"/> -->
  </tileset>
  <layer name="Tile Layer 1" width="51" height="25" opacity="0.85">
-  <data encoding="base64" compression="zlib">
-   eJztk8ENgDAMAzsGD5gGCTEKE8J65MkDSpw4bSSw5J+T5tpmK6VsH/Gdes/EYIhiQtWL5S1vVcQ9ofXaLJqJYEFq0BmRLOPvamu0/Tw8dxrEo3hS9NHIcseWt0SF1teynn1uwbKLj4vf8gjPLF7EayMWzaxoHrWFw1PbkyfiLrRi8rTsxeRhsjD3KQML6/8xzvZyWHmysjzNhfBk+GPIvDXW3izaXk+5CBamGLuUgcVzbiYWz9meff3d3idv0DWN
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+2TwQ2AMAwDOwYPmAYJMQoTwnrkyQNKnDhtJLDkn5Pm2mYrpWwf8Z16z8RgiGJC1YvlLW9VxD2h9dosmolgQWrQGZEs4+9qa7T9PDx3GsSjeFL00chyx5a3RIXW17KefW7BsouPi9/yCM8sXsRrIxbNrGgetYXDU9uTJ+IutGLytOzF5GGyMPcpAwvr/zHO9nJYebKyPM2F8GT4Y8i8NdbeLNpeT7kIFqYYu5SBxXNuJhbP2Z59/d3eJ//7Xv/sEwAA
   </data>
  </layer>
  <objectgroup name="SOLIDS" width="51" height="25">

@@ -74,13 +74,26 @@ object Demo {
       universe.run(observer)
     }
 
+    def gameDemo {
+      val universe = new Universe(GAMEMAP, true)
+      val ship = createShip(Point(320, 320))
+      universe.addThing(ship)
+
+      val ball = CircleMovingThing(320, 370, 32, Color.red)
+      addBall(universe, ball, (ball) => {})
+
+      val observer = new Observer(WINDOW_W, WINDOW_H, universe, ship)
+      observer.WindowToWorld.addKeyListener(ShipKeyboardController(ship))
+      universe.run(observer)  
+    }
+
     def main(args:Array[String]) {
       if (args.length > 0)
         args(0) match {
           case "B" => twoBallsDemo
           case "S" => shipDemo
           case "T" => triangleDemo
-//          case "I" => imageDemo
+          case "G" => gameDemo
 //          case "3" => ballsAndWallsAndCameraDemo
 //          case "2" => edgesAndStuffDemo
 //          case "1" => twoWallsAndABallDemo

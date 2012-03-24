@@ -12,6 +12,7 @@ object Config {
   val ROTATED_IMAGE_COUNT = 36
   val limitFps = false
   val fpsLimit = 5
+  val bgColor= java.awt.Color.LIGHT_GRAY
 
   // Measurements
   var fps = 0

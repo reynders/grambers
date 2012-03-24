@@ -1,21 +1,22 @@
 Backlog
 -------
-* Move object manipulation into game loop instead of key event handler
-* Fix keyboard input: key down -> apply, key up -> stop applying
+* Take first game map into use
+* Other game objects: start point, end point
 * Mass properties to gameobject xml
 * Force information to gameobject xml
-* Take first game map into use
-* Control ship with impulses (FMI: http://www.monkeycoder.co.nz/Community/posts.php?topic=2440)
 * Check performance bottlenecks
+* Find out why there are pauses (-XInt helps?)
 * Int Point
-*
 * IOC (http://programming-scala.labs.oreilly.com/ch13.html#DependencyInjectionInScala)
-* Switch to use the scala 2.8 Swing implementation
+* Switch to use the scala Swing implementation
   (http://www.scala-lang.org/sites/default/files/sids/imaier/Mon,%202009-11-02,%2008:55/scala-swing-design.pdf)
 * Scalafy code
+* sbt build
 
 Done
 -----
+* Move object manipulation into game loop instead of key event handler
+* Fix keyboard input: key down -> apply, key up -> stop applying
 * Integrated with jbox2d
 * Polygon shapes
 * Introduce gravitation force
