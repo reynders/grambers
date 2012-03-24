@@ -1,6 +1,20 @@
+A thrust / Turbo Raketti / Gravity Force clone game and a game platform.
+
+Supports Tiled maps (htt://www.mapeditor.org) and uses jbox2d for physics.
+
+Build instructions
+------------------
+Download and install Maven 3+
+Build with "mvn test"
+
+Running
+-------
+./run.sh grambers.Demo G
+
+for more demos see Demo.scala
+
 Backlog
 -------
-* Take first game map into use
 * Other game objects: start point, end point
 * Mass properties to gameobject xml
 * Force information to gameobject xml
@@ -15,6 +29,7 @@ Backlog
 
 Done
 -----
+* Take first game map into use
 * Move object manipulation into game loop instead of key event handler
 * Fix keyboard input: key down -> apply, key up -> stop applying
 * Integrated with jbox2d
