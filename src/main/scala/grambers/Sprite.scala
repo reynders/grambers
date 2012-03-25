@@ -9,7 +9,7 @@ class Sprite(val name : String, val img : BufferedImage, val w : Int, val h : In
              val rows : Int, val columns : Int, val xOffset : Int, val yOffset : Int,
              val action : String, val animationFps : Int,
              val rotates : Boolean, val rotationCount : Int,
-             val massBodies : Array[MassBody]) {
+             val massBodies : Array[MassBody], val forces : Array[Force]) {
 
   lazy val imgW : Int = img.getWidth
   lazy val imgH : Int = img.getHeight
@@ -59,10 +59,11 @@ class Sprite(val name : String, val img : BufferedImage, val w : Int, val h : In
   override def toString : String = "Sprite " + name + "; w: " + w + " h:" + h + " rows: " + rows + " columns: " + columns +
                                     " action: " + action + " animationFps: " + animationFps
                                    " xOffset:" + xOffset + " yOffset:" + yOffset +
-                                   " rotates: " + rotates + " rotationCount: " + rotationCount + " massBodies: " + massBodies
+                                   " rotates: " + rotates + " rotationCount: " + rotationCount + 
+                                   " massBodies: " + massBodies + " forces: " + forces
 }
 
-class DummySprite extends Sprite("dummy", new BufferedImage(1, 1, Config.imageType), 0, 0, 0, 0, 0, 0, "dummy", 0, false, 0, new Array[MassBody](0)) {}
+class DummySprite extends Sprite("dummy", new BufferedImage(1, 1, Config.imageType), 0, 0, 0, 0, 0, 0, "dummy", 0, false, 0, new Array[MassBody](0), new Array[Force](0)) {}
 
 import scala.xml._
 
@@ -92,14 +93,15 @@ object SpriteLoader {
                                                  Util.parseInt((xml \ "gfx" \ "@animation_fps").text, 0),
                                                  (xml \ "gfx" \ "@rotates").text.equals("true"),
                                                  (xml \ "gfx" \ "@rotation_count").text.toInt,
-                                                 parseMassBodies(xml \ "gfx" \ "mass_body"))
+                                                 parseMassBodies(xml \ "gfx" \ "mass_body"),
+                                                 parseForces(xml \ "gfx" \ "force"))
 
   def load(gfxFileName : String, w : Int, h : Int, rows : Int, columns : Int, xOffset : Int, yOffset : Int,
            action : String, animationFps : Int,
-           rotates : Boolean, rotationCount : Int, massBodies : Array[MassBody]) : Sprite = {
+           rotates : Boolean, rotationCount : Int, massBodies : Array[MassBody], forces : Array[Force]) : Sprite = {
     val img : BufferedImage = javax.imageio.ImageIO.read(new File(gfxFileName)).asInstanceOf[BufferedImage]
     return new Sprite(gfxFileName, img, w, h, rows, columns, xOffset, yOffset,
-                      action, animationFps, rotates, rotationCount, massBodies)
+                      action, animationFps, rotates, rotationCount, massBodies, forces)
   }
 
   def parseMassBodies(xml : NodeSeq) : Array[MassBody] = xml.map{massBody => parseMassBody(massBody)}.toArray[MassBody]
@@ -122,6 +124,13 @@ object SpriteLoader {
       println("WARNING: don't know how to parse fixture type " + (xml \\ "@type").text + " xml: \n" + xml)
       new CircleMassBody(Point(0,0), 0.0)
   }
+
+  def parseForces(xml : NodeSeq) : Array[Force] = xml.map {force => parseForce(force)}.toArray[Force]
+
+  def parseForce(xml : NodeSeq) : Force = 
+                new Force(Util.strPointToPoint((xml \ "@force_vector").text),
+                          Util.strPointToPoint((xml \ "@application_point").text),
+                          (xml \ "@action").text)
 
   def splitImageToSprites(img : BufferedImage, w : Int, h : Int, rows : Int, columns : Int,
                           xOffset : Int, yOffset : Int) : Array[BufferedImage] = {
@@ -176,3 +185,5 @@ case class CircleMassBody(c : Point, r : Double) extends MassBody(c) {}
 case class RectangleMassBody(c : Point, w : Double, h : Double) extends MassBody(c) {}
 
 case class PolygonMassBody(c : Point, points : Array[Point]) extends MassBody(c) {}
+
+class Force(val forceVector : Point, val applicationPoint : Point, val action : String) {}
