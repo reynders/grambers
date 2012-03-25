@@ -88,7 +88,7 @@ val tileSets:Array[TileSet], val layers:Array[Layer], val tiles:Array[Tile], val
         val tile = getTile(0, x, y)
 
         tile match {
-          case tile : EmptyTile =>
+          case EmptyTile =>
           case tile : Tile => bgImage.bgGraphics.drawImage(tile.image, (x-lup._1)*tileW, (y-lup._2)*tileH, null)
         }
       }
