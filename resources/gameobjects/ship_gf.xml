@@ -6,5 +6,9 @@
     <mass_body type="circle" center="0,-3" r="4" />
     <mass_body type="rectangle" center="-8,-4" w="5" h="4" />
     <mass_body type="rectangle" center="7,-4" w="5" h="4" />
+    <force force_vector="0,50" application_point="-12,-13" action="TURN_LEFT" />
+  	<force force_vector="0,50" application_point="12,-13" action="TURN_RIGHT" />
+  	<force force_vector="0,500" application_point="0,0" action="ACCELERATE" />
+  	<force force_vector="0,-500" application_point="0,0" action="REVERSE" />
   </gfx>
 </gameobject>

@@ -15,7 +15,7 @@ class SpriteTest extends TestCase {
                   </gameobject>
 
   def testSpriteLoader {
-    val sprite = SpriteLoader.load("resources/gfx/ships.gif", 25, 20, 1, 3, 0, 0, "testKey", 360, false, 0, new Array[MassBody](0))
+    val sprite = SpriteLoader.load("resources/gfx/ships.gif", 25, 20, 1, 3, 0, 0, "testKey", 360, false, 0, new Array[MassBody](0), new Array[Force](0))
     assertEquals("resources/gfx/ships.gif", sprite.name)
     assertEquals(75, sprite.imgW)
     assertEquals(20, sprite.imgH)
@@ -103,5 +103,20 @@ class SpriteTest extends TestCase {
     assertEquals(Point(1,-1), pmb.c)
     assertEquals(3, pmb.points.size)
     assertEquals(Point(-12, -12), pmb.points(2))
+  }
+
+  def testParseForce {
+    val force = SpriteLoader.parseForce(<force force_vector="0,50" application_point="12,-13" action="LEFT" />)
+    assertTrue(force.isInstanceOf[Force])
+    assertEquals(Point(0, 50), force.forceVector)
+    assertEquals(Point(12, -13), force.applicationPoint)
+    assertEquals("LEFT", force.action)
+    
+    val forces = SpriteLoader.parseForces(<force force_vector="0,50" application_point="12,-13" action="LEFT" />
+                                          <force force_vector="0,50" application_point="-12,-13" action="RIGHT" />
+                                          <force force_vector="0,500" application_point="0,0" action="UP" />
+                                          <force force_vector="0,-500" application_point="0,0" action="DOWN" />)
+    assertEquals(4, forces.size)
+    assertEquals(Point(0, -500), forces(3).forceVector)
   }
 }

@@ -265,7 +265,6 @@ object Tile {
 class MapObjectGroup(val name : String, val mapObjects : Array[Thing]) {
 }
 
-import MapObjectType._
 import scala.collection.mutable.HashMap
 
 class MapObject(val name : String, val typeStr : String, val
