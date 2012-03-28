@@ -159,7 +159,6 @@ class PolygonStaticThing(val c : Point, vertices : List[(Int, Int)]) extends Sta
 
   override def draw(g2 : Graphics2D, position : Point) = {
     if (Config.debugDrawShapes) {
-      println("HERE")
       drawDebugShapes(g2, position)
     }
   }
@@ -266,22 +265,15 @@ class Ship(c : Point, sprite : Sprite) extends SpriteMovingThing(c, sprite) {
   var accelerate = false
   var reverse = false
 
-  def turn(force : Float) = {
-    //println("Angular velocity: " + body.getAngularVelocity())
-    //body.applyTorque(force)
-    body.applyLinearImpulse(body.getWorldVector(new Vec2(0, 50f)), body.getWorldPoint(new Vec2(force.toFloat * 12, -13)))
-  }
-
-  // TODO
-  def accelerate(force: Double) {
-    body.applyLinearImpulse(body.getWorldVector(new Vec2(0f, force.toFloat * 500f)), body.getWorldCenter())
+  def applyForce(force : Force) {
+    body.applyLinearImpulse(body.getWorldVector(force.forceVectorVec2),  body.getWorldPoint(force.applicationPointVec2))
   }
 
   override def step(dt : Double) {
-    if (turnLeft) turn(-1)
-    if (turnRight) turn(1)
-    if (accelerate) accelerate(1)
-    if (reverse) accelerate(-1)
+    if (turnLeft) applyForce(sprite.forceMap("TURN_LEFT"))
+    if (turnRight) applyForce(sprite.forceMap("TURN_RIGHT"))
+    if (accelerate) applyForce(sprite.forceMap("ACCELERATE"))
+    if (reverse) applyForce(sprite.forceMap("REVERSE"))
   }
 }
 

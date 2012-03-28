@@ -15,6 +15,7 @@ class Sprite(val name : String, val img : BufferedImage, val w : Int, val h : In
   lazy val imgH : Int = img.getHeight
   lazy val images : Array[BufferedImage] = SpriteLoader.splitImageToSprites(img, w, h, rows, columns, xOffset, yOffset)
   lazy val rotatedImages : Array[Array[BufferedImage]] = SpriteLoader.createRotatedImages(images, rotationCount, rotates)
+  lazy val forceMap : scala.collection.immutable.Map[String, Force] = forces.map {force => (force.action, force)}.toMap[String, Force]
 
   var isAnimating = false
   var lastGetCurrentImageTimestamp : Long = 0
@@ -186,4 +187,8 @@ case class RectangleMassBody(c : Point, w : Double, h : Double) extends MassBody
 
 case class PolygonMassBody(c : Point, points : Array[Point]) extends MassBody(c) {}
 
-class Force(val forceVector : Point, val applicationPoint : Point, val action : String) {}
+class Force(val forceVector : Point, val applicationPoint : Point, val action : String) {
+  import org.jbox2d.common.Vec2
+  lazy val forceVectorVec2 = new Vec2(forceVector.x.toFloat, forceVector.y.toFloat)
+  lazy val applicationPointVec2 = new Vec2(applicationPoint.x.toFloat, applicationPoint.y.toFloat)
+}
