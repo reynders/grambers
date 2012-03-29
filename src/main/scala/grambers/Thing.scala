@@ -199,17 +199,12 @@ class SpriteMovingThing(var c : Point, val sprite : Sprite) extends MovingThing(
 
   {
     sprite.massBodies.foreach { massBody =>
-      println("SpriteMovingThing " + c + ": creating a fixture from " + massBody)
+      //  println("SpriteMovingThing " + c + ": creating a fixture from " + massBody)
       body.createFixture(massBodyToFixture(massBody))
     }
 
-    val md = new org.jbox2d.collision.shapes.MassData
-    body.getMassData(md)
-    println("Mass is: " + md.mass + " c " + md.center + " i " + md.I )
-    /*
-    md.I = 10.0f
-    body.setMassData(md)
-    */
+    // TODO: set this in gameobject xml
+    body.setAngularDamping(5)
   }
 
   def massBodyToFixture(massBody : MassBody) : FixtureDef = {
@@ -286,10 +281,10 @@ class ShipKeyboardController(ship : Ship, keyActionMap : scala.collection.immuta
     if (keyActionMap.contains(c)) {
       val action = keyActionMap(c)
       action match {
-        case "TURN_LEFT" => ship.turnLeft = true; println("Turning left")
-        case "TURN_RIGHT" => ship.turnRight = true; println("Turning right")
-        case "ACCELERATE"  => ship.accelerate = true; println("Accelerating")
-        case "REVERSE"  => ship.reverse = true; println("Reversing")
+        case "TURN_LEFT" => ship.turnLeft = true;
+        case "TURN_RIGHT" => ship.turnRight = true;
+        case "ACCELERATE"  => ship.accelerate = true;
+        case "REVERSE"  => ship.reverse = true;
         case _ => println("Unknown ship keyboard action " + action)
       }
     }
@@ -300,10 +295,10 @@ class ShipKeyboardController(ship : Ship, keyActionMap : scala.collection.immuta
     if (keyActionMap.contains(c)) {
       val action = keyActionMap(c)
       action match {
-        case "TURN_LEFT" => ship.turnLeft = false; println("Stop Turning left")
-        case "TURN_RIGHT" => ship.turnRight = false; println("Stop Turning right")
-        case "ACCELERATE"  => ship.accelerate = false; println("Stop Accelerating")
-        case "REVERSE"  => ship.reverse = false; println("Stop Reversing")
+        case "TURN_LEFT" => ship.turnLeft = false;
+        case "TURN_RIGHT" => ship.turnRight = false; 
+        case "ACCELERATE"  => ship.accelerate = false; 
+        case "REVERSE"  => ship.reverse = false; 
       }
     }
   }

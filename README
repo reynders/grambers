@@ -15,9 +15,8 @@ for more demos see Demo.scala
 
 Backlog
 -------
+* Body properties to gameobject xml
 * Other game objects: start point, end point
-* Mass properties to gameobject xml
-* Force information to gameobject xml
 * Check performance bottlenecks
 * Find out why there are pauses (-XInt helps?)
 * Int Point
@@ -29,6 +28,7 @@ Backlog
 
 Done
 -----
+* Force information to gameobject xml
 * Take first game map into use
 * Move object manipulation into game loop instead of key event handler
 * Fix keyboard input: key down -> apply, key up -> stop applying
