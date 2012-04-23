@@ -14,13 +14,13 @@ object Demo {
     val TESTMAP = "resources/maps/testmap_40x20.tmx"
     val STARMAP = "resources/maps/starsky_100x100.tmx"
     val GAMEMAP = "resources/maps/map_1.tmx"
-    val SHIPSPRITE = "resources/gameobjects/ship_gf.xml"
-    val TRIANGLESPRITE = "resources/gameobjects/triangle.xml"
+    val SHIP = "resources/gameobjects/ship_gf.xml"
+    val TRIANGLE = "resources/gameobjects/triangle.xml"
 
-    def createShip(position : Point) : Ship = new Ship(position, SpriteLoader.load(SHIPSPRITE))
+    def createShip(position : Point) : Ship = new Ship(position, GameObject.load(SHIP))
   
-    def createTriangle(position : Point) : SpriteMovingThing =
-        new SpriteMovingThing(position, SpriteLoader.load(TRIANGLESPRITE))
+    def createTriangle(position : Point) : GameObjectMovingThing =
+        new GameObjectMovingThing(position, GameObject.load(TRIANGLE))
 
     def addBall(universe : Universe, ball : CircleMovingThing, doYourThing : (Thing)=>Unit) {
       ball.doYourThing = doYourThing

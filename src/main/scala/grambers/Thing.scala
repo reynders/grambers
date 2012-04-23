@@ -195,10 +195,10 @@ class RectangleStaticThing(val c : Point, val w : Int, val h : Int) extends Stat
 import java.awt.image._
 import java.io._
 
-class SpriteMovingThing(var c : Point, val sprite : Sprite) extends MovingThing(c) {
+class GameObjectMovingThing(var c : Point, val gameObject : GameObject) extends MovingThing(c) {
 
   {
-    sprite.massBodies.foreach { massBody =>
+    gameObject.massBodies.foreach { massBody =>
       //  println("SpriteMovingThing " + c + ": creating a fixture from " + massBody)
       body.createFixture(massBodyToFixture(massBody))
     }
@@ -244,7 +244,8 @@ class SpriteMovingThing(var c : Point, val sprite : Sprite) extends MovingThing(
     if (Config.debugDrawShapes)
       drawDebugShapes(g2, position)
 
-    val img = sprite.getCurrentImage(direction.toInt, true, Config.currentTimeMillis)
+    // TODO: support more than 1 sprite
+    val img = gameObject.sprites(0).getCurrentImage(direction.toInt, true, Config.currentTimeMillis)
 
     g2.drawImage(img, (position.x - img.getWidth/2).toInt, (position.y-img.getHeight/2).toInt, null)
   }
@@ -254,7 +255,7 @@ class SpriteMovingThing(var c : Point, val sprite : Sprite) extends MovingThing(
   }
 }
 
-class Ship(c : Point, sprite : Sprite) extends SpriteMovingThing(c, sprite) {
+class Ship(c : Point, gameObject : GameObject) extends GameObjectMovingThing(c, gameObject) {
   var turnLeft = false
   var turnRight = false
   var accelerate = false
@@ -265,10 +266,10 @@ class Ship(c : Point, sprite : Sprite) extends SpriteMovingThing(c, sprite) {
   }
 
   override def step(dt : Double) {
-    if (turnLeft) applyForce(sprite.forceMap("TURN_LEFT"))
-    if (turnRight) applyForce(sprite.forceMap("TURN_RIGHT"))
-    if (accelerate) applyForce(sprite.forceMap("ACCELERATE"))
-    if (reverse) applyForce(sprite.forceMap("REVERSE"))
+    if (turnLeft) applyForce(gameObject.forceMap("TURN_LEFT"))
+    if (turnRight) applyForce(gameObject.forceMap("TURN_RIGHT"))
+    if (accelerate) applyForce(gameObject.forceMap("ACCELERATE"))
+    if (reverse) applyForce(gameObject.forceMap("REVERSE"))
   }
 }
 

@@ -40,7 +40,7 @@ class Observer (var w: Int, var h: Int, val universe : Universe, var thingInFocu
         val c = e.getKeyCode();
         c match {
           case KeyEvent.VK_D => Config.debugOn = !Config.debugOn; println("Setting debug to " + Config.debugOn);
-          case _ => println("Caught key event " + c)
+          case _ => //println("Caught key event " + c)
         }
       
         e.consume();

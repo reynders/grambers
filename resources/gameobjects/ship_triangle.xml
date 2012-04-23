@@ -1,14 +1,13 @@
-<gameobject name="ship_gf" type="moving">
+<gameobject name="ship_triangle" type="moving">
   <gfx file="resources/gfx/ships.gif"
        w="25" h="20" rows="1" columns="3" x_offset="0" y_offset="0" action="thrust" animation_fps="180"
-       rotates="true" rotation_count="36" > <!-- polygonPoints="-1,-2 -4,-7 0,-10 4,-7 2,-2 12,4 0,7 -12,4"> -->
-    <mass_body type="circle" center="0,6" r="3" />
-    <mass_body type="circle" center="0,-3" r="4" />
-    <mass_body type="rectangle" center="-8,-4" w="5" h="4" />
-    <mass_body type="rectangle" center="7,-4" w="5" h="4" />
-    <force force_vector="0,100" application_point="-12,-13" action="TURN_LEFT" />
-  	<force force_vector="0,100" application_point="12,-13" action="TURN_RIGHT" />
-  	<force force_vector="0,400" application_point="0,0" action="ACCELERATE" />
-  	<force force_vector="0,-300" application_point="0,0" action="REVERSE" />
-  </gfx>
+       rotates="true" rotation_count="36" /> <!-- polygonPoints="-1,-2 -4,-7 0,-10 4,-7 2,-2 12,4 0,7 -12,4"> -->
+  <mass_body type="circle" center="0,6" r="3" />
+  <mass_body type="circle" center="0,-3" r="4" />
+  <mass_body type="rectangle" center="-8,-4" w="5" h="4" />
+  <mass_body type="rectangle" center="7,-4" w="5" h="4" />
+  <force force_vector="0,100" application_point="-12,-13" action="TURN_LEFT" />
+	<force force_vector="0,100" application_point="12,-13" action="TURN_RIGHT" />
+	<force force_vector="0,400" application_point="0,0" action="ACCELERATE" />
+	<force force_vector="0,-300" application_point="0,0" action="REVERSE" />
 </gameobject>
