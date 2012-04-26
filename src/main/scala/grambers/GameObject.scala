@@ -27,7 +27,7 @@ object GameObject {
   }
 
   def parseGameObject(xml : NodeSeq) : GameObject = new GameObject(
-      parseSprites(xml \ "gfx"),
+      parseSprites(xml \ "sprite"),
       parseMassBodies(xml \ "mass_body"),
       parseForces(xml \ "force"))
 
