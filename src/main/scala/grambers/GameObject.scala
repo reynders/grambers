@@ -8,7 +8,7 @@ import scala.xml._
 
 class GameObject(val sprites : Array[Sprite], val massBodies : Array[MassBody], val forces : Array[Force]) {
   lazy val forceMap : scala.collection.immutable.Map[String, Force] = forces.map {force => (force.action, force)}.toMap[String, Force]
-
+  lazy val actionToSpriteMap : scala.collection.immutable.Map[String, Sprite] = sprites.map {sprite => (sprite.action, sprite)}.toMap[String, Sprite]
   override def toString() : String = "GameObject: sprites " + sprites.size + " massBodies " + massBodies.size + 
                                      " forces " + forces.size
 }

@@ -256,20 +256,19 @@ class GameObjectMovingThing(var c : Point, val gameObject : GameObject) extends 
 }
 
 class Ship(c : Point, gameObject : GameObject) extends GameObjectMovingThing(c, gameObject) {
-  var turnLeft = false
-  var turnRight = false
-  var accelerate = false
-  var reverse = false
+  var actions = scala.collection.mutable.Set[String]()
 
   def applyForce(force : Force) {
     body.applyLinearImpulse(body.getWorldVector(force.forceVectorVec2),  body.getWorldPoint(force.applicationPointVec2))
   }
 
   override def step(dt : Double) {
-    if (turnLeft) applyForce(gameObject.forceMap("TURN_LEFT"))
-    if (turnRight) applyForce(gameObject.forceMap("TURN_RIGHT"))
-    if (accelerate) applyForce(gameObject.forceMap("ACCELERATE"))
-    if (reverse) applyForce(gameObject.forceMap("REVERSE"))
+    actions.foreach { action =>
+      if (gameObject.forceMap.contains(action)) {
+        println("Applying " + action)
+        applyForce(gameObject.forceMap(action))
+      }
+    }
   }
 }
 
@@ -282,10 +281,7 @@ class ShipKeyboardController(ship : Ship, keyActionMap : scala.collection.immuta
     if (keyActionMap.contains(c)) {
       val action = keyActionMap(c)
       action match {
-        case "TURN_LEFT" => ship.turnLeft = true;
-        case "TURN_RIGHT" => ship.turnRight = true;
-        case "ACCELERATE"  => ship.accelerate = true;
-        case "REVERSE"  => ship.reverse = true;
+        case str : String => ship.actions += action
         case _ => println("Unknown ship keyboard action " + action)
       }
     }
@@ -296,10 +292,8 @@ class ShipKeyboardController(ship : Ship, keyActionMap : scala.collection.immuta
     if (keyActionMap.contains(c)) {
       val action = keyActionMap(c)
       action match {
-        case "TURN_LEFT" => ship.turnLeft = false;
-        case "TURN_RIGHT" => ship.turnRight = false; 
-        case "ACCELERATE"  => ship.accelerate = false; 
-        case "REVERSE"  => ship.reverse = false; 
+        case str : String => ship.actions -= action
+        case _ => println("Unknown ship keyboard action " + action)
       }
     }
   }
