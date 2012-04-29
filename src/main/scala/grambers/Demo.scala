@@ -17,7 +17,7 @@ object Demo {
     val SHIP = "resources/gameobjects/ship_gf.xml"
     val TRIANGLE = "resources/gameobjects/triangle.xml"
 
-    def createShip(position : Point) : Ship = new Ship(position, GameObject.load(SHIP))
+    def createShip(position : Point) : GameObjectMovingThing = new GameObjectMovingThing(position, GameObject.load(SHIP))
   
     def createTriangle(position : Point) : GameObjectMovingThing =
         new GameObjectMovingThing(position, GameObject.load(TRIANGLE))
@@ -56,7 +56,7 @@ object Demo {
       addBall(universe, ball, (ball) => {})
 
       val observer = new Observer(WINDOW_W, WINDOW_H, universe, ship)
-      observer.WindowToWorld.addKeyListener(ShipKeyboardController(ship))
+      observer.WindowToWorld.addKeyListener(GameObjectKeyboardController(ship))
       universe.run(observer)
     }
 
@@ -83,7 +83,7 @@ object Demo {
       addBall(universe, ball, (ball) => {})
 
       val observer = new Observer(WINDOW_W, WINDOW_H, universe, ship)
-      observer.WindowToWorld.addKeyListener(ShipKeyboardController(ship))
+      observer.WindowToWorld.addKeyListener(GameObjectKeyboardController(ship))
       universe.run(observer)  
     }
 

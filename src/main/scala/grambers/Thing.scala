@@ -207,6 +207,21 @@ class GameObjectMovingThing(var c : Point, val gameObject : GameObject) extends 
     body.setAngularDamping(5)
   }
 
+  var actions = scala.collection.mutable.Set[String]()
+
+  def applyForce(force : Force) {
+    body.applyLinearImpulse(body.getWorldVector(force.forceVectorVec2),  body.getWorldPoint(force.applicationPointVec2))
+  }
+
+  override def step(dt : Double) {
+    actions.foreach { action =>
+      if (gameObject.forceMap.contains(action)) {
+        println("Applying " + action)
+        applyForce(gameObject.forceMap(action))
+      }
+    }
+  }
+
   def massBodyToFixture(massBody : MassBody) : FixtureDef = {
     val shape : org.jbox2d.collision.shapes.Shape = massBody match {
       case cmb : CircleMassBody =>
@@ -255,34 +270,17 @@ class GameObjectMovingThing(var c : Point, val gameObject : GameObject) extends 
   }
 }
 
-class Ship(c : Point, gameObject : GameObject) extends GameObjectMovingThing(c, gameObject) {
-  var actions = scala.collection.mutable.Set[String]()
-
-  def applyForce(force : Force) {
-    body.applyLinearImpulse(body.getWorldVector(force.forceVectorVec2),  body.getWorldPoint(force.applicationPointVec2))
-  }
-
-  override def step(dt : Double) {
-    actions.foreach { action =>
-      if (gameObject.forceMap.contains(action)) {
-        println("Applying " + action)
-        applyForce(gameObject.forceMap(action))
-      }
-    }
-  }
-}
-
 import java.awt.event.KeyAdapter
 import java.awt.event.KeyEvent
 
-class ShipKeyboardController(ship : Ship, keyActionMap : scala.collection.immutable.Map[Int, String]) extends KeyAdapter {
+class GameObjectKeyboardController(gameObject: GameObjectMovingThing, keyActionMap : scala.collection.immutable.Map[Int, String]) extends KeyAdapter {
   override def keyPressed(e : KeyEvent) = {
     val c = e.getKeyCode();
     if (keyActionMap.contains(c)) {
       val action = keyActionMap(c)
       action match {
-        case str : String => ship.actions += action
-        case _ => println("Unknown ship keyboard action " + action)
+        case str : String => gameObject.actions += action
+        case _ => println("Unknown game object keyboard action " + action)
       }
     }
   }
@@ -292,17 +290,18 @@ class ShipKeyboardController(ship : Ship, keyActionMap : scala.collection.immuta
     if (keyActionMap.contains(c)) {
       val action = keyActionMap(c)
       action match {
-        case str : String => ship.actions -= action
-        case _ => println("Unknown ship keyboard action " + action)
+        case str : String => gameObject.actions -= action
+        case _ => println("Unknown game object keyboard action " + action)
       }
     }
   }
 }
 
-object ShipKeyboardController {
-  def apply(ship : Ship) : ShipKeyboardController = new ShipKeyboardController(ship, scala.collection.immutable.Map(
-    KeyEvent.VK_LEFT -> "TURN_LEFT",
-    KeyEvent.VK_RIGHT -> "TURN_RIGHT",
-    KeyEvent.VK_UP -> "ACCELERATE", 
-    KeyEvent.VK_DOWN -> "REVERSE"))
+object GameObjectKeyboardController {
+  def apply(gameObject : GameObjectMovingThing) : GameObjectKeyboardController = 
+      new GameObjectKeyboardController(gameObject, scala.collection.immutable.Map(
+                                        KeyEvent.VK_LEFT -> "TURN_LEFT",
+                                        KeyEvent.VK_RIGHT -> "TURN_RIGHT",
+                                        KeyEvent.VK_UP -> "ACCELERATE", 
+                                        KeyEvent.VK_DOWN -> "REVERSE"))
 }
