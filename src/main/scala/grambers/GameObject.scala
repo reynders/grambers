@@ -49,23 +49,27 @@ object GameObject {
   def parseMassBodies(xml : NodeSeq) : Array[MassBody] = xml.map{massBody =>
                                                                  parseMassBody(massBody)}.toArray[MassBody]
 
-  def parseMassBody(xml : NodeSeq) : MassBody = (xml \\ "@type").text match {
-    case "circle" =>
-      val center = Util.strPointToPoint((xml \ "@center").text)
-      val r = (xml \\ "@r").text.toDouble
-      new CircleMassBody(center, r)
-    case "rectangle" =>
-      val center = Util.strPointToPoint((xml \ "@center").text)
-      val w = (xml \\ "@w").text.toDouble
-      val h = (xml \\ "@h").text.toDouble
-      new RectangleMassBody(center, w, h)
-    case "polygon" =>
-      val center = Util.strPointToPoint((xml \ "@center").text)
-      val points = Util.pointArrayStrToPointArray((xml \ "@points").text)
-      new PolygonMassBody(center, points)
-    case _ =>
-      println("WARNING: don't know how to parse fixture type " + (xml \\ "@type").text + " xml: \n" + xml)
-      new CircleMassBody(Point(0,0), 0.0)
+  def parseMassBody(xml : NodeSeq) : MassBody = {
+    val massBody = (xml \\ "@type").text match {
+      case "circle" =>
+        val center = Util.strPointToPoint((xml \ "@center").text)
+        val r = (xml \\ "@r").text.toDouble
+        new CircleMassBody(center, r)
+      case "rectangle" =>
+        val center = Util.strPointToPoint((xml \ "@center").text)
+        val w = (xml \\ "@w").text.toDouble
+        val h = (xml \\ "@h").text.toDouble
+        new RectangleMassBody(center, w, h)
+      case "polygon" =>
+        val center = Util.strPointToPoint((xml \ "@center").text)
+        val points = Util.pointArrayStrToPointArray((xml \ "@points").text)
+        new PolygonMassBody(center, points)
+      case _ =>
+        println("WARNING: don't know how to parse fixture type " + (xml \\ "@type").text + " xml: \n" + xml)
+        new CircleMassBody(Point(0,0), 0.0)
+    }
+    massBody.density = Util.parseDouble((xml \ "@density").text, 1.0)
+    massBody
   }
 
   def parseForces(xml : NodeSeq) : Array[Force] = xml.map {force => parseForce(force)}.toArray[Force]
@@ -108,7 +112,6 @@ class Sprite(val name : String, val w : Int, val h : Int,
         if ((now - activeAnimationFrameShownSince) > animationDtBetweenFramesInMs) {
           activeAnimationFrameIndex = (activeAnimationFrameIndex + 1) % images.size
           activeAnimationFrameShownSince = now
-          println("Aafi: " + activeAnimationFrameIndex)
         }
       } else {
         isAnimating = true

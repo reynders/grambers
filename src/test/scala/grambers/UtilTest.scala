@@ -23,9 +23,15 @@ class UtilTest extends TestCase {
   	assertEquals(Point(-1,-1), Util.strPointToPoint("-1,-1"))
   }
 
-  def testParseInt(str : String, default : Int) {
+  def testParseInt {
     assertEquals(1, Util.parseInt("1", 0))
     assertEquals(-1, Util.parseInt("-1", 0))
     assertEquals(42, Util.parseInt("", 42))
+  }
+
+  def testParseDouble {
+    assertEquals(1.0, Util.parseDouble("1.0", 0))
+    assertEquals(-1.0, Util.parseDouble("-1", 0))
+    assertEquals(42.0, Util.parseDouble("", 42))
   }
 }

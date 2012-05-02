@@ -14,7 +14,7 @@
   <sprite file="resources/gfx/ase_ship_turn_right.gif"
        w="32" h="32" rows="1" columns="3" x_offset="0" y_offset="0" action="TURN_RIGHT" animation_fps="10"
        rotates="true" rotation_count="36" />
-  <mass_body type="polygon" center="0,0" points="-7,12 0,-13 7,12" />
+  <mass_body type="polygon" center="0,0" density="3.0" points="-7,12 0,-13 7,12" />
   <force force_vector="-150,0" application_point="-2,-5" action="TURN_LEFT" />
   <force force_vector="150,0" application_point="2,-5" action="TURN_RIGHT" />
   <force force_vector="0,-300" application_point="0,0" action="ACCELERATE" />

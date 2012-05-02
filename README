@@ -16,6 +16,8 @@ for more demos see Demo.scala
 Backlog
 -------
 * Body properties to gameobject xml
+* Force debug draw
+* log4j
 * Other game objects: start point, end point
 * Check performance bottlenecks
 * Find out why there are pauses (-XInt helps?)

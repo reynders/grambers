@@ -19,4 +19,11 @@ object Util {
     else
       str.toInt
   }
+
+  def parseDouble(str : String, default: Double) : Double = {
+    if (str.equals(""))
+      default
+    else
+      str.toDouble
+  }
 }
