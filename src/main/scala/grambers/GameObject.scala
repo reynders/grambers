@@ -9,7 +9,7 @@ import scala.xml._
 class GameObject(val sprites : Array[Sprite], val massBodies : Array[MassBody], val forces : Array[Force]) {
   lazy val forceMap : scala.collection.immutable.Map[String, Force] = forces.map {force => (force.action, force)}.toMap[String, Force]
   lazy val actionToSpriteMap : scala.collection.immutable.Map[String, Sprite] = sprites.map {sprite => (sprite.action, sprite)}.toMap[String, Sprite]
-  override def toString() : String = "GameObject: sprites " + sprites.size + " massBodies " + massBodies.size + 
+  override def toString() : String = "GameObject: sprites " + sprites.size + " massBodies " + massBodies.size +
                                      " forces " + forces.size
 }
 
@@ -31,7 +31,7 @@ object GameObject {
       parseMassBodies(xml \ "mass_body"),
       parseForces(xml \ "force"))
 
-  def parseSprites(xml : NodeSeq) : Array[Sprite] = xml.map {sprite => 
+  def parseSprites(xml : NodeSeq) : Array[Sprite] = xml.map {sprite =>
                                                              parseSprite(sprite)}.toArray[Sprite]
 
   def parseSprite(xml : NodeSeq) : Sprite = new Sprite((xml \ "@file").text,
@@ -46,7 +46,7 @@ object GameObject {
                                                        (xml \ "@rotates").text.equals("true"),
                                                        (xml \ "@rotation_count").text.toInt)
 
-  def parseMassBodies(xml : NodeSeq) : Array[MassBody] = xml.map{massBody => 
+  def parseMassBodies(xml : NodeSeq) : Array[MassBody] = xml.map{massBody =>
                                                                  parseMassBody(massBody)}.toArray[MassBody]
 
   def parseMassBody(xml : NodeSeq) : MassBody = (xml \\ "@type").text match {
@@ -70,7 +70,7 @@ object GameObject {
 
   def parseForces(xml : NodeSeq) : Array[Force] = xml.map {force => parseForce(force)}.toArray[Force]
 
-  def parseForce(xml : NodeSeq) : Force = 
+  def parseForce(xml : NodeSeq) : Force =
                 new Force(Util.strPointToPoint((xml \ "@force_vector").text),
                           Util.strPointToPoint((xml \ "@application_point").text),
                           (xml \ "@action").text)
@@ -87,13 +87,15 @@ class Sprite(val name : String, val w : Int, val h : Int,
   lazy val images : Array[BufferedImage] = splitImageToSprites(img, w, h, rows, columns, xOffset, yOffset)
   lazy val rotatedImages : Array[Array[BufferedImage]] = createRotatedImages(images, rotationCount, rotates)
 
-  var isAnimating = false
-  var lastGetCurrentImageTimestamp : Long = 0
-
   def getCurrentImage(direction : Int, animate : Boolean, now : Long) : BufferedImage = {
     val index = getCurrentImageIndex(direction, animate, now)
     rotatedImages(index._1)(index._2)
   }
+
+  var isAnimating = false
+  lazy val animationDtBetweenFramesInMs = 1000 / animationFps
+  var activeAnimationFrameIndex : Int = 0
+  var activeAnimationFrameShownSince : Long = 0
 
   def getCurrentImageIndex(direction : Int, animate : Boolean, now : Long) : (Int, Int)= {
     val directionFrameIndex = if (direction >= 0)
@@ -101,23 +103,26 @@ class Sprite(val name : String, val w : Int, val h : Int,
                               else
                                 ((360 + (direction % 360)) % 360) / (360 / rotationCount)
 
-    var animationFrameIndex = 0
-
     if (animate) {
-      if (isAnimating)
-        animationFrameIndex = currentAnimationFrameIndex(now - lastGetCurrentImageTimestamp)
-      else
+      if (isAnimating) {
+        if ((now - activeAnimationFrameShownSince) > animationDtBetweenFramesInMs) {
+          activeAnimationFrameIndex = (activeAnimationFrameIndex + 1) % images.size
+          activeAnimationFrameShownSince = now
+          println("Aafi: " + activeAnimationFrameIndex)
+        }
+      } else {
         isAnimating = true
-
-      lastGetCurrentImageTimestamp = now
-    } else
+        activeAnimationFrameShownSince = now
+      }
+    } else  {
       isAnimating = false
+      activeAnimationFrameIndex = 0
+    }
 
-    return (animationFrameIndex, directionFrameIndex)
+    return (activeAnimationFrameIndex, directionFrameIndex)
   }
 
-  lazy val animationDtBetweenFramesInMs = 1000 / animationFps
-  var activeAnimationFrameIndex : Int = 0
+
 
   def currentAnimationFrameIndex(dt : Long) : Int = {
     if (dt >= animationDtBetweenFramesInMs) {
@@ -129,6 +134,7 @@ class Sprite(val name : String, val w : Int, val h : Int,
 
   def splitImageToSprites(img : BufferedImage, w : Int, h : Int, rows : Int, columns : Int,
                           xOffset : Int, yOffset : Int) : Array[BufferedImage] = {
+    println("Splitting " + name + ": " + img.getWidth + " vs " + w + " c " + columns)
     val imgs = new ArrayBuffer[BufferedImage]()
     for (y <- 0 to (rows-1))
       for (x <- 0 to (columns-1)) {

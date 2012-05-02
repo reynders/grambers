@@ -67,7 +67,7 @@ abstract class Thing() {
     g2.setPaint(originalPaintColor)
   }
 
-  // Called inside the game loop to allow Things to do stuff like animation, 
+  // Called inside the game loop to allow Things to do stuff like animation,
   // applying forces etc
   def step(dt : Double) {}
 
@@ -216,7 +216,6 @@ class GameObjectMovingThing(var c : Point, val gameObject : GameObject) extends 
   override def step(dt : Double) {
     actions.foreach { action =>
       if (gameObject.forceMap.contains(action)) {
-        println("Applying " + action)
         applyForce(gameObject.forceMap(action))
       }
     }
@@ -259,10 +258,18 @@ class GameObjectMovingThing(var c : Point, val gameObject : GameObject) extends 
     if (Config.debugDrawShapes)
       drawDebugShapes(g2, position)
 
-    // TODO: support more than 1 sprite
-    val img = gameObject.sprites(0).getCurrentImage(direction.toInt, true, Config.currentTimeMillis)
-
-    g2.drawImage(img, (position.x - img.getWidth/2).toInt, (position.y-img.getHeight/2).toInt, null)
+    // TODO: Clean this up
+    if (actions.isEmpty) {
+      val img = gameObject.actionToSpriteMap("NO_ACTION").getCurrentImage(direction.toInt, true, Config.currentTimeMillis)
+      g2.drawImage(img, (position.x - img.getWidth/2).toInt, (position.y-img.getHeight/2).toInt, null)
+    } else {
+      actions.foreach { action =>
+        if (gameObject.actionToSpriteMap.contains(action)) {
+          val img = gameObject.actionToSpriteMap(action).getCurrentImage(direction.toInt, true, Config.currentTimeMillis)
+          g2.drawImage(img, (position.x - img.getWidth/2).toInt, (position.y-img.getHeight/2).toInt, null)
+        }
+      }
+    }
   }
 
   override def toString : String = {
@@ -298,10 +305,10 @@ class GameObjectKeyboardController(gameObject: GameObjectMovingThing, keyActionM
 }
 
 object GameObjectKeyboardController {
-  def apply(gameObject : GameObjectMovingThing) : GameObjectKeyboardController = 
+  def apply(gameObject : GameObjectMovingThing) : GameObjectKeyboardController =
       new GameObjectKeyboardController(gameObject, scala.collection.immutable.Map(
                                         KeyEvent.VK_LEFT -> "TURN_LEFT",
                                         KeyEvent.VK_RIGHT -> "TURN_RIGHT",
-                                        KeyEvent.VK_UP -> "ACCELERATE", 
+                                        KeyEvent.VK_UP -> "ACCELERATE",
                                         KeyEvent.VK_DOWN -> "REVERSE"))
 }

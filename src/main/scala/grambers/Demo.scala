@@ -15,10 +15,13 @@ object Demo {
     val STARMAP = "resources/maps/starsky_100x100.tmx"
     val GAMEMAP = "resources/maps/map_1.tmx"
     val SHIP = "resources/gameobjects/ship_gf.xml"
+    val ASE_SHIP = "resources/gameobjects/ase_ship.xml"
     val TRIANGLE = "resources/gameobjects/triangle.xml"
 
-    def createShip(position : Point) : GameObjectMovingThing = new GameObjectMovingThing(position, GameObject.load(SHIP))
+    def createShip2(position : Point) : GameObjectMovingThing = new GameObjectMovingThing(position, GameObject.load(SHIP))
   
+    def createShip(position : Point) : GameObjectMovingThing = new GameObjectMovingThing(position, GameObject.load(ASE_SHIP))
+    
     def createTriangle(position : Point) : GameObjectMovingThing =
         new GameObjectMovingThing(position, GameObject.load(TRIANGLE))
 
