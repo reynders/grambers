@@ -122,16 +122,6 @@ class Sprite(val name : String, val w : Int, val h : Int,
     return (activeAnimationFrameIndex, directionFrameIndex)
   }
 
-
-
-  def currentAnimationFrameIndex(dt : Long) : Int = {
-    if (dt >= animationDtBetweenFramesInMs) {
-      activeAnimationFrameIndex = (activeAnimationFrameIndex + 1) % images.size
-    }
-
-    return activeAnimationFrameIndex
-  }
-
   def splitImageToSprites(img : BufferedImage, w : Int, h : Int, rows : Int, columns : Int,
                           xOffset : Int, yOffset : Int) : Array[BufferedImage] = {
     println("Splitting " + name + ": " + img.getWidth + " vs " + w + " c " + columns)

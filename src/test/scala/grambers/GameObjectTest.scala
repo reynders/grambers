@@ -34,45 +34,6 @@ class SpriteTest extends TestCase {
     assertEquals(10, sprite.rotationCount)
   }
 
-  def testGetCurrentImageIndex() {
-    val sprite = GameObject.parseSprite(spriteXml)
-    var now = Config.currentTimeMillis
-    // Animation index tests
-    assertEquals((0, 0), sprite.getCurrentImageIndex(0, false, now))
-    now += sprite.animationDtBetweenFramesInMs
-    assertEquals((0, 0), sprite.getCurrentImageIndex(0, false, now))
-
-    // When animation just starts it should always return first fram
-    now += sprite.animationDtBetweenFramesInMs
-    assertEquals((0, 0), sprite.getCurrentImageIndex(0, true, now))
-
-    now += sprite.animationDtBetweenFramesInMs
-    assertEquals((1, 0), sprite.getCurrentImageIndex(0, true, now))
-
-    now += sprite.animationDtBetweenFramesInMs
-    assertEquals((2, 0), sprite.getCurrentImageIndex(0, true, now))
-
-    // When animation stops it should return 0 frame always
-    assertEquals((0, 0), sprite.getCurrentImageIndex(0, false, now))
-
-    // Rotation index tests
-    assertEquals((0, 0), sprite.getCurrentImageIndex(360, false, now))
-    assertEquals((0, 0), sprite.getCurrentImageIndex(720, false, now))
-    assertEquals((0, sprite.rotationCount / 2), sprite.getCurrentImageIndex(180, false, now))
-    assertEquals((0, sprite.rotationCount / 2), sprite.getCurrentImageIndex(-180, false, now))
-    assertEquals((0, 0), sprite.getCurrentImageIndex(-359, false, now))
-    assertEquals((0, 0), sprite.getCurrentImageIndex(-360, false, now))
-    assertEquals((0, 9), sprite.getCurrentImageIndex(-1, false, now))
-  }
-
-  def testCurrentAnimationIndex {
-    val sprite = GameObject.parseSprite(spriteXml)
-    assertEquals(0, sprite.currentAnimationFrameIndex(0))
-    assertEquals(1, sprite.currentAnimationFrameIndex(sprite.animationDtBetweenFramesInMs))
-    assertEquals(2, sprite.currentAnimationFrameIndex(sprite.animationDtBetweenFramesInMs*2))
-    assertEquals(0, sprite.currentAnimationFrameIndex(sprite.animationDtBetweenFramesInMs*3))
-  }
-
   def testParseMassBody {
     var massBody = GameObject.parseMassBody(<mass_body type="circle" center="0,6" r="3" />)
     assertTrue(massBody.isInstanceOf[CircleMassBody])
@@ -101,7 +62,7 @@ class SpriteTest extends TestCase {
     assertEquals(Point(0, 50), force.forceVector)
     assertEquals(Point(12, -13), force.applicationPoint)
     assertEquals("LEFT", force.action)
-    
+
     val forces = GameObject.parseForces(<force force_vector="0,50" application_point="12,-13" action="LEFT" />
                                           <force force_vector="0,50" application_point="-12,-13" action="RIGHT" />
                                           <force force_vector="0,500" application_point="0,0" action="UP" />
