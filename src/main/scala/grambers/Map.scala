@@ -45,6 +45,7 @@ val tileSets:Array[TileSet], val layers:Array[Layer], val tiles:Array[Tile], val
       }
 
       if (creatingNewBgImage && myFuture.isSet) {
+        log.debug("CREATED A NEW BG")
         bgImage = myFuture()
         creatingNewBgImage = false
       }

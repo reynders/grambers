@@ -3,4 +3,4 @@
 #java -verbose:gc -XX:+PrintCompilation -client -cp $SCALA_HOME/lib/scala-library.jar:./target/classes:lib/base64-2.3.8.jar $@
 
 # Try -Xint
-java -cp $SCALA_HOME/lib/scala-library.jar:./target/classes:./lib/* $@
+java -d64 -client -cp $SCALA_HOME/lib/scala-library.jar:./target/classes:./lib/* $@

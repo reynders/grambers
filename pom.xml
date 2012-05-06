@@ -20,16 +20,19 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>${junit-version}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.jmock</groupId>
             <artifactId>jmock-junit4</artifactId>
             <version>${jmock-version}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.jmock</groupId>
             <artifactId>jmock-legacy</artifactId>
             <version>${jmock-version}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>net.iharder</groupId>
@@ -94,8 +97,8 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>1.7</source>
+                    <target>1.7</target>
                 </configuration>
                 <executions>
                     <execution>
@@ -109,7 +112,7 @@
         </plugins>
     </build>
     <properties>
-        <scala-version>2.9.1-1</scala-version>
+        <scala-version>2.9.2</scala-version>
         <jbox2d-version>2.1.2.2</jbox2d-version>
         <junit-version>4.4</junit-version>
         <jmock-version>2.5.1</jmock-version>
