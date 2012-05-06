@@ -15,11 +15,10 @@ for more demos see Demo.scala
 
 Backlog
 -------
-* Body properties to gameobject xml
-* Force debug draw
-* log4j
-* Other game objects: start point, end point
 * Check performance bottlenecks
+  * Start using centralized platform specific bufferimage creation
+* Force debug draw
+* Other game objects: start point, end point
 * Find out why there are pauses (-XInt helps?)
 * Int Point
 * IOC (http://programming-scala.labs.oreilly.com/ch13.html#DependencyInjectionInScala)
@@ -30,6 +29,7 @@ Backlog
 
 Done
 -----
+* logging fw in use
 * Force information to gameobject xml
 * Take first game map into use
 * Move object manipulation into game loop instead of key event handler

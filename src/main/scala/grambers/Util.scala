@@ -1,6 +1,8 @@
 package grambers
 
 import org.slf4j.LoggerFactory
+import java.awt.image.BufferedImage
+import java.awt.{Transparency, GraphicsConfiguration, GraphicsDevice, GraphicsEnvironment}
 
 object Util {
 
@@ -30,5 +32,18 @@ object Util {
       default
     else
       str.toDouble
+  }
+
+  /**
+   * @param w Desired width
+   * @param h Desired height
+   * @param transparency java.awt.Transparency value
+   * @return a performance optimized image for this device
+   */
+  def createBufferedImage(w : Int, h : Int, transparency : Int) : BufferedImage = {
+    val env = GraphicsEnvironment.getLocalGraphicsEnvironment();
+    val device = env.getDefaultScreenDevice();
+    val config : GraphicsConfiguration = device.getDefaultConfiguration();
+    return config.createCompatibleImage(w, h, transparency);
   }
 }
