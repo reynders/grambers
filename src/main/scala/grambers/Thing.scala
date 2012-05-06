@@ -3,13 +3,13 @@ package grambers
 import java.awt._
 import java.lang.Math._
 import java.awt.geom._
-import java.lang.System._
 
 import org.jbox2d.dynamics._
 import org.jbox2d.common._
 import org.jbox2d.collision.shapes._
 
 import scala.collection.immutable.List
+import Util.log
 
 abstract class Thing() {
   def center : Point = Point(0, 0)
@@ -89,7 +89,7 @@ abstract class MovingThing(location : Point) extends Thing {
                            bd.position = new Vec2(location.x.toFloat, location.y.toFloat)
                            Universe.world.createBody(bd) }
 
-  override def center : Point = Point(body.getPosition.x, body.getPosition.y)
+  override def center : Point = {val bc = body.getPosition; Point(bc.x, bc.y)}
 
   def direction = toDegrees(body.getAngle)
 
@@ -199,12 +199,12 @@ class GameObjectMovingThing(var c : Point, val gameObject : GameObject) extends 
 
   {
     gameObject.massBodies.foreach { massBody =>
-      //  println("SpriteMovingThing " + c + ": creating a fixture from " + massBody)
+      //  log.debug("SpriteMovingThing " + c + ": creating a fixture from " + massBody)
       body.createFixture(massBodyToFixture(massBody))
     }
 
     // TODO: set this in gameobject xml
-    body.setAngularDamping(5)
+    body.setAngularDamping(3)
   }
 
   var actions = scala.collection.mutable.Set[String]()
@@ -239,7 +239,7 @@ class GameObjectMovingThing(var c : Point, val gameObject : GameObject) extends 
         ps.m_centroid.set(new Vec2(pmb.c.x.toFloat, pmb.c.y.toFloat))
         ps
       case _ =>
-        println("Unknown MassBody type!!")
+        log.warn("Unknown MassBody type!!")
         val cs = new CircleShape()
         cs.m_radius = 0
         cs
@@ -287,7 +287,7 @@ class GameObjectKeyboardController(gameObject: GameObjectMovingThing, keyActionM
       val action = keyActionMap(c)
       action match {
         case str : String => gameObject.actions += action
-        case _ => println("Unknown game object keyboard action " + action)
+        case _ => log.debug("Unknown game object keyboard action " + action)
       }
     }
   }
@@ -298,7 +298,7 @@ class GameObjectKeyboardController(gameObject: GameObjectMovingThing, keyActionM
       val action = keyActionMap(c)
       action match {
         case str : String => gameObject.actions -= action
-        case _ => println("Unknown game object keyboard action " + action)
+        case _ => log.debug("Unknown game object keyboard action " + action)
       }
     }
   }

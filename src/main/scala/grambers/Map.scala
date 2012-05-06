@@ -7,6 +7,7 @@ import scala.collection.mutable._
 import scala.xml._
 import scala.actors._
 import scala.actors.Actor._
+import Util.log
 
 class Map(val wInTiles:Int, val hInTiles:Int, val tileW:Int, val tileH:Int,
 val tileSets:Array[TileSet], val layers:Array[Layer], val tiles:Array[Tile], val mapObjectGroups:Array[MapObjectGroup]) {
@@ -32,7 +33,7 @@ val tileSets:Array[TileSet], val layers:Array[Layer], val tiles:Array[Tile], val
     val tileRlp = worldPointToTileIndex(Point(windowRlp.x + tileW, windowRlp.y + tileH))
 
     if (forceSynchronousCreateBgImage) {
-      println("forceSynchronousCreateBgImage == true, creating new bgImage")
+      log.debug("forceSynchronousCreateBgImage == true, creating new bgImage")
       bgImage = createBackgroundImageFromTiles(tileLup, tileRlp)
       forceSynchronousCreateBgImage = false
     } else {
@@ -94,7 +95,8 @@ val tileSets:Array[TileSet], val layers:Array[Layer], val tiles:Array[Tile], val
       }
     }
 
-//println("Created bg image from tiles " + Rectangle(lup, rlp) + ", in pixels (" + bgImage.image.getWidth + "," + bgImage.image.getHeight + ")")
+    log.debug("Created bg image from tiles " + Rectangle(lup, rlp) + ", in pixels (" + bgImage.image.getWidth + "," + bgImage.image.getHeight + ")")
+
     return bgImage
   }
 
@@ -120,8 +122,10 @@ val tileSets:Array[TileSet], val layers:Array[Layer], val tiles:Array[Tile], val
 
   def getTile(layerId : Int, x:Int, y:Int) : Tile = {
     val tileIndex = layers(layerId).tileMap(x)(y)
-    if (tileIndex._2 == 0)
-      return EmptyTile //println("WARNING: empty tiles not supported, make sure maps has a tile everywhere")
+    if (tileIndex._2 == 0) {
+      log.debug("Empty tiles not supported, make sure maps has a tile everywhere")
+      return EmptyTile
+    }
     else
       return tiles(tileIndex._2-1)
   }
@@ -310,13 +314,13 @@ object MapLoader {
     try {
       val map = parseMapFromXml(XML.loadFile(mapFileName))
 
-      println("Loaded map " + mapFileName + " of size in tiles (" + map.wInTiles + "," + map.hInTiles +
-            "), in pixels (" + map.w + "," + map.h + "), tileW: " + map.tileW + " tileH: " + map.tileH + 
+      log.info("Loaded map " + mapFileName + " of size in tiles (" + map.wInTiles + "," + map.hInTiles +
+            "), in pixels (" + map.w + "," + map.h + "), tileW: " + map.tileW + " tileH: " + map.tileH +
             " with " + map.layers.size + " layers and " + map.tiles.size + " tiles")
       return map
 
     } catch {
-      case e:java.io.FileNotFoundException => println("Unknown map " + mapFileName)
+      case e:java.io.FileNotFoundException => log.error("Unknown map " + mapFileName)
     }
 
     return new DummyMap()
@@ -378,7 +382,7 @@ object MapLoader {
       PolygonStaticThing(Point(mapObject.x, mapObject.y), mapObject.polylinePoints.reverse)
     else {
       // jbox2d takes center point, tiled gives lup so conversion is needed
-      println("Creating RectangleStaticThing from " + mapObject)
+      log.debug("Creating RectangleStaticThing from " + mapObject)
       new RectangleStaticThing(Point(mapObject.x + (mapObject.w/2), mapObject.y + mapObject.h/2), mapObject.w, mapObject.h)
     }
   }

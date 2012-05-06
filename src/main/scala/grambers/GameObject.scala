@@ -5,6 +5,7 @@ import java.awt.image._
 import java.io._
 import scala.collection.mutable.ArrayBuffer
 import scala.xml._
+import Util.log
 
 class GameObject(val sprites : Array[Sprite], val massBodies : Array[MassBody], val forces : Array[Force]) {
   lazy val forceMap : scala.collection.immutable.Map[String, Force] = forces.map {force => (force.action, force)}.toMap[String, Force]
@@ -17,10 +18,10 @@ object GameObject {
   def load(fileName : String) : GameObject = {
     try {
       val gameObject = parseGameObject(XML.loadFile(fileName))
-      println("Loaded " + gameObject)
+      log.debug("Loaded " + gameObject)
       return gameObject
     } catch {
-      case e:java.io.FileNotFoundException => println("Unknown game object: " + fileName)
+      case e:java.io.FileNotFoundException => log.error("Unknown game object: " + fileName)
     }
 
     return new GameObject(Array(), Array(), Array())
@@ -65,7 +66,7 @@ object GameObject {
         val points = Util.pointArrayStrToPointArray((xml \ "@points").text)
         new PolygonMassBody(center, points)
       case _ =>
-        println("WARNING: don't know how to parse fixture type " + (xml \\ "@type").text + " xml: \n" + xml)
+        log.warn("Don't know how to parse fixture type " + (xml \\ "@type").text + " xml: \n" + xml)
         new CircleMassBody(Point(0,0), 0.0)
     }
     massBody.density = Util.parseDouble((xml \ "@density").text, 1.0)
@@ -127,7 +128,7 @@ class Sprite(val name : String, val w : Int, val h : Int,
 
   def splitImageToSprites(img : BufferedImage, w : Int, h : Int, rows : Int, columns : Int,
                           xOffset : Int, yOffset : Int) : Array[BufferedImage] = {
-    println("Splitting " + name + ": " + img.getWidth + " vs " + w + " c " + columns)
+    log.debug("Splitting " + name + ": " + img.getWidth + " vs " + w + " c " + columns)
     val imgs = new ArrayBuffer[BufferedImage]()
     for (y <- 0 to (rows-1))
       for (x <- 0 to (columns-1)) {

@@ -4,6 +4,7 @@ import java.lang.System._
 import javax.swing._
 import java.awt._
 import java.awt.image._
+import Util.log
 
 class Camera {
   def move(observer : Observer) = {}
@@ -39,10 +40,10 @@ class Observer (var w: Int, var h: Int, val universe : Universe, var thingInFocu
       override def keyPressed(e : KeyEvent) = {
         val c = e.getKeyCode();
         c match {
-          case KeyEvent.VK_D => Config.debugOn = !Config.debugOn; println("Setting debug to " + Config.debugOn);
-          case _ => //println("Caught key event " + c)
+          case KeyEvent.VK_D => Config.debugOn = !Config.debugOn; log.info("Setting debug to " + Config.debugOn);
+          case _ => // Caught key event " + c)
         }
-      
+
         e.consume();
       }
     }
@@ -51,7 +52,7 @@ class Observer (var w: Int, var h: Int, val universe : Universe, var thingInFocu
       override def componentResized(e:ComponentEvent) {
         w = getWidth
         h = getHeight
-        println("Window resized to (" + w + "," + h + ")")
+        log.debug("Window resized to (" + w + "," + h + ")")
       }
     }
 
@@ -73,7 +74,7 @@ class Observer (var w: Int, var h: Int, val universe : Universe, var thingInFocu
         val bgImage = universe.map.getBackgroundImage(position, w, h)
 
         if (bgImage.image.getWidth != w)
-          println("bgImage width " + bgImage.image.getWidth + " is not window width " + w)
+          log.warn("bgImage width " + bgImage.image.getWidth + " is not window width " + w)
 
         g2.drawImage(bgImage.image, 0, 0, null)
         universe.staticThings.foreach(thing => thing.draw(g2, thing.center + Point(xViewTranslation, yViewTranslation)))
@@ -89,7 +90,7 @@ class Observer (var w: Int, var h: Int, val universe : Universe, var thingInFocu
       setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       add(ViewPanel)
       setSize(new Dimension(w, h));
-      println("Window size is " + "(" + getWidth + "," + getHeight + ")")
+      log.info("Window size is " + "(" + getWidth + "," + getHeight + ")")
       setVisible(true)
     }
   }

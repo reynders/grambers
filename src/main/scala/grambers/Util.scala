@@ -1,6 +1,11 @@
 package grambers
 
+import org.slf4j.LoggerFactory
+
 object Util {
+
+  val log = LoggerFactory.getLogger("grambers")
+
   def pointArrayStrToPointArray(str : String) : Array[Point] = {
     if (str.trim.equals(""))
       new Array[Point](0)

@@ -2,6 +2,7 @@ package grambers
 
 import scala.collection.mutable._
 import org.jbox2d.common._
+import Util.log
 
 abstract class Shape(val center : Point) {
 
@@ -22,7 +23,7 @@ object Shape {
     case (rectangle : Rectangle, circle : Circle) => rectangle.facingSide(circle.center).shortestVectorTo(circle.center).unitVector
     case (circle : Circle, rectangle : Rectangle) => rectangle.facingSide(circle.center).shortestVectorTo(circle.center).unitVector
     case (leftCircle : Circle, rightCircle : Circle) => new Vector((rightCircle.x - leftCircle.x), (rightCircle.y - leftCircle.y)).unitVector
-    case _ => println("Do not know how to calculate collisionUnitVector between " + leftShape + " and " + rightShape)
+    case _ => log.warn("Do not know how to calculate collisionUnitVector between " + leftShape + " and " + rightShape)
               new Vector(1, 0)
   }
 
@@ -32,7 +33,7 @@ object Shape {
     case (leftCircle : Circle, rightCircle : Circle) => !((leftCircle.r + rightCircle.r) < leftCircle.distanceFrom(rightCircle))
     case (leftRectangle: Rectangle, rightRectangle : Rectangle) => leftRectangle.overlaps(rightRectangle)
     case (line : Line, circle:Circle) => line.shortestVectorTo(circle.center).length <= circle.r
-    case _ => println("Warning: do not know how to collide " + leftShape + " with " + rightShape)
+    case _ => log.warn("Warning: do not know how to collide " + leftShape + " with " + rightShape)
               return false
   }
 
@@ -198,7 +199,7 @@ class Rectangle(val minX:Double, val minY:Double, val maxX:Double, val maxY:Doub
         asLines(2)
       }
       else {
-        println("Point (" + point.x + "," + point.y + ") is inside " + this + ", do something!")
+        log.error("Point (" + point.x + "," + point.y + ") is inside " + this + ", do something!")
         asLines(0)
       }
 
