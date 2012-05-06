@@ -157,7 +157,7 @@ class Sprite(val name : String, val w : Int, val h : Int,
     for(i <- 0 until rotationCount) {
       //val rotatedImage = image.getGraphics().asInstanceOf[Graphics2D].getDeviceConfiguration().createCompatibleImage(image.getWidth, image.getHeight, Transparency.TRANSLUCENT)
       val diameter = Math.max(img.getWidth, img.getHeight)
-      val rotatedImage = new BufferedImage(diameter, diameter, Config.imageType)
+      val rotatedImage = Util.createBufferedImage(diameter, diameter, Transparency.TRANSLUCENT)
       val at = new AffineTransform()
       at.rotate(toRadians(i*(360/rotationCount)), diameter/2, diameter/2)
       at.translate(Math.abs(diameter-img.getWidth)/2, Math.abs(diameter-img.getHeight)/2)

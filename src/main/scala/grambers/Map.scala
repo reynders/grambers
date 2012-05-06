@@ -17,7 +17,7 @@ val tileSets:Array[TileSet], val layers:Array[Layer], val tiles:Array[Tile], val
 
   val TILE_BUFFER_PADDING_TILES = 2
   var bgImageWorldLup : (Double, Double) = _
-  var bgImage : BackgroundImage = new BackgroundImage(new BufferedImage(1, 1, Config.imageType), Rectangle((0,0), (1,1)))
+  var bgImage : BackgroundImage = new BackgroundImage(Util.createBufferedImage(1, 1, Transparency.TRANSLUCENT), Rectangle((0,0), (1,1)))
 
   import scala.actors.Futures._
   var myFuture : Future[BackgroundImage] = _
@@ -55,8 +55,8 @@ val tileSets:Array[TileSet], val layers:Array[Layer], val tiles:Array[Tile], val
 
   import scala.collection.mutable.ArrayBuffer
 
-  var bgImages = ArrayBuffer[BackgroundImage](new BackgroundImage(new BufferedImage(1, 1, Config.imageType), Rectangle(0, 0, 1, 1)),
-                                              new BackgroundImage(new BufferedImage(1, 1, Config.imageType), Rectangle(0, 0, 1, 1)))
+  var bgImages = ArrayBuffer[BackgroundImage](new BackgroundImage(Util.createBufferedImage(1, 1, Transparency.TRANSLUCENT), Rectangle(0, 0, 1, 1)),
+                                              new BackgroundImage(Util.createBufferedImage(1, 1, Transparency.TRANSLUCENT), Rectangle(0, 0, 1, 1)))
 
 
   def getNonvisibleBgImage(bgImageInTiles : Rectangle) : BackgroundImage = {
@@ -68,7 +68,7 @@ val tileSets:Array[TileSet], val layers:Array[Layer], val tiles:Array[Tile], val
     bgImages = bgImages.reverse
 
     val image = if (worldCoordinates.fitsIn(Rectangle(bgImages(0).image.getWidth, bgImages(0).image.getHeight))) bgImages(0).image
-                else new BufferedImage(imageW, imageH, Config.imageType)
+                else Util.createBufferedImage(imageW, imageH, Transparency.TRANSLUCENT) //new BufferedImage(imageW, imageH, Config.imageType)
 
     bgImages(0) = new BackgroundImage(image, worldCoordinates)
     return bgImages(0)
