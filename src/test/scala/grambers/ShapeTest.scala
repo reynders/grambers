@@ -116,24 +116,6 @@ class ShapeTest extends TestCase {
     assertEquals(1.0, line.distanceFrom(new Point(0, 3)))
   }
 
-  def testRectangleCollidesWithCircle {
-    var box = new Rectangle(new Point(0, 0), 4, 4)
-    var circle = new Circle(new Point(0, 3), 1)
-    assertTrue(Shape.collidesWith(box, circle))
-
-    circle = new Circle(new Point(0, 3), 0.99)
-    assertFalse(Shape.collidesWith(box, circle))
-
-    circle = new Circle(new Point(-4, 0), 2)
-    assertTrue(Shape.collidesWith(box, circle))
-
-    circle = new Circle(new Point(4, 0), 1.9)
-    assertFalse(Shape.collidesWith(box, circle))
-
-    circle = new Circle(new Point(3, 2.2), 2)
-    assertTrue(Shape.collidesWith(box, circle))
-  }
-
   def testRectangleFacingSide {
     var box = new Rectangle(new Point(0, 0), 4, 4)
 
@@ -148,14 +130,6 @@ class ShapeTest extends TestCase {
 
     circle = new Circle(new Point(-3, 0), 1)
     assertEquals(box.side_left, box.facingSide(circle.center))
-  }
-
-  def testCollisionUnitVector {
-    var circle = new Circle(new Point(0, 0), 1)
-    var box = new Rectangle(new Point(2, 0), 2, 2)
-    var expectedVector = new Vector(-1, 0)
-    assertEquals(expectedVector, Shape.collisionUnitVector(circle, box))
-    assertEquals(expectedVector, Shape.collisionUnitVector(box, circle))
   }
 
   def testLineToPoints {

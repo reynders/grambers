@@ -16,29 +16,6 @@ abstract class Shape(val center : Point) {
   }
 }
 
-object Shape {
-  def collisionUnitVector(leftShape : Shape, rightShape : Shape) : Vector = (leftShape, rightShape) match {
-    case (circle: Circle, line : Line) => line.shortestVectorTo(circle.center).unitVector
-    case (line : Line, circle: Circle) => line.shortestVectorTo(circle.center).unitVector
-    case (rectangle : Rectangle, circle : Circle) => rectangle.facingSide(circle.center).shortestVectorTo(circle.center).unitVector
-    case (circle : Circle, rectangle : Rectangle) => rectangle.facingSide(circle.center).shortestVectorTo(circle.center).unitVector
-    case (leftCircle : Circle, rightCircle : Circle) => new Vector((rightCircle.x - leftCircle.x), (rightCircle.y - leftCircle.y)).unitVector
-    case _ => log.warn("Do not know how to calculate collisionUnitVector between " + leftShape + " and " + rightShape)
-              new Vector(1, 0)
-  }
-
-  def collidesWith(leftShape : Shape, rightShape : Shape) : Boolean = (leftShape, rightShape) match {
-    case (rectangle : Rectangle, circle : Circle) => circle.r >= rectangle.facingSide(circle.center).distanceFrom(circle.center)
-    case (circle : Circle, rectangle : Rectangle) => circle.r >= rectangle.facingSide(circle.center).distanceFrom(circle.center)
-    case (leftCircle : Circle, rightCircle : Circle) => !((leftCircle.r + rightCircle.r) < leftCircle.distanceFrom(rightCircle))
-    case (leftRectangle: Rectangle, rightRectangle : Rectangle) => leftRectangle.overlaps(rightRectangle)
-    case (line : Line, circle:Circle) => line.shortestVectorTo(circle.center).length <= circle.r
-    case _ => log.warn("Warning: do not know how to collide " + leftShape + " with " + rightShape)
-              return false
-  }
-
-}
-
 class Point(val x : Double, val y : Double) {
 
   def +(i : Int) : Point = {
