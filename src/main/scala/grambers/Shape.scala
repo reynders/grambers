@@ -6,17 +6,13 @@ import Util.log
 
 abstract class Shape(val center : Point) {
 
-  def x : Double = center.x
-  def y : Double = center.y
+  def x : Int = center.x
+  def y : Int = center.y
 
-  def this(x : Double, y : Double) = this(new Point(x, y))
-
-  def distanceFrom(shape : Shape) : Double = {
-    new Vector(shape.x - x, shape.y - y).length
-  }
+  def this(x : Int, y : Int) = this(new Point(x, y))
 }
 
-class Point(val x : Double, val y : Double) {
+class Point(val x : Int, val y : Int) {
 
   def +(i : Int) : Point = {
     return(Point(x + i, y + i))
@@ -47,17 +43,14 @@ class Point(val x : Double, val y : Double) {
 }
 
 object Point {
-  def apply(x : Double, y : Double) : Point = new Point(x, y)
-  def apply(x : String, y : String) : Point = new Point(x.toDouble, y.toDouble)
-  def apply(x : Int, y : Int) : Point = new Point(x.toDouble, y.toDouble)
-  def apply(point : Vec2) : Point = new Point(point.x.toDouble, point.y.toDouble)
+  def apply(x : Int, y : Int) : Point = new Point(x, y)
+  def apply(x : Float, y : Float) : Point = new Point(x.toInt, y.toInt)
+  def apply(x : String, y : String) : Point = new Point(x.toInt, y.toInt)
+  def apply(x : Double, y : Double) : Point = new Point(x.toInt, y.toInt)
+  def apply(point : Vec2) : Point = new Point(point.x.toInt, point.y.toInt)
 }
 
-class Line(val startX : Double, val startY : Double, val endX : Double, val endY : Double) extends Shape(startX, startY) {
-
-  lazy val asVector = new Vector(endX - startX, endY - startY)
-  lazy val asUnitVector = asVector.unitVector
-  lazy val length = asVector.length
+class Line(val startX : Int, val startY : Int, val endX : Int, val endY : Int) extends Shape(startX, startY) {
 
   override def equals(line : Any) = line match {
     case that : Line =>
@@ -69,32 +62,10 @@ class Line(val startX : Double, val startY : Double, val endX : Double, val endY
       false
   }
 
-  def shortestVectorTo(point : Point) : Vector = {
-    val lineToPointVector = new Vector(point.x - startX, point.y - startY)
-    val dotProduct = lineToPointVector.dot(this.asUnitVector)
-
-    if (dotProduct > 0) {
-      if (dotProduct <= this.length) {
-        val pointProjectionOnLine = new Vector(point.x - startX, point.y - startY).projectionOn(this.asUnitVector)
-        return new Vector(point.x - startX, point.y - startY) - pointProjectionOnLine
-      }
-      else {
-        return new Vector(point.x - endX, point.y - endY)
-      }
-    }
-    else {
-      return lineToPointVector
-    }
-  }
-
-  def distanceFrom(point : Point) : Double = {
-    shortestVectorTo(point).length
-  }
-
   def toPoints(nOfPoints : Int) : Array[Point] = {
     assert(nOfPoints >= 2)
-    val dX : Double = (endX - startX) / nOfPoints
-    val dY : Double = (endY - startY) / nOfPoints
+    val dX : Int = (endX - startX) / nOfPoints
+    val dY : Int = (endY - startY) / nOfPoints
     val points = ArrayBuffer[Point]()
     for(i <- 0 until (nOfPoints-1)) points += Point((startX + (i*dX)), (startY + (i*dY)))
     points += Point(endX, endY)
@@ -110,9 +81,9 @@ object Line {
   def apply(start:Point, end:Point) : Line = new Line(start.x, start.y, end.x, end.y)
 }
 
-class Circle(center : Point, val r : Double) extends Shape(center) {
+class Circle(center : Point, val r : Int) extends Shape(center) {
 
-  def this (x: Double, y : Double, r : Double) = this(new Point(x, y), r)
+  def this (x: Int, y : Int, r : Int) = this(new Point(x, y), r)
 
   override def toString : String = {
     return "Circle(" + x + "," + y + ") : " + r + "r)"
@@ -123,7 +94,7 @@ class Circle(center : Point, val r : Double) extends Shape(center) {
   Rectangle is specified as w, h and center point (x, y) instead of left upper
   and right lower corner so that rectangle can be at an angle if needed
   */
-class Rectangle(val minX:Double, val minY:Double, val maxX:Double, val maxY:Double) extends
+class Rectangle(val minX:Int, val minY:Int, val maxX:Int, val maxY:Int) extends
                 Shape(Point(((minX+maxX) / 2), ((minY+maxY) / 2))) {
   val lup = (minX, minY)
   val rlp = (maxX, maxY)
@@ -137,9 +108,9 @@ class Rectangle(val minX:Double, val minY:Double, val maxX:Double, val maxY:Doub
   lazy val side_up = asLines(2)
   lazy val side_left = asLines(3)
 
-  def this(lup:(Double, Double), rlp:(Double, Double)) = this(lup._1, lup._2, rlp._1, rlp._2)
+  def this(lup:(Int, Int), rlp:(Int, Int)) = this(lup._1, lup._2, rlp._1, rlp._2)
 
-  def this(center:Point, w:Double, h:Double) = this(center.x-(w/2), center.y-(h/2),
+  def this(center:Point, w:Int, h:Int) = this(center.x-(w/2), center.y-(h/2),
                                                     center.x+(w/2), center.y+(h/2))
 
   def this(lup:Point, rlp:Point) = this(lup.x, lup.y, rlp.x, rlp.y)
@@ -194,7 +165,7 @@ class Rectangle(val minX:Double, val minY:Double, val maxX:Double, val maxY:Doub
           new Rectangle((max(minX, other.minX), max(minY, other.minY)),
                     (min(maxX, other.maxX), min(maxY, other.maxY)))
        else
-          new Rectangle((0.0, 0.0), (0.0, 0.0))
+          new Rectangle((0, 0), (0, 0))
 
   def contains(other:Rectangle) : Boolean =
         ((other.minX >= minX && other.maxX <= maxX) &&
@@ -215,7 +186,7 @@ class Rectangle(val minX:Double, val minY:Double, val maxX:Double, val maxY:Doub
     w == other.w && h == other.h
   }
 
-  def translate(by:(Double, Double)) : Rectangle =
+  def translate(by:(Int, Int)) : Rectangle =
           new Rectangle(minX + by._1, minY + by._2, maxX + by._1, maxY + by._2)
 
   def normalize : Rectangle = translate(-minX, -minY)
@@ -232,11 +203,11 @@ class Rectangle(val minX:Double, val minY:Double, val maxX:Double, val maxY:Doub
 }
 
 object Rectangle {
-  //def apply(lup:(Double, Double), rlp:(Double, Double)) : Rectangle = new Rectangle(lup._1, lup._2, rlp._1, rlp._2)
-  def apply(lup:(Int, Int), rlp:(Int, Int)) : Rectangle = new Rectangle(lup._1.toDouble, lup._2.toDouble,
-                                                                       rlp._1.toDouble, rlp._2.toDouble)
+  //def apply(lup:(Int, Int), rlp:(Int, Int)) : Rectangle = new Rectangle(lup._1, lup._2, rlp._1, rlp._2)
+  def apply(lup:(Int, Int), rlp:(Int, Int)) : Rectangle = new Rectangle(lup._1.toInt, lup._2.toInt,
+                                                                       rlp._1.toInt, rlp._2.toInt)
   def apply(lx:Int, ly:Int, rx:Int, ry:Int) : Rectangle = Rectangle((lx, ly), (rx, ry))
-  def apply(rectangle:Rectangle, padding : Double) : Rectangle
+  def apply(rectangle:Rectangle, padding : Int) : Rectangle
      = new Rectangle(rectangle.minX - padding, rectangle.minY - padding,
                      rectangle.maxX + padding, rectangle.maxY + padding)
   def apply(lup:Point, rlp:Point) : Rectangle = new Rectangle(lup.x, lup.y, rlp.x, rlp.y)

@@ -12,7 +12,7 @@ import scala.collection.immutable.List
 import Util.log
 
 abstract class Thing() {
-  def center : Point = Point(0, 0)
+  def center : Point = new Point(0, 0)
   val body : Body
   var speed : Double = 0.0
   var mass = 0.0
@@ -94,8 +94,8 @@ abstract class MovingThing(location : Point) extends Thing {
   def direction = toDegrees(body.getAngle)
 
   // TODO: does not do what it says it does
-  def setSpeedAndDirection(direction : Vector, speed : Double) {
-    body.setLinearVelocity(new Vec2(direction.i.toFloat, direction.j.toFloat))
+  def setSpeedAndDirection(direction : Vec2, speed : Double) {
+    body.setLinearVelocity(direction)
   }
 }
 

@@ -19,9 +19,9 @@ object Demo {
     val TRIANGLE = "resources/gameobjects/triangle.xml"
 
     def createShip2(position : Point) : GameObjectMovingThing = new GameObjectMovingThing(position, GameObject.load(SHIP))
-  
+
     def createShip(position : Point) : GameObjectMovingThing = new GameObjectMovingThing(position, GameObject.load(ASE_SHIP))
-    
+
     def createTriangle(position : Point) : GameObjectMovingThing =
         new GameObjectMovingThing(position, GameObject.load(TRIANGLE))
 
@@ -34,15 +34,12 @@ object Demo {
       val universe = new Universe(TESTMAP, true)
 
       var ball = CircleMovingThing(200, 100, 10, Color.yellow)
-      ball.setSpeedAndDirection(new Vector(-5, 10), 90)
       addBall(universe, ball, (ball) => {})
 
       ball = CircleMovingThing(150, 100, 20, Color.blue)
-      ball.setSpeedAndDirection(new Vector(5, 10), 90)
       addBall(universe, ball, (ball) => {})
 
       ball = CircleMovingThing(320, 320, 32, Color.red)
-      ball.setSpeedAndDirection(new Vector(0, 0), 90)
       addBall(universe, ball, (ball) => {})
 
       val observer = new Observer(WINDOW_W, WINDOW_H, universe, ball)
@@ -52,7 +49,7 @@ object Demo {
 
     def shipDemo {
       val universe = new Universe(TESTMAP, true)
-      val ship = createShip(Point(320, 320))
+      val ship = createShip(new Point(320, 320))
       universe.addThing(ship)
 
       val ball = CircleMovingThing(320, 370, 32, Color.red)
@@ -66,7 +63,7 @@ object Demo {
     def triangleDemo {
       //org.jbox2d.common.Settings.maxPolygonVertices = 13
       val universe = new Universe(TESTMAP, true)
-      val ship1 = createTriangle(Point(320, 320))
+      val ship1 = createTriangle(new Point(320, 320))
       // ship1.setSpeedAndDirection(new Vector(5, 10), 90)
       universe.addThing(ship1)
 
@@ -79,7 +76,7 @@ object Demo {
 
     def gameDemo {
       val universe = new Universe(GAMEMAP, true)
-      val ship = createShip(Point(320, 320))
+      val ship = createShip(new Point(320, 320))
       universe.addThing(ship)
 
       val ball = CircleMovingThing(320, 370, 32, Color.red)
@@ -87,7 +84,7 @@ object Demo {
 
       val observer = new Observer(WINDOW_W, WINDOW_H, universe, ship)
       observer.WindowToWorld.addKeyListener(GameObjectKeyboardController(ship))
-      universe.run(observer)  
+      universe.run(observer)
     }
 
     def main(args:Array[String]) {

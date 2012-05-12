@@ -22,20 +22,19 @@ class ShapeTest extends TestCase {
 
   def testRectangleDimensions {
     val r = Rectangle((-2, -2),(2, 2))
-    assertEquals(-2.0, r.minX)
-    assertEquals(2.0, r.maxY)
+    assertEquals(-2, r.minX)
+    assertEquals(2, r.maxY)
   }
 
   def testRectangleIntersects {
-    val expected = new Rectangle((0.0, 3.0), (2.0, 5.0))
-    assertEquals(expected, new Rectangle((0.0, 0.0), (10.0, 10.0)).intersect(
-                           new Rectangle((-1.0, 3.0), (2.0, 5.0))))
+    val expected = new Rectangle((0, 3), (2, 5))
+    assertEquals(expected, new Rectangle((0, 0), (10, 10)).intersect(
+                           new Rectangle((-1, 3), (2, 5))))
   }
 
   def testRectangleLimitBy {
     val original = Rectangle((-1, -2), (4, 4))
     val limitBy = Rectangle((0,0), (5,5))
-    //assertEquals(0, limitBy.minX)
     assertEquals(Rectangle((0, 0), (4, 4)), original.limitBy(limitBy))
   }
 
@@ -43,20 +42,20 @@ class ShapeTest extends TestCase {
     val rectangle = new Rectangle(new Point(10, 10), 10, 10)
     val lines = rectangle.asLines
 
-    assertEquals(new Line(5.0, 5.0, 15.0, 5.0), lines(0))
-    assertEquals(new Line(15.0, 5.0, 15.0, 15.0), lines(1))
-    assertEquals(new Line(15.0, 15.0, 5.0, 15.0), lines(2))
-    assertEquals(new Line(5.0, 15.0, 5.0, 5.0), lines(3))
+    assertEquals(new Line(5, 5, 15, 5), lines(0))
+    assertEquals(new Line(15, 5, 15, 15), lines(1))
+    assertEquals(new Line(15, 15, 5, 15), lines(2))
+    assertEquals(new Line(5, 15, 5, 5), lines(3))
 
     // Check that equals works no matter which way the line is
-    assertEquals(new Line(15.0, 5.0, 5.0, 5.0), lines(0))
+    assertEquals(new Line(15, 5, 5, 5), lines(0))
     assertFalse(new Line(0, 0, 0, 0) == lines(0))
   }
 
   def testRectangleWandH {
     val rectangle = Rectangle(0, 0, 9, 4)
-    assertEquals(9.0, rectangle.w)
-    assertEquals(4.0, rectangle.h)
+    assertEquals(9, rectangle.w)
+    assertEquals(4, rectangle.h)
   }
 
   def testRectangleTranslate {
@@ -102,19 +101,6 @@ class ShapeTest extends TestCase {
     assertEquals(true, outerRectangle.contains(sameSizeRectangle))
   }
 
-  def testDistanceFrom {
-    var line = new Line(0, 0, -4, 0)
-    assertEquals(2.0, line.distanceFrom(new Point(-2, 2)))
-
-    line = new Line(0, 0, -1, 0)
-    assertEquals(3.0, line.distanceFrom(new Point(-4, 0)))
-
-    line = new Line(4, -4, -1, 0)
-    assertEquals(2.0, line.distanceFrom(new Point(4, -6)))
-
-    line = new Line(-2, 2, 2, 2)
-    assertEquals(1.0, line.distanceFrom(new Point(0, 3)))
-  }
 
   def testRectangleFacingSide {
     var box = new Rectangle(new Point(0, 0), 4, 4)
@@ -133,11 +119,11 @@ class ShapeTest extends TestCase {
   }
 
   def testLineToPoints {
-    var line = new Line(0.0, 0.0, 10.0, 10.0)
+    var line = new Line(0, 0, 10, 10)
     val points = line.toPoints(10)
     assertEquals(10, points.size)
-    assertEquals(Point(0.0, 0.0), points(0))
-    assertEquals(Point(10.0, 10.0), points(9))
-    assertEquals(Point(5.0, 5.0), points(5))
+    assertEquals(Point(0, 0), points(0))
+    assertEquals(Point(10, 10), points(9))
+    assertEquals(Point(5, 5), points(5))
   }
 }
