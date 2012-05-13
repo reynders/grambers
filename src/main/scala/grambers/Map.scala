@@ -25,8 +25,8 @@ val tileSets:Array[TileSet], val layers:Array[Layer], val tiles:Array[Tile], val
   var forceSynchronousCreateBgImage = true // Set if visible window size changes
 
   def getBackgroundImage(center : Point, w : Int, h : Int) : BackgroundImage = {
-    val windowLup = Point(Math.round(center.x - w/2), Math.round(center.y - h/2))
-    val windowRlp = Point(Math.round(center.x + w/2), Math.round(center.y + w/2))
+    val windowLup = Point(center.x - w/2, center.y - h/2)
+    val windowRlp = Point(center.x + w/2, center.y + w/2)
 
     // Determine the requested bg window in tiles, add buffering so that we do not recreate the background too late
     val tileLup = worldPointToTileIndex(Point(windowLup.x - tileW, windowLup.y - tileH))
