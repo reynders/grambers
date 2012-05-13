@@ -12,7 +12,7 @@ abstract class Shape(val center : Point) {
   def this(x : Int, y : Int) = this(new Point(x, y))
 }
 
-class Point(val x : Int, val y : Int) {
+class Point(var x : Int, var y : Int) {
 
   def +(i : Int) : Point = {
     return(Point(x + i, y + i))
@@ -30,7 +30,11 @@ class Point(val x : Int, val y : Int) {
     return(Point(x - other.x, y - other.y))
   }
 
-  implicit def IntToPoint(i:Int) : Point = new Point(i, i)
+  def set(fromX : Int, fromY : Int) : Point = {
+    this.x = fromX;
+    this.y = fromY;
+    this
+  }
 
   override def equals(that : Any) = that match {
     case point : Point => (this.x == point.x && this.y == point.y)

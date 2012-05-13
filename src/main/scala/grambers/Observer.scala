@@ -1,9 +1,7 @@
 package grambers
 
-import java.lang.System._
 import javax.swing._
 import java.awt._
-import java.awt.image._
 import Util.log
 
 class Camera {
@@ -66,6 +64,8 @@ class Observer (var w: Int, var h: Int, val universe : Universe, var thingInFocu
         }
       }
 
+      var centerPoint = new Point(0, 0)
+
       def drawUniverse(g2 : Graphics2D) {
 
         if (Config.limitFps)
@@ -77,8 +77,14 @@ class Observer (var w: Int, var h: Int, val universe : Universe, var thingInFocu
           log.warn("bgImage width " + bgImage.image.getWidth + " is not window width " + w)
 
         g2.drawImage(bgImage.image, 0, 0, null)
-        universe.staticThings.foreach(thing => thing.draw(g2, thing.center + Point(xViewTranslation, yViewTranslation)))
-        universe.movingThings.foreach(thing => thing.draw(g2, thing.center + Point(xViewTranslation, yViewTranslation)))
+
+        universe.staticThings.foreach{ thing =>
+          thing.draw(g2, centerPoint.set(thing.center.x + xViewTranslation, thing.center.y + yViewTranslation))
+        }
+
+        universe.movingThings.foreach{ thing =>
+          thing.draw(g2, centerPoint.set(thing.center.x + xViewTranslation, thing.center.y + yViewTranslation))
+        }
 
         Config.fps += 1
       }
