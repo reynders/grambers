@@ -42,10 +42,10 @@ abstract class Thing() {
     for (i <- 0 until polygonShape.getVertexCount) {
       // TODO: The jbox2d polygonshape points are relative to "centroid"
       val wp = Point(body.getWorldPoint(polygonShape.getVertex(i)))
-      poly.addPoint(wp.x.toInt, wp.y.toInt)
+      poly.addPoint(wp.x, wp.y)
     }
 
-    poly.translate(position.x.toInt - center.x.toInt, position.y.toInt - center.y.toInt)
+    poly.translate(position.x - center.x, position.y - center.y)
 
     g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
     val originalPaintColor = g2.getPaint()
@@ -60,10 +60,10 @@ abstract class Thing() {
     g2.setPaint(Config.debugDrawShapesColor)
     val r = circleShape.m_radius.toInt
     val wp = body.getWorldPoint(circleShape.m_p)
-    val x = wp.x.toInt - (center.x.toInt - position.x.toInt) - r
-    val y = wp.y.toInt - (center.y.toInt - position.y.toInt) - r
+    val x = wp.x - (center.x - position.x) - r
+    val y = wp.y - (center.y - position.y) - r
 
-    g2.drawOval(x, y, r*2, r*2)
+    g2.drawOval(x.toInt, y.toInt, r*2, r*2)
     g2.setPaint(originalPaintColor)
   }
 
@@ -169,7 +169,7 @@ object PolygonStaticThing {
   def apply(c : Point, vertices : List[(Int, Int)]) : PolygonStaticThing = new PolygonStaticThing(c, vertices)
 
   def apply(c : Point, vertices : Array[Point]) : PolygonStaticThing =
-      new PolygonStaticThing(c, vertices.map { vertice => (vertice.x.toInt, vertice.y.toInt)}.toList)
+      new PolygonStaticThing(c, vertices.map { vertice => (vertice.x, vertice.y)}.toList)
 }
 
 class RectangleStaticThing(val c : Point, val w : Int, val h : Int) extends StaticThing(c) {
@@ -234,7 +234,7 @@ class GameObjectMovingThing(var c : Point, val gameObject : GameObject) extends 
         ps
       case pmb : PolygonMassBody =>
         val ps = new PolygonShape()
-        val v = pmb.points.map(v => new org.jbox2d.common.Vec2(v.x.toInt, v.y.toInt))
+        val v = pmb.points.map(v => new org.jbox2d.common.Vec2(v.x, v.y))
         ps.set(v.toArray, v.size)
         ps.m_centroid.set(new Vec2(pmb.c.x.toFloat, pmb.c.y.toFloat))
         ps
