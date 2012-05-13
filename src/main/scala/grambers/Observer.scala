@@ -22,7 +22,7 @@ class Observer (var w: Int, var h: Int, val universe : Universe, var thingInFocu
                             var y = if ((thingInFocus.center.y - h/2) < 0) h/2
                                     else if ((thingInFocus.center.y + h/2) > universe.HEIGHT) universe.HEIGHT - h/2
                                     else thingInFocus.center.y
-                            observer.position = Point(x, y)
+                            observer.position.set(x, y)
                           }
                         }
 
