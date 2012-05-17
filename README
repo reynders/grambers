@@ -15,20 +15,18 @@ for more demos see Demo.scala
 
 Backlog
 -------
+* Support for arbitrary size game window
 * Check performance bottlenecks
-  * Start using centralized platform specific bufferimage creation
 * Force debug draw
 * Other game objects: start point, end point
 * Find out why there are pauses (-XInt helps?)
-* Int Point
-* IOC (http://programming-scala.labs.oreilly.com/ch13.html#DependencyInjectionInScala)
 * Switch to use the scala Swing implementation
   (http://www.scala-lang.org/sites/default/files/sids/imaier/Mon,%202009-11-02,%2008:55/scala-swing-design.pdf)
-* Scalafy code
-* sbt build
 
 Done
 -----
+* Int Point
+* Use centralized platform specific bufferimage creation
 * logging fw in use
 * Force information to gameobject xml
 * Take first game map into use
