@@ -26,7 +26,7 @@ val tileSets:Array[TileSet], val layers:Array[Layer], val tiles:Array[Tile], val
 
   def getBackgroundImage(center : Point, w : Int, h : Int) : BackgroundImage = {
     val windowLup = Point(center.x - w/2, center.y - h/2)
-    val windowRlp = Point(center.x + w/2, center.y + w/2)
+    val windowRlp = Point(windowLup.x + w, windowLup.y + h)
 
     // Determine the requested bg window in tiles, add buffering so that we do not recreate the background too late
     val tileLup = worldPointToTileIndex(Point(windowLup.x - tileW, windowLup.y - tileH))
@@ -63,8 +63,8 @@ val tileSets:Array[TileSet], val layers:Array[Layer], val tiles:Array[Tile], val
   def getNonvisibleBgImage(bgImageInTiles : Rectangle) : BackgroundImage = {
     val worldCoordinates = new Rectangle(bgImageInTiles.minX*tileW, bgImageInTiles.minY*tileH,
                                         ((bgImageInTiles.maxX+1)*tileW)-1, ((bgImageInTiles.maxY+1)*tileH)-1)
-    val imageW = (bgImageInTiles.w.toInt+1)*tileW
-    val imageH = (bgImageInTiles.h.toInt+1)*tileH
+    val imageW = (bgImageInTiles.w + 1)*tileW
+    val imageH = (bgImageInTiles.h + 1)*tileH
 
     bgImages = bgImages.reverse
 
