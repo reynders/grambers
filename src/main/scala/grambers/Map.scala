@@ -82,8 +82,8 @@ val tileSets:Array[TileSet], val layers:Array[Layer], val tiles:Array[Tile], val
     // TODO: Might be faster to draw empty tiles than clear whole bgImage
     bgImage.clear()
 
-    val lup = (bgImageAsTiles.minX.toInt, bgImageAsTiles.minY.toInt)
-    val rlp = (bgImageAsTiles.maxX.toInt, bgImageAsTiles.maxY.toInt)
+    val lup = (bgImageAsTiles.minX, bgImageAsTiles.minY)
+    val rlp = (bgImageAsTiles.maxX, bgImageAsTiles.maxY)
 
     for (y <- lup._2 to rlp._2) {
       for (x <- lup._1 to rlp._1) {
@@ -102,12 +102,12 @@ val tileSets:Array[TileSet], val layers:Array[Layer], val tiles:Array[Tile], val
   }
 
   def worldPointToTileIndex(worldPoint : Point) : (Int, Int) = {
-    var x = worldPoint.x.toInt
-    var y = worldPoint.y.toInt
+    var x = worldPoint.x
+    var y = worldPoint.y
     if (x < 0) x = 0 else if (x >= w) x = w-1
     if (y < 0) y = 0 else if (y >= h) y = h-1
-    val tx = (x / tileW.toInt)
-    val ty = (y / tileH.toInt)
+    val tx = (x / tileW)
+    val ty = (y / tileH)
     assert ((tx >= 0 && tx < wInTiles && ty >= 0 && ty < hInTiles),
             "tx: " + tx + "(max value " + (wInTiles-1) + "), ty: " + ty +
             "(max value " + (hInTiles-1) + ")")
@@ -141,7 +141,7 @@ class DummyMap extends Map(1, 1, 1, 1, new Array[TileSet](0), new Array[Layer](0
 
 class BackgroundImage(val image:BufferedImage, val worldCoordinates:Rectangle) {
   lazy val bgGraphics : Graphics2D = image.createGraphics
-  lazy val lup = (worldCoordinates.lup._1.toInt, worldCoordinates.lup._2.toInt)
+  lazy val lup = (worldCoordinates.lup._1, worldCoordinates.lup._2)
 
   def getVisiblePart(visibleWindow : Rectangle) : BackgroundImage = {
     val bgX = lup._1
@@ -156,8 +156,8 @@ class BackgroundImage(val image:BufferedImage, val worldCoordinates:Rectangle) {
     val visiblePartWorldCoordinates = new Rectangle(bgImageVisiblePart.lup._1 + bgX, bgImageVisiblePart.lup._2 + bgY,
                                                 bgImageVisiblePart.rlp._1 + bgX, bgImageVisiblePart.rlp._2 + bgY)
 
-    val visiblePartImage = image.getSubimage(bgImageVisiblePart.lup._1.toInt, bgImageVisiblePart.lup._2.toInt,
-                                             bgImageVisiblePart.w.toInt, bgImageVisiblePart.h.toInt)
+    val visiblePartImage = image.getSubimage(bgImageVisiblePart.lup._1, bgImageVisiblePart.lup._2,
+                                             bgImageVisiblePart.w, bgImageVisiblePart.h)
     return new BackgroundImage(visiblePartImage, visiblePartWorldCoordinates)
   }
 
