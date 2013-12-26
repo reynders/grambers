@@ -163,7 +163,7 @@ class Rectangle(val minX:Int, val minY:Int, val maxX:Int, val maxY:Int) extends
              (maxX < other.minX) ||(minX > other.maxX))
   }
 
-  import scala.Math._
+  import scala.math._
   def intersect(other:Rectangle) : Rectangle =
        if (overlaps(other))
           new Rectangle((max(minX, other.minX), max(minY, other.minY)),

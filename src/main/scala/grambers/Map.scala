@@ -5,9 +5,9 @@ import java.awt.image._
 import java.awt._
 import scala.collection.mutable._
 import scala.xml._
-import scala.actors._
-import scala.actors.Actor._
 import Util.log
+import scala.concurrent.{ExecutionContext, Future}
+import ExecutionContext.Implicits.global
 
 class Map(val wInTiles:Int, val hInTiles:Int, val tileW:Int, val tileH:Int,
 val tileSets:Array[TileSet], val layers:Array[Layer], val tiles:Array[Tile], val mapObjectGroups:Array[MapObjectGroup]) {
@@ -19,7 +19,6 @@ val tileSets:Array[TileSet], val layers:Array[Layer], val tiles:Array[Tile], val
   var bgImageWorldLup : (Double, Double) = _
   var bgImage : BackgroundImage = new BackgroundImage(Util.createBufferedImage(1, 1, Transparency.TRANSLUCENT), Rectangle((0,0), (1,1)))
 
-  import scala.actors.Futures._
   var myFuture : Future[BackgroundImage] = _
   var creatingNewBgImage = false
   var forceSynchronousCreateBgImage = true // Set if visible window size changes
@@ -41,13 +40,15 @@ val tileSets:Array[TileSet], val layers:Array[Layer], val tiles:Array[Tile], val
       if (!worldRectangleToTileRectangle(bgImage.worldCoordinates).contains(Rectangle(tileLup, tileRlp)) &&
                                          !creatingNewBgImage) {
         creatingNewBgImage = true
-        myFuture = future {createBackgroundImageFromTiles(tileLup, tileRlp)}
+        myFuture = scala.concurrent.future {createBackgroundImageFromTiles(tileLup, tileRlp)}
       }
 
-      if (creatingNewBgImage && myFuture.isSet) {
-        log.debug("CREATED A NEW BG")
-        bgImage = myFuture()
-        creatingNewBgImage = false
+      if (creatingNewBgImage) {
+        myFuture.map { newBgImage =>
+          log.debug("CREATED A NEW BG")
+          bgImage = newBgImage
+          creatingNewBgImage = false
+        }
       }
     }
 
@@ -172,7 +173,7 @@ class TileSet(val firstTileIndex:Int, val tiles:Array[Tile], val w:Int, val h:In
 
 object TileSet {
 
-  def apply(xml : Node) : TileSet =
+  def apply(xml : scala.xml.Node) : TileSet =
      loadFromFile((xml \\ "image" \ "@source").text,
                   (xml \\ "@firstgid").text.toInt,
                   (xml \\ "@tilewidth").text.toInt,
@@ -206,7 +207,7 @@ class Layer(val name : String, val w : Int, val h : Int) {
 }
 
 object Layer {
-  def apply(xml : Node) : Layer = {
+  def apply(xml : scala.xml.Node) : Layer = {
     val layer = new Layer((xml \ "@name").text,
                           (xml \ "@width").text.toInt,
                           (xml \ "@height").text.toInt)
@@ -399,7 +400,7 @@ object MapLoader {
     return mapObjects.toArray[MapObject]
   }
 
-  def parseMapObject(mapObjectXml : Node) : MapObject = {
+  def parseMapObject(mapObjectXml : scala.xml.Node) : MapObject = {
     val name = (mapObjectXml \ "@name").text
     val typeStr = (mapObjectXml \ "@type").text
     val x = if ((mapObjectXml \ "@x").text != "") (mapObjectXml \ "@x").text.toInt else 0
